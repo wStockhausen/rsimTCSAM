@@ -9,4 +9,5 @@ Description: This provides a simulation model for testing the TCSAM2015 stock as
 License: MIT
 Imports:
     ggplot2,
-    reshape2
+    reshape2,
+    wtsUtilities
