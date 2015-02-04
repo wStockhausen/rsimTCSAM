@@ -1,9 +1,11 @@
 #'
-#'@title Calculate size transition matrices by year, sex
+#'@title Calculate size transition matrices by year, sex, shell condition
+#'
+#'@description Function to calculate size transition matrices by year, sex, shell condition
 #'
 #'@param mc - model configuration object
 #'
-#'@return prZAM_yxmszz: 5d array with weight-at-size by year/sex/maturity state/shell condition
+#'@return prZAM_yxszz: 5d array with size transition matrices by year/sex/shell condition
 #'
 #'@import ggplot2
 #'@import reshape2
@@ -14,7 +16,7 @@ calcZTM<-function(mc,showPlot=TRUE){
     d<-mc$dims;
     p<-mc$params$growth;
     
-    prZAM_yxmszz <- dimArray(mc,'y.x.m.s.z.zp')
+    prZAM_yxszz <- dimArray(mc,'y.x.s.z.zp')
     mdfr.pr<-NULL;
     mdfr.mn<-NULL;
     for (t in names(p$blocks)){
@@ -38,13 +40,11 @@ calcZTM<-function(mc,showPlot=TRUE){
                 prZAM<-prZAM/sum(prZAM);
                 prZAM_xzz[x,z,z:d$zp$n]<-prZAM;
             }#z
-            for (m in d$m$nms){
-                for (s in d$s$nms){
-                    for (y in yrs) {
-                        prZAM_yxmszz[y,x,m,s,,]<-prZAM_xzz[x,,];#indep of maturity state, shell condition
-                    }#y
-                }#s
-            }#m
+            for (s in d$s$nms){
+                for (y in yrs) {
+                    prZAM_yxszz[y,x,s,,]<-prZAM_xzz[x,,];#indep of shell condition
+                }#y
+            }#s
         }#x
         mdfrp.mn<-melt(mnZAM_xz,value.name='val');
         mdfrp.mn$t<-t;
@@ -75,5 +75,5 @@ calcZTM<-function(mc,showPlot=TRUE){
         p <- p + facet_wrap(~ x+t, ncol=1);
         print(p);
     }
-    return(prZAM_yxmszz)
+    return(prZAM_yxszz)
 }

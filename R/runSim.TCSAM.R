@@ -1,7 +1,7 @@
 #'
-#'@title Run the BBRKC simulation model to produce a Gmacs input file.
+#'@title Run the TCSAM simulation model to produce a TCSAM2015 input file.
 #'
-#'@description Function to run the BBRKC simulation model to produce a Gmacs input file.
+#'@description Function to run the TCSAM simulation model to produce a TCASM2015 input file.
 #'
 #'@param fn - filename for output file (input file to gmacs)
 #'@param showPlot - flag (T/F) to show plots
@@ -13,9 +13,10 @@
 #'
 #'@export
 #'
-runSim.BBRKC<-function(fn='gmacs.input.dat',showPlot=TRUE){
-    #get model configuration for BBRKC
-    mc <- readModelConfiguration();
+runSim.TCSAM<-function(fn='tcsam.input.dat',showPlot=TRUE){
+    #get model configuration for Tanner crab
+#    mc <- readModelConfiguration();
+    mc <- ModelConfiguration.TCSAM();
     
     #calculate model processes
     mp <- calcModelProcesses(mc,showPlot=showPlot);
@@ -24,7 +25,7 @@ runSim.BBRKC<-function(fn='gmacs.input.dat',showPlot=TRUE){
     mr <- runModel(mc,mp,showPlot=showPlot);
     
     #output results to model files
-    writeSim.gmacs(mc,mp,mr,fn=fn,showPlot=showPlot);
+    writeSim.TCSAM(mc,mp,mr,fn=fn,showPlot=showPlot);
     
     return(invisible(list(mp=mp,mc=mc,mr=mr)));
 }

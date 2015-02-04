@@ -11,20 +11,20 @@
 #'@export
 #'
 calcModelProcesses<-function(mc,showPlot=TRUE){
-    #weight-at-size
+    #calculate weight-at-size
     W_yxmsz <- calcWatZ(mc,showPlot=showPlot);
     
-    #calculate time-varying natural mortality
+    #calculate natural mortality
     M_yxmsz <- calcNaturalMortality(mc,showPlot=showPlot);
     
-    #calculate molting probabilities
-    prMolt_yxmsz<-calcPrMolt(mc,showPlot=showPlot);
+    #calculate molting probabilities for immature crab
+    prMolt_yxsz<-calcPrMolt(mc,showPlot=showPlot);
     
-    #calculate size transition matrix
-    T_yxmszz <- calcZTM(mc,showPlot=showPlot);
+    #calculate pr(molt to maturity|size, molt) 
+    prMoltToMat_yxsz <- calcPrMoltToMaturity(mc,showPlot=showPlot);
     
-    #calculate pr(maturity|size) [interpretations differ for KC, TC]
-    prMat_yxz <- calcMaturity(mc,showPlot=showPlot);
+    #calculate size transition matrix for molting crab
+    T_yxszz <- calcZTM(mc,showPlot=showPlot);
     
     #calculate fishing mortalities
     F_list <- calcFishingMortalities(mc,showPlot=showPlot);
@@ -45,9 +45,9 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
                M_yxmsz=M_yxmsz,
                Z_yxmsz=Z_yxmsz,
                S_yxmsz=S_yxmsz,
-               prMolt_yxmsz=prMolt_yxmsz,
-               T_yxmszz=T_yxmszz,
-               prMat_yxz=prMat_yxz,
+               prMolt_yxsz=prMolt_yxsz,
+               prMoltToMat_yxsz=prMoltToMat_yxsz,
+               T_yxszz=T_yxszz,
                F_list=F_list,
                S_list=S_list)
     

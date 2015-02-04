@@ -1,12 +1,12 @@
 #'
-#'@title Calculate probability of molting at size for sex, maturity state, shell condition.
+#'@title Calculate probability at size of molting for immature crab by sex, shell condition.
 #'
-#'@title Function to calculate probability of molting at size for sex, maturity state, shell condition.
+#'@title Function to calculate probability at size of molting for immature crab by sex, shell condition.
 #'
 #'@param mc - model configuration object
 #'@param showPlot - flag to show plots
 #'
-#'@return prMolt_yxmsz
+#'@return prMolt_yxsz
 #'
 #'@import reshape2
 #'@import ggplot2
@@ -17,28 +17,24 @@ calcPrMolt<-function(mc,showPlot=TRUE){
     d<-mc$dims;
     p<-mc$params$molting;
     
-    if (mc$type=='KC'){
-        tiny <- 0.001;
-        
-        prMolt_yxmsz <- dimArray(mc,'y.x.m.s.z',val=0);    
+    if (mc$type=='TC'){
+        prMolt_yxsz <- dimArray(mc,'y.x.s.z',val=0);    
         mdfr<-NULL;
         for (t in names(p$blocks)){
             tb<-p$blocks[[t]];
             yrs<-as.character(tb$years);
             for (x in d$x$nms){
-                mu <- tb$mu[x]
-                sd <- tb$cv[x] * mu;
-                mp_z<-dimArray(mc,'z');
-                mp_z[] <- 1.0 - ((1.0-2.*tiny)*plogis(d$z$vls,mu,sd) + tiny);
-                mdfrp<-melt(mp_z,value.name='val');
-                mdfrp$x<-x;
-                mdfrp$t<-t;
-                mdfr<-rbind(mdfr,mdfrp);
-                for (m in d$m$nms){
-                    for (s in d$s$nms) {
-                        for (y in yrs) prMolt_yxmsz[y,x,m,s,]<-mp_z;
-                    }#s
-                }#m      
+                for (s in d$s$nms) {
+                    z50 <- tb$z50_xms[x,m,s];
+                    sdv <- tb$sdv_xms[x,m,s];
+                    mp_z<-dimArray(mc,'z');
+                    mp_z[] <- 1.0 - plogis(d$z$vls,z50,sdv);
+                    mdfrp<-melt(mp_z,value.name='val');
+                    mdfrp$fac<-paste(x,s,sep=', ');
+                    mdfrp$t<-t;
+                    mdfr<-rbind(mdfr,mdfrp);
+                    for (y in yrs) prMolt_yxsz[y,x,s,]<-mp_z;
+                }#s
             }#x
         }#t
     } else {
@@ -46,13 +42,13 @@ calcPrMolt<-function(mc,showPlot=TRUE){
     }
     
     if (showPlot){
-        p <- ggplot(aes(x=z,y=val,color=x),data=mdfr)
+        p <- ggplot(aes(x=z,y=val,color=fac),data=mdfr)
         p <- p + geom_line()
-        p <- p + labs(x='size (mm)',y='pr(molt|sex,size)')
-        p <- p + guides(color=guide_legend('sex'));
+        p <- p + labs(x='size (mm)',y='pr(molt|size)')
+        p <- p + guides(color=guide_legend('sex, shell condition'));
         p <- p + facet_wrap(~t,ncol=1);
         print(p);
     }
     
-    return(prMolt_yxmsz);
+    return(prMolt_yxsz);
 }

@@ -8,6 +8,8 @@
 #'
 #'@return model configuration list object
 #'
+#'@import wtsUtilities
+#'
 #'@export
 #'
 readModelConfiguration<-function(fn=NULL,ext='*'){
@@ -65,8 +67,8 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
     for (tp in 1:nt){
         t<-rsp[[i]][1]; i<-i+1;
         eval(parse(text=paste('years<-',t)));
-        a<-dimArray(list(dims=dims),'x.z');
-        b<-dimArray(list(dims=dims),'x.z');
+        a<-dimArray(list(dims=dims),'x.m');
+        b<-dimArray(list(dims=dims),'x.m');
         nc<-parseNum(rsp[[i]][1]); i<-i+1;
         for (ic in 1:nc){
             xp<-rsp[[i]][1]; 

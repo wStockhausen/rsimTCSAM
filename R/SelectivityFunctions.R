@@ -26,16 +26,16 @@ calcSelectivity<-function(type,z,params){
 #'
 #'@description Function to calculate the logistic function
 #'
-#'@param z - vector of sizes at which to compute selectivities
-#'@param mu - size at which selectivity  = 0.5 (logit-scale mean)
-#'@param sd - standard deviation in selectivity (logit-scale standard deviation)
+#'@param z    - vector of sizes at which to compute selectivities
+#'@param z50 - size at which selectivity  = 0.5 (logit-scale mean)
+#'@param sd  - standard deviation in selectivity (logit-scale standard deviation)
 #'
 #'@return vector with selectivity values at the elements of z
 #'
-plogis<-function(z,mu,sd){
+plogis<-function(z,z50,sd){
     #cat(z,'\n')
-    #cat('mu, sd = ',mu,sd,'\n')
-    res<-1.0/(1.0+exp(-(z-mu)/sd));
+    #cat('z50, sd = ',z50,sd,'\n')
+    res<-1.0/(1.0+exp(-(z-z50)/sd));
     #print(res);
     names(res)<-as.character(z);
     #print(res)
