@@ -21,15 +21,23 @@
 calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
     #calculate time series of fisheries catches
     d<-mc$dims;
-    S_yxmsz   <- mp$S_yxmsz;#survival
-    Z_yxmsz   <- mp$Z_yxmsz;#total mortality rate
+    M_yxmsz   <- mp$M_yxmsz;         #natural mortality rate
     FC_fyxmsz <- mp$F_list$FC_fyxmsz;#capture rates
     FM_fyxmsz <- mp$F_list$FM_fyxmsz;#mortality rates
     RM_fyxmsz <- mp$F_list$RM_fyxmsz;#retention mortality rates
     DM_fyxmsz <- mp$F_list$DM_fyxmsz;#discard mortality rates
     
+    #calc survival to midpoint of fisheries
+    S_yxmsz <- exp(-mc$params$fish.time*mp$M_yxmsz);
+    
+    #calc total fishing mortality
+    FT_yxmsz<-dimArray(mc, 'y.x.m.s.z');
+    for (f in d$f$nms){
+        FT_yxmsz <- FT_yxmsz + FM_fyxmsz[f,,,,,];
+    }
+    
     fac_yxmsz  <- dimArray(mc, 'y.x.m.s.z');
-    fac_yxmsz[,,,,]<-((1-S_yxmsz[,,,,])/Z_yxmsz[,,,,])*N_yxmsz[,,,,];
+    fac_yxmsz[,,,,]<-(1/FT_yxmsz)*(1-exp(-FT_yxmsz))*(S_yxmsz*N_yxmsz);
     
     NC_fyxmsz <- dimArray(mc,'f.y.x.m.s.z');#numbers captured
     NM_fyxmsz <- dimArray(mc,'f.y.x.m.s.z');#numbers killed
@@ -55,24 +63,21 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
         p <- p + guides(color=guide_legend('fishery',order=1,alpha=1),
                         linetype=guide_legend('type',order=2),
                         shape=guide_legend('type',order=2));
-        p <- p + facet_wrap(~ x, ncol=1);#only 1 maturity state
+        p <- p + facet_grid(f ~ x);
         print(p);
         
         #size comps
-#         p <- ggplot(aes(x=y,y=z,fill=val,size=val),data=mdfr);
-#         p <- p + geom_point(alpha=0.6,shape=21);
-#         p <- p + scale_size_area(max_size=10);
-#         p <- p + scale_fill_gradient();
-#         p <- p + geom_abline(intercept=0,slope=1,linetype=3,color='black');
-#         p <- p + labs(x='year',y='size (mm)',title='Survey Abundance');
-#         p <- p + guides(fill=guide_colorbar('Abundance',order=1,alpha=1),
-#                         size=guide_legend('',order=2));
-#         if (mc$type=='KC'){
-#             p <- p + facet_wrap(~ v + x + s, ncol=1);#only 1 maturity state
-#         } else {
-#             p <- p + facet_wrap(~ m + s + x, ncol=1);
-#         }
-#         print(p);
+        ddfr<-dcast(mdfr,f+type+x+y+z~.,fun.aggregate=sum,value.var='val');
+        for (fp in d$f$nms){
+            p <- ggplot(aes(x=y,y=z,fill=type,size=`.`),data=ddfr[ddfr$f==fp,]);
+            p <- p + geom_point(alpha=0.6,shape=21);
+            p <- p + scale_size_area(max_size=10);
+            p <- p + labs(x='year',y='size (mm)',title=paste(fp,'Catch/Mortality'));
+            p <- p + guides(fill=guide_legend('type',order=1,alpha=1),
+                            size=guide_legend('',order=2));
+            p <- p + facet_wrap(~ x ,ncol=1);
+            print(p);
+        }
     }
     
     return(list(NC_fyxmsz=NC_fyxmsz,NM_fyxmsz=NM_fyxmsz,

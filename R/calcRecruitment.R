@@ -14,9 +14,6 @@ calcRecruitment<-function(mc,showPlot=TRUE){
     d <- mc$dims;      #model dimensions info
     p <- mc$params$rec;#recruitment parameters
     
-    #calc annual size distribution
-    R_yz  <- calcRatZ(mc,showPlot=showPlot)
-    
     #calc total recruitment by year
     R_y   <- dimArray(mc,'y');
     dims  <- dim(R_y);
@@ -44,12 +41,19 @@ calcRecruitment<-function(mc,showPlot=TRUE){
             tb<-p$blocks[[t]];
             yrs <-as.character(tb$years);
             ndvs<- length(yrs);
-            devs<- rnorm(ndvs,mean=0, sd=tb$sdXR);
-            mXR <- 1/(1+exp(-(tb$lnXR+devs+(tb$sdXR^2)/2)));
+            if (tb$lgtSdXR>0){
+                devs<- rnorm(ndvs,mean=0, sd=tb$lgtSdXR);
+            } else {
+                devs<-0*1:ndvs;
+            }
+            mXR <- 1/(1+exp(-(tb$lgtMnXR+devs+(tb$lgtSdXR^2)/2)));
             R_yx[yrs,'male']   <- mXR;
             R_yx[yrs,'female'] <- 1-mXR;
-        }
+        }#t
     }
+    
+    #calc annual size distribution
+    R_yz  <- calcRatZ(mc,showPlot=showPlot)
     
     #calc year/sex/size-specific recruimtent
     R_yxz <- dimArray(mc,'y.x.z');
@@ -74,7 +78,7 @@ calcRecruitment<-function(mc,showPlot=TRUE){
         px <- px + ylim(c(0,1))
         print(px)
     }
-    return(R_yxz)
+    return(list(R_y=R_y,R_yx=R_yx,R_yz=R_yz,R_yxz=R_yxz));
 }
 #---------------------------------------------------------------------
 #'
@@ -90,6 +94,10 @@ calcRecruitment<-function(mc,showPlot=TRUE){
 #'@export
 #'
 calcRatZ<-function(mc,showPlot=TRUE){
+    if (mc$type!='TC'){
+        throwModelTypeError(mc$type,'TC','calcRatZ()');
+    }
+    
     d <- mc$dims;      #model dimensions info
     p <- mc$params$rec;#recruitment parameters
     
@@ -101,11 +109,10 @@ calcRatZ<-function(mc,showPlot=TRUE){
         yrs<-as.character(tb$years);
         alpha <- exp(tb$lnAlphaZ);
         beta  <- exp(tb$lnBetaZ);
-        zcs <- d$zc$vls;
-        #print(zcs)
-	    cum <- pgamma(zcs,shape=alpha/beta,scale=beta);
+        zbs <- d$z$vls - d$zc$vls[1];#size increment from the lowest size cutpoint
+        #print(zbs)
         prs<-dimArray(mc,'z');
-        prs[] <- first_difference(cum);
+        prs[] <- dgamma(zbs,shape=alpha/beta,scale=beta);
         prs <- prs/sum(prs);#standardized to sum to 1
 	    for (y in yrs) {R_yz[y,] <- prs;}
         mdfrp<-melt(prs,value.name='val');
@@ -114,53 +121,12 @@ calcRatZ<-function(mc,showPlot=TRUE){
     }
     
     if (showPlot){
-        pz <- ggplot(mapping=aes(x=z,y=val,color=t),data=mdfr)
-        pz <- pz + geom_line();
-        pz <- pz + labs(x='size (mm)',y='pr(Z)',title='size distribution')
+        pz <- ggplot(mapping=aes(x=z,y=val,fill=t),data=mdfr)
+        pz <- pz + geom_bar(stat='identity');
+        pz <- pz + labs(x='size (mm)',y='pr(Z)',title='Recruitment Size Distributions')
         pz <- pz + guides(color=guide_legend('time block'));
         print(pz)
     }
     return(R_yz)
-}
-
-#---------------------------------------------------------------------
-#'
-#'@title Calculate initial proportions recruiting-at-size
-#'
-#'@param mc - model configuration object
-#'
-#'@return R_z: 1d array with initial proportions of crab recruiting by size
-#'
-#'@import reshape2
-#'@import ggplot2
-#'
-#'@export
-#'
-calcRatZ.init<-function(mc,showPlot=TRUE){
-    d <- mc$dims;      #model dimensions info
-    p <- mc$params$rec$inits;#recruitment parameters
-    
-    #calc size distribution
-    R_z  <- dimArray(mc,'z');
-    mdfr<-NULL;
-        alpha <- exp(p$lnAlphaZ);
-        beta  <- exp(p$lnBetaZ);
-        zcs <- d$zc$vls;
-        #print(zcs)
-        cum <- pgamma(zcs,shape=alpha/beta,scale=beta);
-        prs<-dimArray(mc,'z');
-        prs[] <- first_difference(cum);
-        prs <- prs/sum(prs);#standardized to sum to 1
-        R_z[] <- prs;
-        mdfr<-melt(prs,value.name='val');
-    
-    if (showPlot){
-        pz <- ggplot(mapping=aes(x=z,y=val),data=mdfr)
-        pz <- pz + geom_line();
-        pz <- pz + labs(x='size (mm)',y='pr(Z)',title='initial size distribution')
-        pz <- pz + guides(color=guide_legend(''));
-        print(pz)
-    }
-    return(R_z)
 }
 

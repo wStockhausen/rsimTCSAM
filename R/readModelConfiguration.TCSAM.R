@@ -1,18 +1,18 @@
 #'
-#'@title Select and read a model configuration file.
+#'@title Select and read a model configuration file for a TCSAM model.
 #'
-#'@description Function to select and read a model configuration file.
+#'@description Function to select and read a model configuration file for a TCSAM.
 #'
 #'@param fn - the file to read (NULL brings up a file chooser dialog)
 #'@param ext - extension of type of file to select (if fn is NULL)
 #'
 #'@return model configuration list object
 #'
-#'@import wtsUtilities
+#'@import wtsUtilities 
 #'
 #'@export
 #'
-readModelConfiguration<-function(fn=NULL,ext='*'){
+readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     #get file name to read
     if (is.null(fn)){
         fn<-selectFile(ext)
@@ -47,18 +47,23 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
     dims<-lst.dims$dims;
     i<-lst.dims$i;
     
+    mny<-dims$y$mny;#start year for simulation
+    mxy<-dims$y$mxy;#final year for simulation
     zbs<-dims$z$vls; #size bins
     
     #--parse model parameters    
-    params <- list(wAtZ=NULL,
-                   nm=NULL,
-                   molting=NULL,
-                   growth=NULL,
-                   maturity=NULL,
-                   rec=NULL,
-                   fisheries=NULL,
-                   surveys=NULL);
+    params <- list();
     
+    #PARAMETERS key word
+    cat("reading parameters\n")
+    chk<-rsp[[i]][1]; i<-i+1;
+    checkKeyword(chk,'PARAMETERS');
+    
+    #mating and fishing times
+    params$mate.time<-parseNum(rsp[[i]][1]); i<-i+1;
+    params$fish.time<-parseNum(rsp[[i]][1]); i<-i+1;
+    cat('--read mate.time, fish.time\n')
+        
     #weight at size
     chk<-rsp[[i]][1]; i<-i+1;
     checkKeyword(chk,'WatZ');
@@ -69,22 +74,24 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
         eval(parse(text=paste('years<-',t)));
         a<-dimArray(list(dims=dims),'x.m');
         b<-dimArray(list(dims=dims),'x.m');
-        nc<-parseNum(rsp[[i]][1]); i<-i+1;
-        for (ic in 1:nc){
-            xp<-rsp[[i]][1]; 
-            eval(parse(text=paste('zs<-',rsp[[i]][2]))); 
-            av<-parseNum(rsp[[i]][3]); 
-            bv<-parseNum(rsp[[i]][4]);
-            a[xp,zs]<-av;
-            b[xp,zs]<-bv;
-            i<-i+1;
-        }
+        for (xp in 1:dims$x$n){
+            for (mp in 1:dims$m$n){
+                x<-rsp[[i]][1]; 
+                m<-rsp[[i]][2]; 
+                av<-parseNum(rsp[[i]][3]); 
+                bv<-parseNum(rsp[[i]][4]);
+                a[x,m]<-av;
+                b[x,m]<-bv;
+                i<-i+1;
+            }#mp
+        }#xp
         blocks[[t]]<-list(years=years,
-                          a_xz=a,
-                          b_xz=b
+                          a_xm=a,
+                          b_xm=b
                          );
     }#blocks
     params$wAtZ<-list(blocks=blocks);
+    cat('--read weight-at-size parameters\n')
     
     #natural mortality
     chk<-rsp[[i]][1]; i<-i+1;
@@ -94,20 +101,27 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
     for (tp in 1:nt){
         t<-rsp[[i]][1]; i<-i+1;
         eval(parse(text=paste('years<-',t)));
-        mnM<-dimArray(list(dims=dims),'x');
-        cvM<-dimArray(list(dims=dims),'x');
+        M0_xms  <- dimArray(list(dims=dims),'x.m.s');
+        cvM_xms <- dimArray(list(dims=dims),'x.m.s');
         for (xp in 1:dims$x$n){
-            x<-rsp[[i]][1]; 
-            mnM[x]<-parseNum(rsp[[i]][2]);;
-            cvM[x]<-parseNum(rsp[[i]][3]);;
-            i<-i+1;
+            for (mp in 1:dims$m$n){
+                for (sp in 1:dims$s$n){
+                    x<-rsp[[i]][1]; 
+                    m<-rsp[[i]][2]; 
+                    s<-rsp[[i]][3]; 
+                    M0_xms[x,m,s]  <- parseNum(rsp[[i]][4]);;
+                    cvM_xms[x,m,s] <- parseNum(rsp[[i]][5]);;
+                    i<-i+1;
+                }
+            }
         }
         blocks[[t]]<-list(years=years,
-                          mnM=mnM,
-                          cvM=cvM
+                          M0_xms=M0_xms,
+                          cvM_xms=cvM_xms
                          );
     }#blocks
     params$nm<-list(blocks=blocks);
+    cat('--read natural mortality parameters\n')
     
     #molting
     chk<-rsp[[i]][1]; i<-i+1;
@@ -117,20 +131,51 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
     for (tp in 1:nt){
         t<-rsp[[i]][1]; i<-i+1;
         eval(parse(text=paste('years<-',t)));
-        mu<-dimArray(list(dims=dims),'x')
-        cv<-dimArray(list(dims=dims),'x')
+        z50_xs<-dimArray(list(dims=dims),'x.s');
+        sdv_xs<-dimArray(list(dims=dims),'x.s');
         for (xp in 1:dims$x$n){
-            x<-rsp[[i]][1]; 
-            mu[x]<-parseNum(rsp[[i]][2]); 
-            cv[x]<-parseNum(rsp[[i]][3]); 
-            i<-i+1;
+            for (sp in 1:dims$s$n){
+                x<-rsp[[i]][1]; 
+                s<-rsp[[i]][2]; 
+                z50_xs[x,s]<-parseNum(rsp[[i]][3]); 
+                sdv_xs[x,s]<-parseNum(rsp[[i]][4]); 
+                i<-i+1;
+            }#sp
         }#xp
         blocks[[t]]<-list(years=years,
-                          mu=mu,
-                          cv=cv
+                          z50_xs=z50_xs,
+                          sdv_xs=sdv_xs
                           );
     }#blocks
     params$molting<-list(blocks=blocks);
+    cat('--read molting parameters\n')
+    
+    #molt to maturity
+    chk<-rsp[[i]][1]; i<-i+1;
+    checkKeyword(chk,'MoltToMaturity');
+    blocks<-list();
+    nt<-parseNum(rsp[[i]][1]); i<-i+1;
+    for (tp in 1:nt){
+        t<-rsp[[i]][1]; i<-i+1;
+        eval(parse(text=paste('years<-',t)));
+        z50_xs<-dimArray(list(dims=dims),'x.s');
+        sdv_xs<-dimArray(list(dims=dims),'x.s');
+        for (xp in 1:dims$x$n){
+            for (sp in 1:dims$s$n){
+                x<-rsp[[i]][1]; 
+                s<-rsp[[i]][2]; 
+                z50_xs[x,s]<-parseNum(rsp[[i]][3]); 
+                sdv_xs[x,s]<-parseNum(rsp[[i]][4]); 
+                i<-i+1;
+            }#sp
+        }#xp
+        blocks[[t]]<-list(years=years,
+                          z50_xs=z50_xs,
+                          sdv_xs=sdv_xs
+                          );
+    }#blocks
+    params$moltToMaturity<-list(blocks=blocks);
+    cat('--read molt-to-maturity parameters\n')
     
     #growth
     chk<-rsp[[i]][1]; i<-i+1;
@@ -145,9 +190,9 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
         s<-dimArray(list(dims=dims),'x');
         for (xp in 1:dims$x$n){
             x<-rsp[[i]][1]; 
-            a[x]<-parseNum(rsp[[i]][2]); 
-            b[x]<-parseNum(rsp[[i]][3]); 
-            s[x]<-parseNum(rsp[[i]][4]); 
+            a[x]<-exp(parseNum(rsp[[i]][2])); 
+            b[x]<-exp(parseNum(rsp[[i]][3])); 
+            s[x]<-exp(parseNum(rsp[[i]][4])); 
             i<-i+1;
         }#xp
         blocks[[t]]<-list(years=years,
@@ -157,68 +202,40 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
                          );
     }#blocks
     params$growth<-list(blocks=blocks);
-    
-    #maturity
-    chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'Maturity');
-    blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
-    for (tp in 1:nt){
-        t<-rsp[[i]][1]; i<-i+1;
-        eval(parse(text=paste('years<-',t)));
-        mat_xz<-dimArray(list(dims=dims),'x.z');
-        for (xp in 1:dims$x$n){
-            x<-rsp[[i]][1]; 
-            mat_xz[x,]<-parseNum(rsp[[i]][1+(1:dims$z$n)]); 
-            i<-i+1;
-        }
-        blocks[[t]]<-list(years=years,mat_xz=mat_xz);
-    }#blocks
-    params$maturity<-list(blocks=blocks);
+    cat('--read growth parameters\n')
     
     #recruitment
     chk<-rsp[[i]][1]; i<-i+1;
     checkKeyword(chk,'Recruitment');
     #read initialization section
-    lnR     = parseNum(rsp[[i]][1]); #ln-scale mean recruitment
-    cvR     = parseNum(rsp[[i]][2]); #ln-scale value for ln-scale recruitment standard deviation
-    lnXR    = parseNum(rsp[[i]][3]); #ln-scale nominal sex ratio
-    sdXR    = parseNum(rsp[[i]][4]); #ln-scale standard deviation for sex ratio deviations
-    lnAlphaZ= parseNum(rsp[[i]][5]); #ln-scale alpha parameter for rec. size distribution
-    lnBetaZ = parseNum(rsp[[i]][6]); #ln-scale beta parameter for rec. size distribution
+    inits<-list();
+    inits$lnR      <- parseNum(rsp[[i]][1]); #ln-scale mean recruitment
+    inits$cvR      <- parseNum(rsp[[i]][2]); #ln-scale value for ln-scale recruitment standard deviation
+    inits$lgtMnXR  <- parseNum(rsp[[i]][3]); #logit-scale nominal sex ratio
+    inits$lgtSdXR  <- parseNum(rsp[[i]][4]); #logit-scale standard deviation for sex ratio deviations
+    inits$lnAlphaZ <- parseNum(rsp[[i]][5]); #ln-scale alpha parameter for rec. size distribution
+    inits$lnBetaZ  <- parseNum(rsp[[i]][6]); #ln-scale beta parameter for rec. size distribution
     i<-i+1;
-    inits<-list(lnR     =lnR,     #ln-scale mean recruitment
-                cvR     =cvR,     #recruitment cv
-                lnXR    =lnXR,    #ln-scale nominal sex ratio
-                sdXR    =sdXR,    #ln-scale standard deviation for sex ratio deviations
-                lnAlphaZ=lnAlphaZ,#ln-scale alpha parameter for rec. size distribution
-                lnBetaZ =lnBetaZ  #ln-scale beta parameter for rec. size distribution
-               );
-
     #read time blocks
     blocks<-list();
     nt<-parseNum(rsp[[i]][1]); i<-i+1;
     for (tp in 1:nt){
+        block<-list();
         t<-rsp[[i]][1];
         eval(parse(text=paste('years<-',t)));
-        lnR     = parseNum(rsp[[i]][2]); #ln-scale mean recruitment
-        cvR     = parseNum(rsp[[i]][3]); #ln-scale value for ln-scale recruitment standard deviation
-        lnXR    = parseNum(rsp[[i]][4]); #ln-scale nominal sex ratio
-        sdXR    = parseNum(rsp[[i]][5]); #ln-scale standard deviation for sex ratio deviations
-        lnAlphaZ= parseNum(rsp[[i]][6]); #ln-scale alpha parameter for rec. size distribution
-        lnBetaZ = parseNum(rsp[[i]][7]); #ln-scale beta parameter for rec. size distribution
-        blocks[[t]]<-list(years=years,
-                          lnR     =lnR,     #ln-scale mean recruitment
-                          cvR     =cvR,     #recruitment cv
-                          lnXR    =lnXR,    #ln-scale nominal sex ratio
-                          sdXR    =sdXR,    #ln-scale standard deviation for sex ratio deviations
-                          lnAlphaZ=lnAlphaZ,#ln-scale alpha parameter for rec. size distribution
-                          lnBetaZ =lnBetaZ  #ln-scale beta parameter for rec. size distribution
-                         )
+        block$years<-years;
+        block$lnR      <- parseNum(rsp[[i]][2]); #ln-scale mean recruitment
+        block$cvR      <- parseNum(rsp[[i]][3]); #ln-scale value for ln-scale recruitment standard deviation
+        block$lgtMnXR  <- parseNum(rsp[[i]][4]); #logit-scale nominal sex ratio
+        block$lgtSdXR  <- parseNum(rsp[[i]][5]); #logit-scale standard deviation for sex ratio deviations
+        block$lnAlphaZ <- parseNum(rsp[[i]][6]); #ln-scale alpha parameter for rec. size distribution
+        block$lnBetaZ  <- parseNum(rsp[[i]][7]); #ln-scale beta parameter for rec. size distribution
+        blocks[[t]]<-block;
         i<-i+1;
     }#blocks
     params$rec<-list(inits=inits,
                      blocks=blocks);
+    cat('--read recruitment parameters\n')
     
     #fisheries
     chk<-rsp[[i]][1]; i<-i+1;
@@ -226,15 +243,21 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
     fisheries<-list();
     for (fp in 1:dims$f$n){
         f<-rsp[[i]][1]; i<-i+1;
+        retFlags<-as.logical(rsp[[i]][1:3]); i<-i+1;
+        dscFlags<-as.logical(rsp[[i]][1:3]); i<-i+1;
+        totFlags<-as.logical(rsp[[i]][1:3]); i<-i+1;
+        retErr<-as.numeric(rsp[[i]][1:3]); i<-i+1;
+        dscErr<-as.numeric(rsp[[i]][1:3]); i<-i+1;
+        totErr<-as.numeric(rsp[[i]][1:3]); i<-i+1;
         blocks<-list();
         nt<-parseNum(rsp[[i]][1]); i<-i+1;
         for (tp in 1:nt){
-            t<-rsp[[i]][1];
+            t<-rsp[[i]][1]; i<-i+1;
             eval(parse(text=paste('years<-',t)));
-            hm   <-parseNum(rsp[[i]][2]);
-            mnF  <-parseNum(rsp[[i]][3]);
-            sdF  <-parseNum(rsp[[i]][4]);
-            offFX<-parseNum(rsp[[i]][5]);
+            hm   <-parseNum(rsp[[i]][1]);
+            mnF  <-parseNum(rsp[[i]][2]);
+            sdF  <-parseNum(rsp[[i]][3]);
+            offFX<-parseNum(rsp[[i]][4]);
             i<-i+1;
             sel<-list();
             ret<-list();
@@ -257,13 +280,18 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
                 }
                 i<-i+1;
             }#ic
-            block<-list(years=years,hm=hm,mnF=mnF,sdF=sdF,offFX=offFX,
+            block<-list(years=years,
+                        hm=hm,mnF=mnF,sdF=sdF,offFX=offFX,
                         sel=sel,ret=ret);
             blocks[[t]]<-block;
-        }#t
-        fisheries[[f]]<-list(name=f,blocks=blocks);
+        }#tp
+        fisheries[[f]]<-list(name=f,
+                             output=list(ret=retFlags,dsc=dscFlags,tot=totFlags),
+                             error=list(ret=retErr,dsc=dscErr,tot=totErr),
+                             blocks=blocks);
     }#fp
     params$fisheries<-fisheries;
+    cat('--read fisheries parameters\n')
     
     #surveys
     chk<-rsp[[i]][1]; i<-i+1;
@@ -271,14 +299,16 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
     surveys<-list();
     for (vp in 1:dims$v$n){
         v<-rsp[[i]][1]; i<-i+1;
+        flags<-as.logical(rsp[[i]][1:3]); i<-i+1;
+        error<-as.numeric(rsp[[i]][1:3]); i<-i+1;
         blocks<-list();
         nt<-parseNum(rsp[[i]][1]); i<-i+1;
         for (tp in 1:nt){
-            t<-rsp[[i]][1];
+            t<-rsp[[i]][1]; i <- i+1;
             eval(parse(text=paste('years<-',t)));
-            mnQ  <-parseNum(rsp[[i]][2]);
-            sdQ  <-parseNum(rsp[[i]][3]);
-            offQX<-parseNum(rsp[[i]][4]);
+            mnQ  <-parseNum(rsp[[i]][1]);
+            sdQ  <-parseNum(rsp[[i]][2]);
+            offQX<-parseNum(rsp[[i]][3]);
             i<-i+1;
             sel<-list();
             nc<-parseNum(rsp[[i]][1]); i<-i+1;
@@ -298,13 +328,15 @@ readModelConfiguration<-function(fn=NULL,ext='*'){
                 }
                 i<-i+1;
             }#ic
-            block<-list(years=years,mnQ=mnQ,sdQ=sdQ,offQX=offQX,
+            block<-list(years=years,
+                        mnQ=mnQ,sdQ=sdQ,offQX=offQX,
                         sel=sel);
             blocks[[t]]<-block;
         }#t
-        surveys[[v]]<-list(name=v,blocks=blocks);
+        surveys[[v]]<-list(name=v,output=flags,error=error,blocks=blocks);
     }#vp
     params$surveys<-surveys
+    cat('--read surveys parameters\n')
     
     #-----model configuration
     mc<-list(type=modelType,dims=dims,params=params)
@@ -339,6 +371,10 @@ parseDims<-function(rz,i){
     
     #set text row counter
     j<-0;
+    
+    #DIMESIONS keyword
+    chk<-rz[[i+j]][1]; j<-j+1;
+    checkKeyword(chk,'DIMENSIONS');
     
     #years
     mny<-parseNum(rz[[i+j]][1]); j<-j+1;
@@ -389,6 +425,8 @@ parseDims<-function(rz,i){
     dims$v$n<-parseNum(rz[[i+j]][1]); j<-j+1;
     dims$v$nms<-rz[[i+j]][1:dims$v$n]; j<-j+1;
     cat("surveys = ",addQuotes(dims$v$nms),'\n')
+    
+    cat("--finished reading dims list object\n\n")
     
     return(list(dims=dims,i=i+j));
 }

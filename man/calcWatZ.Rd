@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcWatZ.R
 \name{calcWatZ}
 \alias{calcWatZ}
-\title{Calculate weight-at-size by year, sex}
+\title{Calculate weight-at-size by year, sex, maturity state and shell condition.}
 \usage{
 calcWatZ(mc, showPlot = TRUE)
 }
@@ -10,9 +10,13 @@ calcWatZ(mc, showPlot = TRUE)
 \item{mc}{- model configuration object}
 }
 \value{
-W_yxmsz: 5d array with weight-at-size by year/sex/maturity state/shell condition
+W_yxmsz: 5d array with weight-at-size in KG by year/sex/maturity state/shell condition
 }
 \description{
 
+}
+\details{
+Input parameters are for weight-at-size in grams, but converted to kg so biomass
+is in 1000s t.
 }
 

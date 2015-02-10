@@ -34,14 +34,6 @@
 #     v
 #         n - number of surveys
 #         nms - names of surveys
-# mc$params
-#     recruitment
-#         lnR  - ln-scale mean recruitment
-#         sigR - ln-scale recruitment standard deviation
-#         lnXR - nominal sex ratio
-#         sigXR - ln-scale standard deviation for sex ratio deviations
-#         aZ    - alpha parameter for rec. size distribution
-#         bZ    - beta parameter for rec. size distribution
 #-----------------------------------------------------------------------------------
 #'
 #'@title Model configuration for Tanner crab.
@@ -67,6 +59,12 @@ ModelConfiguration.TCSAM<-function(){
     #-----parameters
     params <- list();
     
+    #time of mating
+    params$mate.time <- 0.625;#fraction of year from July 1 at which mating/molting occurs
+    
+    #time that midpoint of fishing occurs
+    params$fish.time <- 0.625;#fraction of year from July 1 at which mating/molting occurs
+    
     #weight-at-size
     nt<-1;#number of time blocks
     blocks<-list();
@@ -75,15 +73,14 @@ ModelConfiguration.TCSAM<-function(){
         years<-mny:mxy;
         a<-dimArray(list(dims=dims),'x.m')
         b<-dimArray(list(dims=dims),'x.m')
-        a	b
         a['female','immature']<-0.000637;	b['female','immature']<-2.794;
-        a['female',  'mature']<-0.000344	b['female',  'mature']<-2.956
-        a[  'male','immature']<-0.000163	b[  'male','immature']<-3.136
-        a[  'male',  'mature']<-0.000163	b[  'male',  'mature']<-3.136    
-        blocks[[1]]<-list(years=years,
-                          a_xm=a,
-                          b_xm=b
-                         );
+        a['female',  'mature']<-0.000344;	b['female',  'mature']<-2.956;
+        a[  'male','immature']<-0.000163;	b[  'male','immature']<-3.136;
+        a[  'male',  'mature']<-0.000163;	b[  'male',  'mature']<-3.136;    
+        blocks[['1950:2014']]<-list(years=years,
+                                    a_xm=a,
+                                    b_xm=b
+                                   );
     #end of blocks
     params$wAtZ<-list(blocks=blocks);
 
@@ -93,8 +90,8 @@ ModelConfiguration.TCSAM<-function(){
     #start of blocks
         #--time block 1
         years<-c(mny:1989,1995:mxy);
-        M0_xms<-dimArraylist(dims=dims),'x.m.s');
-        cvM_xms<-dimArraylist(dims=dims),'x.m.s');
+        M0_xms<-dimArray(list(dims=dims),'x.m.s');
+        cvM_xms<-dimArray(list(dims=dims),'x.m.s');
         M0<-0.23;
         M0_xms[  'male',  'mature','new shell']<-M0;
         M0_xms[  'male',  'mature','old shell']<-M0;
@@ -104,15 +101,15 @@ ModelConfiguration.TCSAM<-function(){
         M0_xms['female',  'mature','old shell']<-M0;
         M0_xms['female','immature','new shell']<-M0;
         M0_xms['female','immature','old shell']<-M0;
-        cvM_xms[,,] <- 0.1;
-        blocks[[1]]<-list(years=years,
-                          M0_xms=M0_xms,
-                          cvM_xms=cvM_xms
-                         );
+        cvM_xms[,,] <- 0.0;
+        blocks[['mny:1989,1995:mxy']]<-list(years=years,
+                                              M0_xms=M0_xms,
+                                              cvM_xms=cvM_xms
+                                             );
         #--time block 2
         years<-c(1990:1994);
-        M0_xms<-dimArraylist(dims=dims),'x.m.s');
-        cvM_xms<-dimArraylist(dims=dims),'x.m.s');
+        M0_xms<-dimArray(list(dims=dims),'x.m.s');
+        cvM_xms<-dimArray(list(dims=dims),'x.m.s');
         M0<-0.3;
         M0_xms[  'male',  'mature','new shell']<-M0;
         M0_xms[  'male',  'mature','old shell']<-M0;
@@ -123,7 +120,7 @@ ModelConfiguration.TCSAM<-function(){
         M0_xms['female','immature','new shell']<-M0;
         M0_xms['female','immature','old shell']<-M0;
         cvM_xms[,,] <- 0.1;
-        blocks[[2]]<-list(years=years,
+        blocks[['1990:1994']]<-list(years=years,
                           M0_xms=M0_xms,
                           cvM_xms=cvM_xms
                          );
@@ -135,15 +132,14 @@ ModelConfiguration.TCSAM<-function(){
     blocks<-list();
     #start of blocks
         #--time block 1
-        years<-c(mny:mxy);
-        z50_xms<-dimArray(list(dims=dims),'x.m.s');
-        cv_xms<-dimArray(list(dims=dims),'x.m.s');
-        z50_xms[,'immature',] <- 1000;#all immature crab molt
-        z50_xms[,  'mature',] <--1000;#no mature crab molt
-        cv_xms[,,]            <- 1;  #pretty steep
-        blocks[[1]]<-list(years=years,
-                          z50_xms=z50_xms,
-                          cv_xms=cv_xms
+        years<-mny:mxy;
+        z50_xs<-dimArray(list(dims=dims),'x.s');
+        sdv_xs<-dimArray(list(dims=dims),'x.s');
+        z50_xs[,] <- 1000;#all immature crab molt
+        sdv_xs[,] <- 1;  #pretty steep
+        blocks[['mny:mxy']]<-list(years=years,
+                          z50_xs=z50_xs,
+                          sdv_xs=sdv_xs
                           );
     #end of blocks
     params$molting<-list(blocks=blocks);
@@ -154,16 +150,16 @@ ModelConfiguration.TCSAM<-function(){
     blocks<-list();
     #start of blocks
         #--time block 1
-        years<-c(mny:mxy);
-        z50_xms<-dimArray(list(dims=dims),'x.m.s');
-        cv_xms<-dimArray(list(dims=dims),'x.m.s');
-        z50_xms[,'immature',] <- 1000;#all immature crab molt
-        z50_xms[,  'mature',] <--1000;#no mature crab molt
-        cv_xms[,,]            <- 1;  #pretty steep
-        blocks[[2]]<-list(years=years,
-                          z50_xms=z50_xms,
-                          cv_xms=cv_xms
-                          );
+        years<-mny:mxy;
+        z50_xs<-dimArray(list(dims=dims),'x.s');
+        sdv_xs<-dimArray(list(dims=dims),'x.s');
+        z50_xs[  'male',] <- 120;
+        z50_xs['female',] <- 90;
+        sdv_xs[,] <- 5;  #not too steep
+        blocks[['mny:mxy']]<-list(years=years,
+                                  z50_xs=z50_xs,
+                                  sdv_xs=sdv_xs
+                                  );
     #end of blocks
     params$moltToMaturity<-list(blocks=blocks);
     
@@ -172,43 +168,54 @@ ModelConfiguration.TCSAM<-function(){
     blocks<-list();
     #start of blocks
         #--time block 1
-        years<-c(mny:mxy);
+        years<-mny:mxy;
         a<-dimArray(list(dims=dims),'x');
         a[c('male','female')] <- exp(c(-0.798507696,-0.597837001));
         b<-dimArray(list(dims=dims),'x');
         b[c('male','female')] <- exp(c(-0.051293294,-0.105360516));
-        scale<-dimArray(list(dims=dims),'x');
+        scl<-dimArray(list(dims=dims),'x');
         scl[c('male','female')] <- exp(-0.287682072);
-        blocks[[1]]<-list(a_x=a,
-                          b_x=b,
-                          s_x=scl
-                          );
+        blocks[['mny:mxy']]<-list(years=years,
+                                  a_x=a,
+                                  b_x=b,
+                                  s_x=scl
+                                  );
     #end of blocks
     params$growth<-list(blocks=blocks);
 
     #recruitment
+    #initialization
+    inits<-list(lnR     = 4.3,        #ln-scale mean recruitment
+                cvR     = 0.5,        #recruitment cv
+                lgtMnXR = 0,          #logit-scale mean sex ratio
+                lgtSdXR = 0,          #standard deviation for logit-scale sex ratio deviations
+                lnAlphaZ= 2.442347,   #ln-scale alpha parameter for rec. size distribution
+                lnBetaZ = 1.386294    #ln-scale beta parameter for rec. size distribution
+                )
     nt<-1; #number of time blocks
     blocks<-list();
     #start of blocks
         #--time block 1
         years<-c(mny:mxy);
-        blocks[[1]]<-list(lnR     = 4.3,        # ln-scale mean recruitment
-                          lnRCV   =-0.43275213, #ln-scale value for recruitment cv
-                          lnXR    = 0,          #ln-scale nominal sex ratio
-                          lnSigXR = 0,          #ln-scale standard deviation for sex ratio deviations
+        blocks[['mny:mxy']]<-
+                     list(years=years,
+                          lnR     = 4.3,        #ln-scale mean recruitment
+                          cvR     = 0.5,        #recruitment cv
+                          lgtMnXR = 0,          #logit-scale mean sex ratio
+                          lgtSdXR = 0,          #standard deviation for logit-scale sex ratio deviations
                           lnAlphaZ= 2.442347,   #ln-scale alpha parameter for rec. size distribution
                           lnBetaZ = 1.386294    #ln-scale beta parameter for rec. size distribution
                           )
     #end of blocks
-    params$rec<-list(blocks=blocks);
+    params$rec<-list(inits=inits,blocks=blocks);
     
     #fisheries
     f1<-list(name='Tanner crab directed fishery',
-             blocks=list(
+             blocks=list(`1965:2014`=
                         list(years=1965:2014,hm=0.3,mnF=0.3,sdF=0.4,offFX=0.1,
-                             sel=list(male  =list(type='logistic',params=list(mu=100,sd=20)),
-                                      female=list(type='logistic',params=list(mu= 60,sd=20))),
-                             ret=list(male  =list(type='logistic',params=list(mu=140,sd=5)))
+                             sel=list(male  =list(type='logistic',params=c(mu=100,sd=20)),
+                                      female=list(type='logistic',params=c(mu= 60,sd=20))),
+                             ret=list(male  =list(type='logistic',params=c(mu=140,sd=5)))
                         )
                     )
             );
@@ -216,10 +223,10 @@ ModelConfiguration.TCSAM<-function(){
     
     #surveys
     s1<-list(name='NMFS trawl survey',
-             blocks=list(
+             blocks=list(`1975:2014`=
                         list(years=1975:2014,mnQ=0.7,sdQ=0.1,offQX=0.8,
-                             sel=list(male  =list(type='logistic',params=list(mu=50,sd=20)),
-                                      female=list(type='logistic',params=list(mu=40,sd=20)))
+                             sel=list(male  =list(type='logistic',params=c(mu=50,sd=20)),
+                                      female=list(type='logistic',params=c(mu=40,sd=20)))
                         )
                     )
             );

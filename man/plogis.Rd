@@ -4,12 +4,12 @@
 \alias{plogis}
 \title{Calculate the logistic function}
 \usage{
-plogis(z, mu, sd)
+plogis(z, z50, sd)
 }
 \arguments{
 \item{z}{- vector of sizes at which to compute selectivities}
 
-\item{mu}{- size at which selectivity  = 0.5 (logit-scale mean)}
+\item{z50}{- size at which selectivity  = 0.5 (logit-scale mean)}
 
 \item{sd}{- standard deviation in selectivity (logit-scale standard deviation)}
 }

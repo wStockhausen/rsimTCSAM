@@ -11,10 +11,12 @@
 #'
 calcNaturalMortality<-function(mc,showPlot=TRUE){
     if (mc$type!='TC'){
-        throwModelTypeError(mc$type,'calcNaturalMortality');
+        throwModelTypeError(mc$type,'TC','calcNaturalMortality');
     }
+    
     d<-mc$dims;
     p<-mc$params$nm;
+    
     M_yxmsz <- dimArray(mc,'y.x.m.s.z');
     mdfr<-NULL;
     for (t in names(p$blocks)){
@@ -36,11 +38,11 @@ calcNaturalMortality<-function(mc,showPlot=TRUE){
     }
     
     if (showPlot){
-        p <- ggplot(aes(x=tb,y=val,fill=fac),data=mdfr)
-        p <- p + geom_bar(stat='identity',position='dodge')
-        p <- p + labs(x='time block',y='M0')
-        p <- p + guides(fill=guide_legend('sex, maturity, \nshell condition'))
-        print(p);
+        pl <- ggplot(aes(x=tb,y=val,fill=fac),data=mdfr)
+        pl <- pl + geom_bar(stat='identity',position='dodge')
+        pl <- pl + labs(x='time block',y='M0')
+        pl <- pl + guides(fill=guide_legend('sex, maturity, \nshell condition'))
+        print(pl);
     }
     return(M_yxmsz);
 }

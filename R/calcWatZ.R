@@ -1,9 +1,12 @@
 #'
-#'@title Calculate weight-at-size by year, sex
+#'@title Calculate weight-at-size by year, sex, maturity state and shell condition.
 #'
 #'@param mc - model configuration object
 #'
-#'@return W_yxmsz: 5d array with weight-at-size by year/sex/maturity state/shell condition
+#'@return W_yxmsz: 5d array with weight-at-size in KG by year/sex/maturity state/shell condition
+#'
+#'@details Input parameters are for weight-at-size in grams, but converted to kg so biomass
+#'is in 1000s t.
 #'
 #'@import ggplot2
 #'@import reshape2
@@ -11,27 +14,10 @@
 #'@export
 #'
 calcWatZ<-function(mc,showPlot=TRUE){
-    if (mc$type=='KC'){
-        W_yxmsz <- calcWatZ.gmacs(mc,showPlot=showPlot)
-    } else {
-        throwModelTypeError(mc$type,'calcWatZ()');
+    if (mc$type!='TC'){
+        throwModelTypeError(mc$type,'TC','calcWatZ()');
     }
-    return(W_yxmsz);    
-}
-
-#'
-#'@title Calculate weight-at-size by year, sex
-#'
-#'@param mc - model configuration object
-#'
-#'@return W_yxmsz: 5d array with weight-at-size by year/sex/maturity state/shell condition
-#'
-#'@import ggplot2
-#'@import reshape2
-#'
-#'@export
-#'
-calcWatZ.gmacs<-function(mc,showPlot=TRUE){
+    
     d<-mc$dims;
     p<-mc$params$wAtZ;
     
@@ -40,26 +26,26 @@ calcWatZ.gmacs<-function(mc,showPlot=TRUE){
     for (t in names(p$blocks)){
         tb<-p$blocks[[t]];
         yrs<-as.character(tb$years);
-        W_xz<-dimArray(mc,'x.z');
+        W_xmz<-dimArray(mc,'x.m.z');
         for (x in d$x$nms){
-            lnA<-log(tb$a_xz[x,]);#no dependence on maturity/shell condition
-            B  <-tb$b_xz[x,];
-            W_xz[x,] <- exp(lnA+B*log(d$z$vls));
             for (m in d$m$nms){
+                lnA<-log(tb$a_xm[x,m]);#no dependence on maturity/shell condition
+                B  <-tb$b_xm[x,m];
+                W_xmz[x,m,] <- exp(lnA+B*log(d$z$vls));#weight in g
                 for (s in d$s$nms){
-                    for (y in yrs) {W_yxmsz[y,x,m,s,]<-W_xz[x,]}
+                    for (y in yrs) {W_yxmsz[y,x,m,s,]<-W_xmz[x,m,]/1000;} #in kg
                 }
             }
         }
-        mdfrp<-melt(W_xz,value.name='val');
+        mdfrp<-melt(W_xmz,value.name='val');
         mdfrp$t<-t;
         mdfr<-rbind(mdfr,mdfrp);
     }
     if (showPlot){
-        pz <- ggplot(mapping=aes(x=z,y=val,color=x),data=mdfr)
+        pz <- ggplot(mapping=aes(x=z,y=val,color=x,linetype=m),data=mdfr)
         pz <- pz + geom_line();
-        pz <- pz + labs(x='size (mm)',y='weight (kg)',title='')
-        pz <- pz + guides(color=guide_legend('sex'));
+        pz <- pz + labs(x='size (mm)',y='weight (g)',title='')
+        pz <- pz + guides(color=guide_legend('sex',order=1),linetype=guide_legend('maturity',order=2));
         pz <- pz + facet_wrap(~t,ncol=1);
         print(pz)
     }

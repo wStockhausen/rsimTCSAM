@@ -20,7 +20,7 @@ calcNatZ.Surveys<-function(mc,mp,N_yxmsz,showPlot=TRUE){
     Q_vyxmsz <- mp$S_list$Q_vyxmsz;
     N_vyxmsz <- dimArray(mc,'v.y.x.m.s.z');
     for (v in d$v$nms){
-        N_vyxmsz[v,,,,,]<-Q_vyxmsz[v,,,,,]*N_yxmsz[,,,,];
+        N_vyxmsz[v,,,,,]<-Q_vyxmsz[v,,,,,]*N_yxmsz;
     }#v
     if (showPlot){
         mdfr<-melt(N_vyxmsz,value.name='val');
@@ -35,20 +35,18 @@ calcNatZ.Surveys<-function(mc,mp,N_yxmsz,showPlot=TRUE){
         print(p);
         
         #size comps
-        p <- ggplot(aes(x=y,y=z,fill=val,size=val),data=mdfr);
-        p <- p + geom_point(alpha=0.6,shape=21);
-        p <- p + scale_size_area(max_size=10);
-        p <- p + scale_fill_gradient();
-        p <- p + geom_abline(intercept=0,slope=1,linetype=3,color='black');
-        p <- p + labs(x='year',y='size (mm)',title='Survey Abundance');
-        p <- p + guides(fill=guide_colorbar('Abundance',order=1,alpha=1),
-                        size=guide_legend('',order=2));
-        if (mc$type=='KC'){
-            p <- p + facet_wrap(~ v + x + s, ncol=1);#only 1 maturity state
-        } else {
-            p <- p + facet_wrap(~ m + s + x, ncol=1);
+        for (vp in d$v$nms){
+            p <- ggplot(aes(x=y,y=z,fill=val,size=val),data=mdfr[mdfr$v==vp,]);
+            p <- p + geom_point(alpha=0.4,shape=21);
+            p <- p + scale_size_area(max_size=10);
+            p <- p + scale_fill_gradient();
+            p <- p + geom_abline(intercept=0,slope=1,linetype=3,color='black');
+            p <- p + labs(x='year',y='size (mm)',title=paste(vp,'Survey Abundance'));
+            p <- p + guides(fill=guide_colorbar('Abundance',order=1,alpha=1),
+                            size=guide_legend('',order=2));
+                p <- p + facet_grid(m + s ~ x);
+            print(p);
         }
-        print(p);
     }
     
     return(N_vyxmsz)

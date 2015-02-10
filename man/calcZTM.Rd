@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcZTM.R
 \name{calcZTM}
 \alias{calcZTM}
-\title{Calculate size transition matrices by year, sex}
+\title{Calculate size transition matrices by year, sex, shell condition}
 \usage{
 calcZTM(mc, showPlot = TRUE)
 }
@@ -10,9 +10,12 @@ calcZTM(mc, showPlot = TRUE)
 \item{mc}{- model configuration object}
 }
 \value{
-prZAM_yxmszz: 5d array with weight-at-size by year/sex/maturity state/shell condition
+prZAM_yxszz: 5d array with size transition matrices by year/sex/shell condition
 }
 \description{
+Function to calculate size transition matrices by year, sex, shell condition
+}
+\details{
 
 }
 

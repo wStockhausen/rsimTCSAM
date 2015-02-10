@@ -15,7 +15,6 @@ runModel(mc, mp, showPlot = TRUE)
 }
 \value{
 List consisting of:
-R_yxz - recruitment by year/sex/size
 iN_xmsz - initial population abundance by sex/maturity/shell condition/size
 N_yxmsz - population abundance by year/sex/maturity/shell condition/size
 F_list - list of fisheries results (see calcNatZ.Fisheries)

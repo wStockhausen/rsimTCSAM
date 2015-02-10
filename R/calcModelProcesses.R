@@ -21,7 +21,7 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
     prMolt_yxsz<-calcPrMolt(mc,showPlot=showPlot);
     
     #calculate pr(molt to maturity|size, molt) 
-    prMoltToMat_yxsz <- calcPrMoltToMaturity(mc,showPlot=showPlot);
+    prMolt2Mat_yxsz <- calcPrMoltToMaturity(mc,showPlot=showPlot);
     
     #calculate size transition matrix for molting crab
     T_yxszz <- calcZTM(mc,showPlot=showPlot);
@@ -32,22 +32,30 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
     #calculate survey catchabilities (TODO: implement this)
     S_list <- calcSurveyCatchabilities(mc,showPlot=showPlot);
     
-    #calculate time-varying total mortality
-    Z_yxmsz <- M_yxmsz;
+    #calculate total mortality schedules
+    #--mortality BEFORE mating (assumes fishing midpoint happens before mating)
+    Z1_yxmsz <- mc$params$mate.time*M_yxmsz;
     for (f in mc$dims$fisheries$nms){
-        Z_yxmsz[,,,,] <- Z_yxmsz[,,,,] + (F_list$F_fyxmsz)[f,,,,,];
+        Z1_yxmsz[,,,,] <- Z1_yxmsz[,,,,] + (F_list$F_fyxmsz)[f,,,,,];
     }
+    #--mortality AFTER mating (assumes fishing midpoint happens before mating)
+    Z2_yxmsz <- (1-mc$params$mate.time)*M_yxmsz;
     
     #calculate survival
-    S_yxmsz <- exp(-Z_yxmsz);
+    S1_yxmsz <- exp(-Z1_yxmsz);#from start of year to mating, includes fishing
+    S2_yxmsz <- exp(-Z2_yxmsz);#from mating to end of year
+    
+    #calculate recruitment
+    R_list <- calcRecruitment(mc,showPlot=showPlot);#note this won't work for Tier 1
     
     mp <- list(W_yxmsz=W_yxmsz,
                M_yxmsz=M_yxmsz,
-               Z_yxmsz=Z_yxmsz,
-               S_yxmsz=S_yxmsz,
                prMolt_yxsz=prMolt_yxsz,
-               prMoltToMat_yxsz=prMoltToMat_yxsz,
+               prMolt2Mat_yxsz=prMolt2Mat_yxsz,
                T_yxszz=T_yxszz,
+               S1_yxmsz=S1_yxmsz,
+               S2_yxmsz=S2_yxmsz,
+               R_list=R_list,
                F_list=F_list,
                S_list=S_list)
     

@@ -4,10 +4,12 @@
 \alias{throwModelTypeError}
 \title{Throw an unrecognized model type error.}
 \usage{
-throwModelTypeError(type, str)
+throwModelTypeError(imt, xmt, str)
 }
 \arguments{
-\item{type}{- model type}
+\item{imt}{- input model type}
+
+\item{xmt}{- expected model types}
 
 \item{str}{- string to print (name of calling function)}
 }

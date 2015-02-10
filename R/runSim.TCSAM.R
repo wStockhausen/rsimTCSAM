@@ -15,8 +15,8 @@
 #'
 runSim.TCSAM<-function(fn='tcsam.input.dat',showPlot=TRUE){
     #get model configuration for Tanner crab
-#    mc <- readModelConfiguration();
-    mc <- ModelConfiguration.TCSAM();
+    mc <- readModelConfiguration.TCSAM();
+#    mc <- ModelConfiguration.TCSAM();
     
     #calculate model processes
     mp <- calcModelProcesses(mc,showPlot=showPlot);

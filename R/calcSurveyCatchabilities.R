@@ -20,13 +20,13 @@ calcSurveyCatchabilities<-function(mc,showPlot=TRUE){
     d<-mc$dims;
     vs<-mc$params$surveys
     
-    Q_vyxms   <-dimArray(mc,'v.y.x.m.s');
-    sel_vyxmsz<-dimArray(mc,'v.y.x.m.s.z')
-    Q_vyxmsz  <-dimArray(mc,'v.y.x.m.s.z');
+    Q_vyxms   <-dimArray(mc,'v.y.x.m.s',val=NA);
+    sel_vyxmsz<-dimArray(mc,'v.y.x.m.s.z',val=NA)
+    Q_vyxmsz  <-dimArray(mc,'v.y.x.m.s.z',val=NA);
     
     for (v in names(vs)){
-        Q_yx   <-dimArray(mc,'y.x');  #sex-specific capture rates by year for survey v
-        sel_yxz<-dimArray(mc,'y.x.z');#sex-specific capture selectivity by year for survey v
+        Q_yx   <-dimArray(mc,'y.x',val=NA);  #sex-specific capture rates by year for survey v
+        sel_yxz<-dimArray(mc,'y.x.z',val=NA);#sex-specific capture selectivity by year for survey v
         blocks<-vs[[v]]$blocks;
         for (t in names(blocks)){
             b<-blocks[[t]];

@@ -4,7 +4,7 @@
 \alias{calcNatZ}
 \title{Project population numbers at size forward through the model time interval}
 \usage{
-calcNatZ(mc, mp, iN_xmsz, R_yxz, showPlot = TRUE)
+calcNatZ(mc, mp, iN_xmsz, showPlot = TRUE)
 }
 \arguments{
 \item{mc}{- model configuration list object}
@@ -12,11 +12,11 @@ calcNatZ(mc, mp, iN_xmsz, R_yxz, showPlot = TRUE)
 \item{mp}{- model processes list object}
 
 \item{iN_xmsz}{- initial numbers at size array}
-
-\item{R_yxz}{- recruitment at size array}
 }
 \value{
-N_yxmsz: 5-d array of population numbers by year/sex/maturity/shell condition/size
+list with two elements:
+N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/size
+MB_yx   - 2d array with mature biomass at mating time by year/sex
 }
 \description{
 Function to project population numbers at size forward through the model time interval
