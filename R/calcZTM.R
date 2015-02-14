@@ -56,7 +56,7 @@ calcZTM<-function(mc,showPlot=TRUE){
         pl <- pl + geom_point(size=5);
         pl <- pl + guides(color=guide_legend(''),shape=guide_legend(''));
         pl <- pl + labs(x='pre-molt size (mm)',y='mean post-molt size (mm)',title='Mean Growth');
-        pl <- pl + facet_wrap(~t,ncol=1);
+        pl <- pl + facet_grid(t~.);
         print(pl);
         mdfr<-melt(prZAM_xzz,value.name='val');
         pl <- ggplot(aes(x=z,y=zp,fill=val,size=val),data=mdfr.pr);
@@ -67,7 +67,7 @@ calcZTM<-function(mc,showPlot=TRUE){
         pl <- pl + labs(x='pre-molt size (mm)',y='post-molt size (mm)',title='Growth Transition Matrices');
         pl <- pl + guides(fill=guide_colorbar(expression(pr*bgroup("(",paste(Z[post],"|",Z[pre]),")")),order=1,alpha=1),
                         size=guide_legend('',order=2));
-        pl <- pl + facet_wrap(~ x+t, ncol=1);
+        pl <- pl + facet_grid(t~x);
         print(pl);
     }
     return(prZAM_yxszz)

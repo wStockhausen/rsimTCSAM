@@ -4,18 +4,31 @@
 \alias{runSim.TCSAM}
 \title{Run the TCSAM simulation model to produce a TCSAM2015 input file.}
 \usage{
-runSim.TCSAM(fn = "tcsam.input.dat", showPlot = TRUE)
+runSim.TCSAM(fno = "tcsam.input.dat", seed = NULL, fnd = "devs.csv",
+  showPlot = TRUE, pdf = NULL, width = 8, height = 6)
 }
 \arguments{
-\item{fn}{- filename for output file (input file to gmacs)}
+\item{fno}{- filename for output file (input file to TCSAM2015)}
+
+\item{seed}{- seed for random number generator (NULL generates system seed)}
+
+\item{fnd}{- filename for devs output}
 
 \item{showPlot}{- flag (T/F) to show plots}
+
+\item{pdf}{- if not NULL, a filename to output plots to in pdf format}
+
+\item{width}{- width of pdf output (inches)}
+
+\item{height}{- height of pdf output (inches)}
 }
 \value{
 list with elements:
+seed - RNG seed used
 mc - model configuration list object
 mp - model processes list object
 mr - model results list object
+mo - model output list object
 }
 \description{
 Function to run the TCSAM simulation model to produce a TCASM2015 input file.

@@ -4,8 +4,8 @@ TC     #model type (KC or TC for king crab or Tanner crab)
 #---------------------------------------------------------------
 #-----dimensions
 DIMENSIONS  #keyword
-1950   #min y
-2014   #max y
+1950   #start year
+2014   #assessment year (=mxy+1)
 25     #min size cutpoint (mm)
 185    #max size cutpoint (mm)
 5      #size bin size (mm)
@@ -27,7 +27,7 @@ PARAMETERS  #keyword
 #--Weight-at-size
 WatZ    #weight-at-size keyword
 1       #number of time blocks
-mny:mxy #time block 1
+mny:asy #time block 1 (asy=assessment year)
 #sex       maturity      a         b
 'female' 'immature'  0.000637   2.794
 'female'   'mature'  0.000344   2.956
@@ -60,10 +60,10 @@ MoltToMaturity
 1        #number of time blocks
 mny:mxy  #time block 1
 #sex       shell condition   z50    sdv
-  'male'  'new shell'       120    10
-  'male'  'old shell'       120    10
-'female'  'new shell'        90    10
-'female'  'old shell'        90    10
+  'male'  'new shell'       100    10
+  'male'  'old shell'       100    10
+'female'  'new shell'        80    10
+'female'  'old shell'        80    10
 #--Growth
 Growth
 1         #number of time blocks
@@ -96,14 +96,14 @@ Fisheries #keyword
 1   #number of time blocks
 #-----time block 1
 1965:mxy   #years
-#discard mortality   mean F   sd F   female offset
-      0.3             0.3     0.4       0.1
+#discard mortality   mean F   sd F   female multiplier
+      0.3             0.3      0.4         1.0
 #selectivity
 3   #number of curves
-#sex       type          function   np   params 
-  'male'  'selectivity' 'logistic'   2    100    20  #mu    sd
-'female'  'selectivity' 'logistic'   2     60    20  #mu    sd
-  'male'  'retention'   'logistic'   2    138     5  #mu    sd
+#sex       type          function            np   params 
+  'male'  'selectivity' 'asclogistic50Ln95'   2     80    3.2  #z50    ln(z95-z50)
+'female'  'selectivity' 'asclogistic50Ln95'   2     80    3.2  #z50    ln(z95-z50)
+  'male'  'retention'   'asclogistic50Ln95'   2    140    2.3  #z50    ln(z95-z50)
 #--Surveys
 Surveys  #keyword
 #-survey 1
@@ -114,12 +114,12 @@ Surveys  #keyword
     0.01         0.02           50      #output error info
 1   #number of time blocks
 #-----time block 1
-1975:mxy   #years
-#mean Q     sd Q  female offset
-  0.7        0.1     0.8
+1975:asy   #years
+#mean Q     sd Q  female multiplier
+  1.0        0.0     1.0
 #selectivity
 2   #number of curves
 #sex       type          function    np   params
-  'male'  'selectivity' 'logistic'   2     60    20  #mu    sd
-'female'  'selectivity' 'logistic'   2     60    20  #mu    sd
+  'male'  'selectivity' 'asclogistic50Ln95'   2     60    3.2  #z50    ln(z95-z50)
+'female'  'selectivity' 'asclogistic50Ln95'   2     60    3.2  #z50    ln(z95-z50)
 DONE #keyword

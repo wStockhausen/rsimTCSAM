@@ -15,6 +15,7 @@
 #'
 #'@import reshape2
 #'@import ggplot2
+#'@import wtsUtilities
 #'
 #'@export
 #'
@@ -56,26 +57,23 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
         dmdfr<-melt(ND_fyxmsz,value.name='val'); dmdfr$type<-'discard mortality';
         mdfr<-rbind(ncdfr,nmdfr,rmdfr,dmdfr);
         ddfr<-dcast(mdfr,f+type+x+y~.,fun.aggregate=sum,value.var='val');
-        p <- ggplot(aes(x=y,y=`.`,color=f,linetype=type,shape=type),data=ddfr);
+        p <- ggplot(aes(x=y,y=`.`,color=type,linetype=type,shape=type),data=ddfr);
         p <- p + geom_line(alpha=0.8,width=2);
         p <- p + geom_point(alpha=0.8);
-        p <- p + labs(x='year',y='Fishery Catch/Mortality');
-        p <- p + guides(color=guide_legend('fishery',order=1,alpha=1),
-                        linetype=guide_legend('type',order=2),
-                        shape=guide_legend('type',order=2));
+        p <- p + labs(x='year',y='Fishery Catch/Mortality (millions)');
         p <- p + facet_grid(f ~ x);
         print(p);
         
         #size comps
         ddfr<-dcast(mdfr,f+type+x+y+z~.,fun.aggregate=sum,value.var='val');
         for (fp in d$f$nms){
-            p <- ggplot(aes(x=y,y=z,fill=type,size=`.`),data=ddfr[ddfr$f==fp,]);
-            p <- p + geom_point(alpha=0.6,shape=21);
-            p <- p + scale_size_area(max_size=10);
+            p <- ggplot(aes(x=y,y=z,color=`.`,size=`.`),data=ddfr[ddfr$f==fp,]);
+            p <- p + geom_point(alpha=0.4);
+            p <- p + scale_size_area(max_size=6);
+            p <- p + scale_color_gradientn(colours=createColorPalette('jet',100,alpha=0.4))
             p <- p + labs(x='year',y='size (mm)',title=paste(fp,'Catch/Mortality'));
-            p <- p + guides(fill=guide_legend('type',order=1,alpha=1),
-                            size=guide_legend('',order=2));
-            p <- p + facet_wrap(~ x ,ncol=1);
+            p <- p + guides(size=guide_legend('millions',order=1),color=guide_colorbar(''));
+            p <- p + facet_grid(type ~ x);
             print(p);
         }
     }

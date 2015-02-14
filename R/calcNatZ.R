@@ -13,6 +13,7 @@
 #'
 #'@import reshape2
 #'@import ggplot2
+#'@import wtsUtilities
 #'
 #'@export
 #'
@@ -55,7 +56,7 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
         p <- p + geom_point(alpha=0.8);
         p <- p + labs(x='year',y='Population Abundance');
         p <- p + guides(color=guide_legend('',order=1,alpha=1),
-                        shape=guide_legend('',order=3));
+                        shape=guide_legend('',order=1));
         print(p);
         
         mdfrp<-melt(MB_yx,value.name='val');
@@ -64,19 +65,18 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
         p <- p + geom_point(alpha=0.8);
         p <- p + labs(x='year',y='Mature Biomass (at time of mating)');
         p <- p + guides(color=guide_legend('',order=1,alpha=1),
-                        shape=guide_legend('',order=3));
+                        shape=guide_legend('',order=1));
         print(p);
         
         #size comps
-        p <- ggplot(aes(x=y,y=z,fill=val,size=val),data=mdfr);
-        p <- p + geom_point(alpha=0.6,shape=21);
-        p <- p + scale_size_area(max_size=10);
-        p <- p + scale_fill_gradient();
-        p <- p + geom_abline(intercept=0,slope=1,linetype=3,color='black');
+        p <- ggplot(aes(x=y,y=z,color=val,size=val),data=mdfr);
+        p <- p + geom_point(alpha=0.4);
+        p <- p + scale_size_area(max_size=6);
+        p <- p + scale_color_gradientn(colours=createColorPalette('jet',100,alpha=0.4))
         p <- p + labs(x='year',y='size (mm)',title='Population Abundance');
-        p <- p + guides(fill=guide_colorbar('Abundance',order=1,alpha=1),
-                        size=guide_legend('',order=2));
-        p <- p + facet_wrap(~ m + s + x, ncol=1);
+        p <- p + guides(size=guide_legend('millions',order=1),
+                        color=guide_colorbar('',order=2,alpha=1));
+        p <- p + facet_grid(m + s ~  x);
         print(p);
     }
     

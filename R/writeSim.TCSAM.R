@@ -100,10 +100,10 @@ writeSim.TCSAM<-function(mc,mp,mr,fn='TCAM2015.Data.dat',showPlot=TRUE){
     cat("#year   midPtFisheries  matingTime\n",file=conn);
         
     #Fisheries Data
-    writeSim.TCSAM.Fisheries(mc,mp,mr,conn,showPlot=showPlot);
+    fshs<-writeSim.TCSAM.Fisheries(mc,mp,mr,conn,showPlot=showPlot);
     
     #Surveys Data
-    writeSim.TCSAM.Surveys(mc,mp,mr,conn,showPlot=showPlot);
+    srvs<-writeSim.TCSAM.Surveys(mc,mp,mr,conn,showPlot=showPlot);
     
-    return();
+    return(list(fisheries=fshs,surveys=srvs));
 }

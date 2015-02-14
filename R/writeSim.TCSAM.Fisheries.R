@@ -18,8 +18,8 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
     #model dimensions
     d <- mc$dims;
     #--Retained catch abundance/biomass (1000s mt)
-    NR_fy<-dimArray(mc,'f.y');     #retained abundance by f, y
-    BR_fy<-dimArray(mc,'f.y');     #retained biomass by f, y
+    NR_fyx<-dimArray(mc,'f.y.x');     #retained abundance by f, y, x
+    BR_fyx<-dimArray(mc,'f.y.x');     #retained biomass by f, y, x
     W_yxmsz<-mp$W_yxmsz;           #weight-at-size retained
     NR_fyxmsz<-mr$F_list$NR_fyxmsz;#numbers retained
     for (f in d$f$nms){
@@ -27,33 +27,35 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
             for (x in d$x$nms){
                 for (m in d$m$nms){
                     for (s in d$s$nms){
-                        NR_fy[f,y]<-NR_fy[f,y]+sum(NR_fyxmsz[f,y,x,m,s,]);
-                        BR_fy[f,y]<-BR_fy[f,y]+sum(W_yxmsz[y,x,m,s,]*NR_fyxmsz[f,y,x,m,s,]);
+                        NR_fyx[f,y,x]<-NR_fyx[f,y,x]+sum(NR_fyxmsz[f,y,x,m,s,]);
+                        BR_fyx[f,y,x]<-BR_fyx[f,y,x]+sum(W_yxmsz[y,x,m,s,]*NR_fyxmsz[f,y,x,m,s,]);
                     }#s
                 }#m
             }#x
         }#y
     }#f
     if (showPlot){
-        mdfr<-melt(NR_fy,value.name='val');
-        p <- ggplot(aes(x=y,y=val,color=f,shape=f),data=mdfr);
+        mdfr<-melt(NR_fyx,value.name='val');
+        ddfr<-dcast(mdfr,f+y~`.`,fun.aggregate=sum,value.var='val')
+        p <- ggplot(aes(x=y,y=`.`),data=ddfr);
         p <- p + geom_point();
         p <- p + geom_line();
         p <- p + labs(x='year',y="Retained Catch Abundance (millions)")
-        p <- p + guides(color=guide_legend('fishery',order=1),shape=guide_legend(''))
+        p <- p + facet_grid(f~.)
         print(p);
-        mdfr<-melt(BR_fy,value.name='val');
-        p <- ggplot(aes(x=y,y=val,color=f,shape=f),data=mdfr);
+        mdfr<-melt(BR_fyx,value.name='val');
+        ddfr<-dcast(mdfr,f+y~`.`,fun.aggregate=sum,value.var='val')
+        p <- ggplot(aes(x=y,y=`.`),data=ddfr);
         p <- p + geom_point();
         p <- p + geom_line();
         p <- p + labs(x='year',y="Retained Catch Biomass (1000s t)")
-        p <- p + guides(color=guide_legend('fishery',order=1),shape=guide_legend(''))
+        p <- p + facet_grid(f~.)
         print(p);
     }    
     #calc number of data rows that will be output for retained catch data
     nr_f<-dimArray(mc,'f');
     for (f in d$f$nms){
-        for (y in d$y$nms) {if (!is.na(NR_fy[f,y])){nr_f[f]<-nr_f[f]+1;}}
+        for (y in d$y$nms) {if (!is.na(NR_fyx[f,y,1])){nr_f[f]<-nr_f[f]+1;}}
     }
     
     #--Discard catch numbers
@@ -74,18 +76,22 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
     }#f
     if (showPlot){
         mdfr<-melt(ND_fyx,value.name='val');
-        p <- ggplot(aes(x=y,y=val,color=f,shape=x),data=mdfr);
+        p <- ggplot(aes(x=y,y=val,color=x,shape=x),data=mdfr);
         p <- p + geom_point();
         p <- p + geom_line();
         p <- p + labs(x='year',y="Discard Catch Abundance (millions)")
-        p <- p + guides(color=guide_legend('fishery',order=1),shape=guide_legend('sex'))
+        p <- p + guides(color=guide_legend('sex',order=1),
+                        shape=guide_legend('sex'))
+        p <- p + facet_grid(f~.)
         print(p);
         mdfr<-melt(BD_fyx,value.name='val');
-        p <- ggplot(aes(x=y,y=val,color=f,shape=x),data=mdfr);
+        p <- ggplot(aes(x=y,y=val,color=x,shape=x),data=mdfr);
         p <- p + geom_point();
         p <- p + geom_line();
         p <- p + labs(x='year',y="Discard Catch Biomass (1000s t)")
-        p <- p + guides(color=guide_legend('fishery',order=1),shape=guide_legend('sex'))
+        p <- p + guides(color=guide_legend('sex',order=1),
+                        shape=guide_legend('sex'))
+        p <- p + facet_grid(f~.)
         print(p);
     }
     #calc number of rows to be output for discard catch data
@@ -99,6 +105,14 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
             }#x
         }#y
     }#f
+    
+    #--total catch numbers
+    NT_fyx<-dimArray(mc,'f.y.x');  #total numbers caught by f, x, y (NOT mortality)
+    BT_fyx<-dimArray(mc,'f.y.x');  #total biomass caught by f, x, y (NOT mortality)
+    NT_fyx <- NR_fyx+ND_fyx;
+    BT_fyx <- BR_fyx+BD_fyx;
+    
+    #write results to data file
     for (f in d$f$nms){
         fsh<-mc$params$fisheries[[f]];
         cat("\n\n",file=conn)
@@ -131,7 +145,7 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                 cat("MALE ALL_MATURITY ALL_SHELL\n",file=conn);
                 cat("#year    value	cv_m\n",file=conn);
                 for (y in d$y$nms){
-                    if (!is.na(NR_fy[f,y])) cat(y,NR_fy[f,y],0.01,'\n',sep='  ',file=conn);
+                    if (!is.na(NR_fyx[f,y,1])) cat(y,NR_fyx[f,y,1],0.01,'\n',sep='  ',file=conn);
                 }#y
             }
             if (fsh$output$ret[2]){
@@ -267,8 +281,8 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
             if (fsh$output$tot[1]){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
-                cat("BY_SEX     #objective function fitting option\n",file=conn);
-                cat("NORM2        #likelihood type\n",file=conn);
+                cat("BY_SEX              #objective function fitting option\n",file=conn);
+                cat("LOGNORMAL           #likelihood type\n",file=conn);
                 cat(nd_fx[f,1],"  #number of years\n",file=conn);
                 cat("MILLIONS         #catch (numbers) units\n",file=conn);
                 cat(d$x$n,"    #number of factor combinations\n",file=conn);
@@ -276,15 +290,15 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                     cat(toupper(x),"ALL_MATURITY ALL_SHELL\n",file=conn);
                     cat("#year    value	cv_m\n",file=conn);
                     for (y in d$y$nms){
-                        if (!is.na(ND_fyx[f,y,x])) cat(y,ND_fyx[f,y,x],0.05,'\n',file=conn);
+                        if (!is.na(NT_fyx[f,y,x])) cat(y,NT_fyx[f,y,x],0.05,'\n',file=conn);
                     }#y
                 }#x
             }
             if (fsh$output$tot[2]){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
-                cat("BY_TOTAL     #objective function fitting option\n",file=conn);
-                cat("NORM2        #likelihood type\n",file=conn);
+                cat("BY_SEX     #objective function fitting option\n",file=conn);
+                cat("LOGNORMAL  #likelihood type\n",file=conn);
                 cat(nd_fx[f,1],"  #number of years\n",file=conn);
                 cat("THOUSANDS_MT         #catch (numbers) units\n",file=conn);
                 cat(d$x$n,"    #number of factor combinations\n",file=conn);
@@ -292,7 +306,7 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                     cat(toupper(x),"ALL_MATURITY ALL_SHELL\n",file=conn);
                     cat("#year    value    cv_m\n",file=conn);
                     for (y in d$y$nms){
-                        if (!is.na(BD_fyx[f,y,x])) cat(y,BD_fyx[f,y,x],0.05,'\n',file=conn);
+                        if (!is.na(BT_fyx[f,y,x])) cat(y,BT_fyx[f,y,x],0.05,'\n',file=conn);
                     }#y
                 }#x
             }
@@ -332,6 +346,9 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
             cat("#-----no total catch data\n",file=conn);
         }
     }#f
+    return(invisible(list(NR_fyx=NR_fyx,BR_fyx=BR_fyx,
+                          ND_fyx=ND_fyx,BD_fyx=BD_fyx,
+                          NT_fyx=NT_fyx,BT_fyx=BT_fyx)));
 }
     
     

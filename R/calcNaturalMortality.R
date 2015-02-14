@@ -5,6 +5,7 @@
 #'
 #'@return array M_yxmsz
 #'
+#'@import reshape2
 #'@import ggplot2
 #'
 #'@export
@@ -38,10 +39,11 @@ calcNaturalMortality<-function(mc,showPlot=TRUE){
     }
     
     if (showPlot){
-        pl <- ggplot(aes(x=tb,y=val,fill=fac),data=mdfr)
+        pl <- ggplot(aes(x=x,y=val,fill=m),data=mdfr)
         pl <- pl + geom_bar(stat='identity',position='dodge')
-        pl <- pl + labs(x='time block',y='M0')
-        pl <- pl + guides(fill=guide_legend('sex, maturity, \nshell condition'))
+        pl <- pl + labs(x='sex',y='M0')
+        pl <- pl + guides(fill=guide_legend('maturity'))
+        pl <- pl + facet_grid(tb~s)
         print(pl);
     }
     return(M_yxmsz);

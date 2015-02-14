@@ -49,6 +49,7 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     
     mny<-dims$y$mny;#start year for simulation
     mxy<-dims$y$mxy;#final year for simulation
+    asy<-dims$y$asy;#assessment year for simulation (mxy+1)
     zbs<-dims$z$vls; #size bins
     
     #--parse model parameters    
@@ -358,7 +359,7 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
 parseDims<-function(rz,i){
     
     #create dims list object
-    dims<-list(y=list(n=0,nms=NULL,vls=NULL,mny=0,mxy=0),
+    dims<-list(y=list(n=0,nms=NULL,vls=NULL,mny=0,mxy=0,asy=0),
                x=list(n=0,nms=NULL),
                m=list(n=0,nms=NULL),
                s=list(n=0,nms=NULL),
@@ -377,14 +378,16 @@ parseDims<-function(rz,i){
     checkKeyword(chk,'DIMENSIONS');
     
     #years
-    mny<-parseNum(rz[[i+j]][1]); j<-j+1;
-    mxy<-parseNum(rz[[i+j]][1]); j<-j+1;
-    cat('model years = ',mny,":",mxy,'\n',sep='')
+    mny<-parseNum(rz[[i+j]][1]); j<-j+1;#start model year
+    asy<-parseNum(rz[[i+j]][1]); j<-j+1;#assessment year (=mxy+1)
+    mxy<-asy-1;
+    cat('model years = ',mny,":",mxy,'. Assessment year = ',asy,'\n',sep='')
     dims$y$mny<-mny;
     dims$y$mxy<-mxy
-    dims$y$n<-mxy-mny+1;
-    dims$y$vls<-mny:mxy;
-    dims$y$nms<-as.character(mny:mxy);
+    dims$y$asy<-asy;
+    dims$y$n<-asy-mny+1;
+    dims$y$vls<-mny:asy
+    dims$y$nms<-as.character(mny:asy);
     
     #size bins and cutpoints
     mnZC<-parseNum(rz[[i+j]][1]); j<-j+1;

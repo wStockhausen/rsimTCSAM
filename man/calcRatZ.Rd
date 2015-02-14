@@ -2,15 +2,19 @@
 % Please edit documentation in R/calcRecruitment.R
 \name{calcRatZ}
 \alias{calcRatZ}
-\title{Calculate proportions recruiting-at-size}
+\title{Calculate proportions recruiting-at-size for one set of parameters}
 \usage{
-calcRatZ(mc, showPlot = TRUE)
+calcRatZ(mc, tb, showPlot = FALSE)
 }
 \arguments{
-\item{mc}{- model configuration object}
+\item{mc}{- model configuration list object}
+
+\item{tb}{- time block or inits list object}
+
+\item{showPlot}{- flag (T/F) to show plots}
 }
 \value{
-R_yz: d array with annual proportions of crab recruiting by size
+1d array with proportions of crab recruiting by size
 }
 \description{
 

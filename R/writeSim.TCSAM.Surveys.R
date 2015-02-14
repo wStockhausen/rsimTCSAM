@@ -18,8 +18,8 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
     #model dimensions
     d <- mc$dims;
     #--Survey abundance numbers
-    N_vyx<-dimArray(mc,'v.y.x'); #survey numbers by y, x
-    B_vyx<-dimArray(mc,'v.y.x'); #survey biomass by y, x
+    N_vyxms<-dimArray(mc,'v.y.x.m.s'); #survey numbers by y, x, m, s
+    B_vyxms<-dimArray(mc,'v.y.x.m.s'); #survey biomass by y, x, m, s
     W_yxmsz<-mp$W_yxmsz;         #weight-at-size
     N_vyxmsz<-mr$N_vyxmsz;       #survey abundance by y,x,m,s,z
     for (v in d$v$nms){
@@ -27,33 +27,39 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
             for (x in d$x$nms){
                 for (m in d$m$nms){
                     for (s in d$s$nms){
-                        N_vyx[v,y,x]<-N_vyx[v,y,x]+sum(N_vyxmsz[v,y,x,m,s,]);
-                        B_vyx[v,y,x]<-B_vyx[v,y,x]+sum(W_yxmsz[y,x,m,s,]*N_vyxmsz[v,y,x,m,s,]);
+                        N_vyxms[v,y,x,m,s]<-N_vyxms[v,y,x,m,s]+sum(N_vyxmsz[v,y,x,m,s,]);
+                        B_vyxms[v,y,x,m,s]<-B_vyxms[v,y,x,m,s]+sum(W_yxmsz[y,x,m,s,]*N_vyxmsz[v,y,x,m,s,]);
                     }#s
                 }#m
             }#x
         }#y
     }#v
     if (showPlot){
-        mdfr<-melt(N_vyx,value.name='val');
-        p <- ggplot(aes(x=y,y=val,color=v,shape=x),data=mdfr);
+        mdfr<-melt(N_vyxms,value.name='val');
+        ddfr<-dcast(mdfr,v+y+x~.,fun.aggregate=sum,value.var='val')
+        p <- ggplot(aes(x=y,y=`.`,color=x,shape=x),data=ddfr);
         p <- p + geom_point();
         p <- p + geom_line();
         p <- p + labs(x='year',y="Survey Abundance (millions)")
-        p <- p + guides(color=guide_legend('survey',order=1),shape=guide_legend('sex'))
+        p <- p + guides(color=guide_legend('sex',order=1),
+                        shape=guide_legend('sex'))
+        p <- p + facet_grid(v~.)
         print(p);
-        mdfr<-melt(B_vyx,value.name='val');
-        p <- ggplot(aes(x=y,y=val,color=v,shape=x),data=mdfr);
+        mdfr<-melt(B_vyxms,value.name='val');
+        ddfr<-dcast(mdfr,v+y+x~.,fun.aggregate=sum,value.var='val')
+        p <- ggplot(aes(x=y,y=`.`,color=x,shape=x),data=ddfr);
         p <- p + geom_point();
         p <- p + geom_line();
         p <- p + labs(x='year',y="Survey Biomass (1000s t)")
-        p <- p + guides(color=guide_legend('survey',order=1),shape=guide_legend('sex'))
+        p <- p + guides(color=guide_legend('sex',order=1),
+                        shape=guide_legend('sex'))
+        p <- p + facet_grid(v~.)
         print(p);
     }
     n_v<-dimArray(mc,'v');
     for (v in 1:d$v$n){
         for (y in d$y$nms) {
-            if (sum(N_vyx[v,y,],na.rm=TRUE)>0){n_v[v]<-n_v[v]+1;}
+            if (sum(N_vyxms[v,y,,,],na.rm=TRUE)>0){n_v[v]<-n_v[v]+1;}
         }
     }
     for (v in d$v$nms){
@@ -75,32 +81,40 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
                 cat("BY_SEX     #objective function fitting option\n",file=conn);
-                cat("NORM2        #likelihood type\n",file=conn);
+                cat("LOGNORMAL  #likelihood type\n",file=conn);
                 cat(n_v[v],"  #number of years\n",file=conn);
-                cat("MILLIONS         #catch (numbers) units\n",file=conn);
-                cat(d$x$n,"    #number of factor combinations\n",file=conn);
+                cat("MILLIONS   #catch (numbers) units\n",file=conn);
+                cat(d$x$n*d$m$n*d$s$n,"    #number of factor combinations\n",file=conn);
                 for (x in d$x$nms){
-                    cat(toupper(x),"ALL_MATURITY ALL_SHELL\n",file=conn);
-                    cat("#year    value    cv_m\n",file=conn);
-                    for (y in d$y$nms){
-                        if (!is.na(N_vyx[v,y,x])) cat(y,N_vyx[v,y,x],srv$error[1],'\n',file=conn);
-                    }#y
+                    for (m in d$m$nms){
+                        for (s in d$s$nms){
+                            cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
+                            cat("#year    value    cv_m\n",file=conn);
+                            for (y in d$y$nms){
+                                if (!is.na(N_vyxms[v,y,x,m,s])) cat(y,N_vyxms[v,y,x,m,s],srv$error[1],'\n',file=conn);
+                            }#y
+                        }#s
+                    }#m
                 }#x
             }
             if (srv$output[2]){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
-                cat("BY_TOTAL     #objective function fitting option\n",file=conn);
-                cat("NORM2        #likelihood type\n",file=conn);
-                cat(nd_fx[f,1],"  #number of years\n",file=conn);
+                cat("BY_SEX            #objective function fitting option\n",file=conn);
+                cat("LOGNORMAL         #likelihood type\n",file=conn);
+                cat(n_v[v],"  #number of years\n",file=conn);
                 cat("THOUSANDS_MT         #catch (numbers) units\n",file=conn);
-                cat(d$x$n,"    #number of factor combinations\n",file=conn);
+                cat(d$x$n*d$m$n*d$s$n,"    #number of factor combinations\n",file=conn);
                 for (x in d$x$nms){
-                    cat(toupper(x),"ALL_MATURITY ALL_SHELL\n",file=conn);
-                    cat("#year    value    cv_m\n",file=conn);
-                    for (y in d$y$nms){
-                        if (!is.na(B_vyx[v,y,x])) cat(y,B_vyx[v,y,x],srv$error[2],'\n',file=conn);
-                    }#y
+                    for (m in d$m$nms){
+                        for (s in d$s$nms){
+                            cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
+                            cat("#year    value    cv_m\n",file=conn);
+                            for (y in d$y$nms){
+                                if (!is.na(B_vyxms[v,y,x,m,s])) cat(y,B_vyxms[v,y,x,m,s],srv$error[2],'\n',file=conn);
+                            }#y
+                        }#s
+                    }#m
                 }#x
             }
             if (srv$output[3]){
@@ -141,4 +155,5 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
             cat("#-----no survey catch data\n",file=conn);
         }
     }#v
+    return(list(N_vyxms=N_vyxms,B_vyxms=B_vyxms))
 }

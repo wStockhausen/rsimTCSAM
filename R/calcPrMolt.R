@@ -33,6 +33,8 @@ calcPrMolt<-function(mc,showPlot=TRUE){
                 mp_z<-dimArray(mc,'z');
                 mp_z[] <- 1.0 - plogis(d$z$vls,z50,sdv);
                 mdfrp<-melt(mp_z,value.name='val');
+                mdfrp$x<-x;
+                mdfrp$s<-s;
                 mdfrp$fac<-paste(x,s,sep=', ');
                 mdfrp$t<-t;
                 mdfr<-rbind(mdfr,mdfrp);
@@ -42,11 +44,11 @@ calcPrMolt<-function(mc,showPlot=TRUE){
     }#t
     
     if (showPlot){
-        pl <- ggplot(aes(x=z,y=val,color=fac),data=mdfr)
+        pl <- ggplot(aes(x=z,y=val,color=x),data=mdfr)
         pl <- pl + geom_line()
         pl <- pl + labs(x='size (mm)',y='pr(molt|size)')
-        pl <- pl + guides(color=guide_legend('sex, shell condition'));
-        pl <- pl + facet_wrap(~t,ncol=1);
+        pl <- pl + guides(color=guide_legend('sex'));
+        pl <- pl + facet_grid(t~s);
         print(pl);
     }
     

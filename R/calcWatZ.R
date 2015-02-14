@@ -46,7 +46,7 @@ calcWatZ<-function(mc,showPlot=TRUE){
         pz <- pz + geom_line();
         pz <- pz + labs(x='size (mm)',y='weight (g)',title='')
         pz <- pz + guides(color=guide_legend('sex',order=1),linetype=guide_legend('maturity',order=2));
-        pz <- pz + facet_wrap(~t,ncol=1);
+        pz <- pz + facet_grid(t~.);
         print(pz)
     }
     
