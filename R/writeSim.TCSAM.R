@@ -23,7 +23,7 @@ writeSim.TCSAM<-function(mc,mp,mr,fn='TCAM2015.Data.dat',showPlot=TRUE){
     cat("#####################################################################\n",file=conn);
     cat('rsimTest',"  # model scenario","\n",file=conn);
     cat(d$y$mny,"  # model start year (pop. model start year)","\n",file=conn);
-    cat(d$y$mxy,"  # assessment year (final pop model numbers at size are given for July 1, assessment year)","\n",file=conn);
+    cat(d$y$asy,"  # assessment year (final pop model numbers at size are given for July 1, assessment year)","\n",file=conn);
     cat(d$z$n,  "  # Number of size bins in the model","\n",file=conn);
     cat('#size bin cut pts\n',file=conn);
     cat(d$zc$vls,"\n",sep=' ',file=conn);
@@ -104,6 +104,44 @@ writeSim.TCSAM<-function(mc,mp,mr,fn='TCAM2015.Data.dat',showPlot=TRUE){
     
     #Surveys Data
     srvs<-writeSim.TCSAM.Surveys(mc,mp,mr,conn,showPlot=showPlot);
+    
+    #Parameters info
+    cat("#---PARAMETERS INFO----------\n",file=conn);
+    cat("#--recruitment\n",file=conn);
+    blocks<-mc$params$rec$blocks;
+    cat("blocks:",names(blocks),'\n',file=conn)
+    for (t in names(blocks)){
+        tb<-blocks[[t]];
+        cat(t,':',tb$years,'\n',sep='\t',file=conn);
+        cat(t,':',mp$R_list$devs_y[as.character(tb$years)],'\n',sep='\t',file=conn);
+    }#t
+    cat("#--molt-to-maturity\n",file=conn);
+    cat("#sex","shell condition","years",mc$dims$z$nms,'\n',sep='\t',file=conn)
+    blocks<-mc$params$moltToMaturity$blocks;
+    cat("blocks:",names(blocks),'\n',file=conn)
+    for (t in names(blocks)){
+        tb<-blocks[[t]];
+        yr<-as.character(tb$years[1]);#get first year of block
+        cat(yr,'\n',file=conn)
+        for (x in mc$dims$x$nms){
+            for (s in mc$dims$s$nms){
+                lgt<-log(mp$prMolt2Mat_yxsz[yr,x,s,]/(1-mp$prMolt2Mat_yxsz[yr,x,s,]));
+                cat(x,s,t,':',lgt,'\n',sep='\t',file=conn);
+            }#s
+        }#x        
+    }#t
+    cat("#--fisheries\n",file=conn);
+    fs<-names(mc$params$fisheries);
+    for (f in fs){
+        cat("fishery:",f,'\n',file=conn)
+        blocks<-mc$params$fisheries[[f]]$blocks;
+        cat("blocks:",names(blocks),'\n',file=conn)
+        for (t in names(blocks)){
+            tb<-blocks[[t]];
+            cat(t,':',tb$years,'\n',sep='\t',file=conn);
+            cat(t,':',mp$F_list$devs_fy[f,as.character(tb$years)],'\n',sep='\t',file=conn);
+        }#t
+    }#f
     
     return(list(fisheries=fshs,surveys=srvs));
 }
