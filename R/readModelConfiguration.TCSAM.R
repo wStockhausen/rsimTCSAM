@@ -43,14 +43,13 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     cat("ModelType = '",modelType,"'\n",sep='');
     
     #parse model dimensions
-    lst.dims<-parseDims(rsp,i);  
-    dims<-lst.dims$dims;
-    i<-lst.dims$i;
+    lst.dims<-parseMC.Dims(rsp,i); i<-lst.dims$i;
+    dims<-lst.dims$dims;    
     
     mny<-dims$y$mny;#start year for simulation
     mxy<-dims$y$mxy;#final year for simulation
     asy<-dims$y$asy;#assessment year for simulation (mxy+1)
-    zbs<-dims$z$vls; #size bins
+    zbs<-dims$z$vls;#size bins
     
     #--parse model parameters    
     params <- list();
@@ -239,199 +238,18 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     cat('--read recruitment parameters\n')
     
     #fisheries
-    chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'Fisheries');
-    fisheries<-list();
-    for (fp in 1:dims$f$n){
-        f<-rsp[[i]][1]; i<-i+1;
-        retFlags<-as.logical(rsp[[i]][1:3]); i<-i+1;
-        dscFlags<-as.logical(rsp[[i]][1:3]); i<-i+1;
-        totFlags<-as.logical(rsp[[i]][1:3]); i<-i+1;
-        retErr<-as.numeric(rsp[[i]][1:3]); i<-i+1;
-        dscErr<-as.numeric(rsp[[i]][1:3]); i<-i+1;
-        totErr<-as.numeric(rsp[[i]][1:3]); i<-i+1;
-        blocks<-list();
-        nt<-parseNum(rsp[[i]][1]); i<-i+1;
-        for (tp in 1:nt){
-            t<-rsp[[i]][1]; i<-i+1;
-            eval(parse(text=paste('years<-',t)));
-            hm   <-parseNum(rsp[[i]][1]);
-            mnF  <-parseNum(rsp[[i]][2]);
-            sdF  <-parseNum(rsp[[i]][3]);
-            offFX<-parseNum(rsp[[i]][4]);
-            i<-i+1;
-            sel<-list();
-            ret<-list();
-            nc<-parseNum(rsp[[i]][1]); i<-i+1;
-            for (ic in 1:nc){
-                x <-rsp[[i]][1];               #sex
-                ct<-rsp[[i]][2];               #curve type (sel or ret)
-                ft<-rsp[[i]][3];               #function type
-                np<-parseNum(rsp[[i]][4]);     #number of parameters for function
-                ps<-parseNum(rsp[[i]][4+1:np]);#parameter values
-                if (ct=='selectivity'){
-                    sel[[x]]<-list(type=ft,params=ps);
-                } else if (ct=='retention'){
-                    ret[[x]]<-list(type=ft,params=ps);
-                } else {
-                    cat('Unrecognized curve type "',ct,'"\n');
-                    cat('Should be "selectivity" or "retention" \n');
-                    cat('Aborting...');
-                    stop();
-                }
-                i<-i+1;
-            }#ic
-            block<-list(years=years,
-                        hm=hm,mnF=mnF,sdF=sdF,offFX=offFX,
-                        sel=sel,ret=ret);
-            blocks[[t]]<-block;
-        }#tp
-        fisheries[[f]]<-list(name=f,
-                             output=list(ret=retFlags,dsc=dscFlags,tot=totFlags),
-                             error=list(ret=retErr,dsc=dscErr,tot=totErr),
-                             blocks=blocks);
-    }#fp
-    params$fisheries<-fisheries;
+    resF<-parseMC.Fisheries(rsp,i,dims); i<-resF$i;
+    params$fisheries<-resF$fisheries;
     cat('--read fisheries parameters\n')
     
     #surveys
-    chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'Surveys');
-    surveys<-list();
-    for (vp in 1:dims$v$n){
-        v<-rsp[[i]][1]; i<-i+1;
-        flags<-as.logical(rsp[[i]][1:3]); i<-i+1;
-        error<-as.numeric(rsp[[i]][1:3]); i<-i+1;
-        blocks<-list();
-        nt<-parseNum(rsp[[i]][1]); i<-i+1;
-        for (tp in 1:nt){
-            t<-rsp[[i]][1]; i <- i+1;
-            eval(parse(text=paste('years<-',t)));
-            mnQ  <-parseNum(rsp[[i]][1]);
-            sdQ  <-parseNum(rsp[[i]][2]);
-            offQX<-parseNum(rsp[[i]][3]);
-            i<-i+1;
-            sel<-list();
-            nc<-parseNum(rsp[[i]][1]); i<-i+1;
-            for (ic in 1:nc){
-                x <-rsp[[i]][1];               #sex
-                ct<-rsp[[i]][2];               #curve type
-                ft<-rsp[[i]][3];               #function type
-                np<-parseNum(rsp[[i]][4]);     #number of parameters for function
-                ps<-parseNum(rsp[[i]][4+1:np]);#parameter values
-                if (ct=='selectivity'){
-                    sel[[x]]<-list(type=ft,params=ps);
-                } else {
-                    cat('Unrecognized curve type "',ct,'"\n');
-                    cat('Should be "selectivity"\n');
-                    cat('Aborting...');
-                    stop();
-                }
-                i<-i+1;
-            }#ic
-            block<-list(years=years,
-                        mnQ=mnQ,sdQ=sdQ,offQX=offQX,
-                        sel=sel);
-            blocks[[t]]<-block;
-        }#t
-        surveys[[v]]<-list(name=v,output=flags,error=error,blocks=blocks);
-    }#vp
-    params$surveys<-surveys
+    resS<-parseMC.Surveys(rsp,i,dims); i<-resS$i;
+    params$surveys<-resS$surveys;
     cat('--read surveys parameters\n')
     
     #-----model configuration
     mc<-list(type=modelType,dims=dims,params=params)
     return(mc);
-}
-
-#'
-#'@title Parse model dimensions information from a character string vector.
-#'
-#'@param rz - character string vector from which to extract model dimensions info
-#'@param i - index into character string vector at which to start parsing
-#'
-#'@return a list with elements
-#'dims : model dimensions list object
-#'i    : final index + 1 into rz at end of parsing dims info
-#'
-#'@export
-#'
-parseDims<-function(rz,i){
-    
-    #create dims list object
-    dims<-list(y=list(n=0,nms=NULL,vls=NULL,mny=0,mxy=0,asy=0),
-               x=list(n=0,nms=NULL),
-               m=list(n=0,nms=NULL),
-               s=list(n=0,nms=NULL),
-               z=list(n=0,nms=NULL,vls=NULL),
-               zp=list(n=0,nms=NULL,vls=NULL),
-               zc=list(n=0,nms=NULL,vls=NULL),
-               f=list(n=0,nms=NULL),
-               v=list(n=0,nms=NULL)
-               );
-    
-    #set text row counter
-    j<-0;
-    
-    #DIMESIONS keyword
-    chk<-rz[[i+j]][1]; j<-j+1;
-    checkKeyword(chk,'DIMENSIONS');
-    
-    #years
-    mny<-parseNum(rz[[i+j]][1]); j<-j+1;#start model year
-    asy<-parseNum(rz[[i+j]][1]); j<-j+1;#assessment year (=mxy+1)
-    mxy<-asy-1;
-    cat('model years = ',mny,":",mxy,'. Assessment year = ',asy,'\n',sep='')
-    dims$y$mny<-mny;
-    dims$y$mxy<-mxy
-    dims$y$asy<-asy;
-    dims$y$n<-asy-mny+1;
-    dims$y$vls<-mny:asy
-    dims$y$nms<-as.character(mny:asy);
-    
-    #size bins and cutpoints
-    mnZC<-parseNum(rz[[i+j]][1]); j<-j+1;
-    mxZC<-parseNum(rz[[i+j]][1]); j<-j+1;
-    delZ<-parseNum(rz[[i+j]][1]); j<-j+1;
-    dims$zc$vls<-seq(from=mnZC,to=mxZC,by=delZ);
-    dims$zc$nms<-as.character(dims$zc$vls);
-    dims$zc$n<-length(dims$zc$vls);
-    dims$z$vls<-dims$zc$vls[(2:dims$zc$n)-1]+0.5*first_difference(dims$zc$vls);
-    dims$z$nms<-as.character(dims$z$vls);
-    dims$z$n<-length(dims$z$vls);
-    dims$zp$vls<-dims$z$vls
-    dims$zp$nms<-dims$z$nms;
-    dims$zp$n<-dims$z$n;
-    cat('size bins =',dims$z$nms,'\n');
-    
-    #sexes
-    dims$x$n<-parseNum(rz[[i+j]][1]); j<-j+1;
-    dims$x$nms<-rz[[i+j]][1:dims$x$n]; j<-j+1;
-    cat("sexes = ",addQuotes(dims$x$nms),'\n')
-    
-    #maturity states
-    dims$m$n<-parseNum(rz[[i+j]][1]); j<-j+1;
-    dims$m$nms<-rz[[i+j]][1:dims$m$n]; j<-j+1;
-    cat("maturity states = ",addQuotes(dims$m$nms),'\n')
-    
-    #shell condition
-    dims$s$n<-parseNum(rz[[i+j]][1]); j<-j+1;
-    dims$s$nms<-rz[[i+j]][1:dims$s$n]; j<-j+1;
-    cat("shell condition = ",addQuotes(dims$s$nms),'\n')
-    
-    #fisheries
-    dims$f$n<-parseNum(rz[[i+j]][1]); j<-j+1;
-    dims$f$nms<-rz[[i+j]][1:dims$f$n]; j<-j+1;
-    cat("fisheries = ",addQuotes(dims$f$nms),'\n')
-    
-    #surveys
-    dims$v$n<-parseNum(rz[[i+j]][1]); j<-j+1;
-    dims$v$nms<-rz[[i+j]][1:dims$v$n]; j<-j+1;
-    cat("surveys = ",addQuotes(dims$v$nms),'\n')
-    
-    cat("--finished reading dims list object\n\n")
-    
-    return(list(dims=dims,i=i+j));
 }
 
 #mc<-readModelConfiguration();

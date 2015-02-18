@@ -122,51 +122,54 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
         cat("FISHERY_DATA     #required keyword\n",file=conn);
         cat(gsub('[[:blank:]]',"_",f),"    #fishery name\n",file=conn);
         cat("FALSE","   #has effort data?\n",file=conn);
-        cat(any(fsh$output$ret),"   #has retained catch?\n",file=conn);
-        cat(any(fsh$output$dsc),"   #has observed discard catch\n",file=conn);
-        cat(any(fsh$output$tot),"    #has observed total catch\n",file=conn);
+        anyRet<-any(fsh$output$ret$abundance$flag,fsh$output$ret$biomass$flag,fsh$output$ret$sizecomps$flag);
+        anyDsc<-any(fsh$output$dsc$abundance$flag,fsh$output$dsc$biomass$flag,fsh$output$dsc$sizecomps$flag);
+        anyTot<-any(fsh$output$tot$abundance$flag,fsh$output$tot$biomass$flag,fsh$output$tot$sizecomps$flag);
+        cat(anyRet,"   #has retained catch?\n",file=conn);
+        cat(anyDsc,"   #has observed discard catch\n",file=conn);
+        cat(anyTot,"    #has observed total catch\n",file=conn);
         cat("#------------EFFORT DATA-----------#\n",file=conn);
         cat("#-----no effort data\n",file=conn);
         cat("#------------RETAINED CATCH DATA------------#\n",file=conn);
-        if (any(fsh$output$ret)){
+        if (anyRet){
             #retained catch
             cat("CATCH_DATA  #required keyword\n",file=conn);
-            cat(fsh$output$ret[1],"   #has aggregate catch abundance (numbers)\n",file=conn);
-            cat(fsh$output$ret[2],"   #has aggregate catch biomass (weight)\n",file=conn);
-            cat(fsh$output$ret[3],"   #has size frequency data\n",file=conn);
-            if (fsh$output$ret[1]){
+            cat(fsh$output$ret$abundance$flag,"   #has aggregate catch abundance (numbers)\n",file=conn);
+            cat(fsh$output$ret$biomass$flag,  "   #has aggregate catch biomass (weight)\n",file=conn);
+            cat(fsh$output$ret$sizecomps$flag,"   #has size frequency data\n",file=conn);
+            if (fsh$output$ret$abundance$flag){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
-                cat("BY_TOTAL     #objective function fitting option\n",file=conn);
-                cat("NORM2        #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$ret$abundance$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$ret$abundance$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nr_f[f],"    	#number of years\n",file=conn);
                 cat("MILLIONS         #catch (numbers) units\n",file=conn);
                 cat("1		#number of factor combinations\n",file=conn);
                 cat("MALE ALL_MATURITY ALL_SHELL\n",file=conn);
                 cat("#year    value	cv_m\n",file=conn);
                 for (y in d$y$nms){
-                    if (!is.na(NR_fyx[f,y,1])) cat(y,NR_fyx[f,y,1],0.01,'\n',sep='  ',file=conn);
+                    if (!is.na(NR_fyx[f,y,1])) cat(y,NR_fyx[f,y,1],fsh$output$ret$abundance$err,'\n',sep='  ',file=conn);
                 }#y
             }
-            if (fsh$output$ret[2]){
+            if (fsh$output$ret$biomass$flag){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
-                cat("BY_TOTAL     #objective function fitting option\n",file=conn);
-                cat("NORM2        #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$ret$biomass$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$ret$biomass$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nr_f[f],"    	#number of years\n",file=conn);
                 cat("THOUSANDS_MT         #catch (numbers) units\n",file=conn);
                 cat("1		#number of factor combinations\n",file=conn);
                 cat("MALE ALL_MATURITY ALL_SHELL\n",file=conn);
                 cat("#year    value	cv_m\n",file=conn);
                 for (y in d$y$nms){
-                    if (!is.na(BR_fy[f,y]))  cat(y,BR_fy[f,y],0.02,'\n',sep='  ',file=conn);
+                    if (!is.na(BR_fyx[f,y,1]))  cat(y,BR_fyx[f,y,1],fsh$output$ret$biomass$err,'\n',sep='  ',file=conn);
                 }#y
             }
-            if (fsh$output$ret[3]){
+            if (fsh$output$ret$sizecomps$flag){
                 cat("#------------NUMBERS-AT-SIZE DATA-----------#\n",file=conn);
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
-                cat("BY_TOTAL    #objective function fitting option\n",file=conn);
-                cat("MULTINOMIAL #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$ret$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$ret$sizecomps$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nr_f[f],"     #number of years of data\n",file=conn);
                 cat("???         #units\n",file=conn);
                 cat(d$zc$n,"  #NUMBER OF SIZE BIN CUTPTS\n",file=conn);
@@ -185,7 +188,7 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
                                 if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
-                                    cat(dp[r,3],50,file=conn);
+                                    cat(dp[r,3],fsh$output$ret$sizecomps$err,file=conn);
                                     for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
                                     cat('\n',file=conn)
                                 }
@@ -198,17 +201,17 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
             cat("#-----no retained catch data\n",file=conn);
         }
         cat("#------------DISCARDED CATCH DATA------------#\n",file=conn);
-        if (any(fsh$output$dsc)){
+        if (anyDsc){
             #discarded catch
             cat("CATCH_DATA  #required keyword\n",file=conn);
-            cat(fsh$output$dsc[1],"   #has aggregate catch abundance (numbers)\n",file=conn);
-            cat(fsh$output$dsc[2],"   #has aggregate catch biomass (weight)\n",file=conn);
-            cat(fsh$output$dsc[3],"   #has size frequency data\n",file=conn);
-            if (fsh$output$dsc[1]){
+            cat(fsh$output$dsc$abundance$flag,"   #has aggregate catch abundance (numbers)\n",file=conn);
+            cat(fsh$output$dsc$biomass$flag,  "   #has aggregate catch biomass (weight)\n",file=conn);
+            cat(fsh$output$dsc$sizecomps$flag,"   #has size frequency data\n",file=conn);
+            if (fsh$output$dsc$abundance$flag){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
-                cat("BY_SEX     #objective function fitting option\n",file=conn);
-                cat("NORM2        #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$dsc$abundance$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$dsc$abundance$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nd_fx[f,1],"  #number of years\n",file=conn);
                 cat("MILLIONS         #catch (numbers) units\n",file=conn);
                 cat(d$x$n,"	#number of factor combinations\n",file=conn);
@@ -216,15 +219,15 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                     cat(toupper(x),"ALL_MATURITY ALL_SHELL\n",file=conn);
                     cat("#year    value	cv_m\n",file=conn);
                     for (y in d$y$nms){
-                        if (!is.na(ND_fyx[f,y,x])) cat(y,ND_fyx[f,y,x],0.05,'\n',file=conn);
+                        if (!is.na(ND_fyx[f,y,x])) cat(y,ND_fyx[f,y,x],fsh$output$dsc$abundance$err,'\n',file=conn);
                     }#y
                 }#x
             }
-            if (fsh$output$dsc[2]){
+            if (fsh$output$dsc$biomass$flag){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
-                cat("BY_TOTAL     #objective function fitting option\n",file=conn);
-                cat("NORM2        #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$dsc$biomass$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$dsc$biomass$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nd_fx[f,1],"  #number of years\n",file=conn);
                 cat("THOUSANDS_MT         #catch (numbers) units\n",file=conn);
                 cat(d$x$n,"    #number of factor combinations\n",file=conn);
@@ -232,15 +235,15 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                     cat(toupper(x),"ALL_MATURITY ALL_SHELL\n",file=conn);
                     cat("#year    value    cv_m\n",file=conn);
                     for (y in d$y$nms){
-                        if (!is.na(BD_fyx[f,y,x])) cat(y,BD_fyx[f,y,x],0.05,'\n',file=conn);
+                        if (!is.na(BD_fyx[f,y,x])) cat(y,BD_fyx[f,y,x],fsh$output$dsc$biomass$err,'\n',file=conn);
                     }#y
                 }#x
             }
-            if (fsh$output$dsc[3]){
+            if (fsh$output$dsc$sizecomps$flag){
                 cat("#------------NUMBERS-AT-SIZE DATA-----------#\n",file=conn);
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
-                cat("BY_SEX    #objective function fitting option\n",file=conn);
-                cat("MULTINOMIAL #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$dsc$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$dsc$sizecomps$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nd_fx[f,1],"     #number of years of data\n",file=conn);
                 cat("???         #units\n",file=conn);
                 cat(d$zc$n,"  #NUMBER OF SIZE BIN CUTPTS\n",file=conn);
@@ -259,7 +262,7 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
                                 if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
-                                    cat(dp[r,3],50,file=conn);
+                                    cat(dp[r,3],fsh$output$dsc$sizecomps$err,file=conn);
                                     for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
                                     cat('\n',file=conn)
                                 }
@@ -272,17 +275,17 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
             cat("#-----no discarded catch data\n",file=conn);
         }
         cat("#------------TOTAL CATCH DATA------------#\n",file=conn);
-        if (any(fsh$output$tot)){
+        if (anyTot){
             #total catch
             cat("CATCH_DATA  #required keyword\n",file=conn);
-            cat(fsh$output$tot[1],"   #has aggregate catch abundance (numbers)\n",file=conn);
-            cat(fsh$output$tot[2],"   #has aggregate catch biomass (weight)\n",file=conn);
-            cat(fsh$output$tot[3],"   #has size frequency data\n",file=conn);
-            if (fsh$output$tot[1]){
+            cat(fsh$output$tot$abundance$flag,"   #has aggregate catch abundance (numbers)\n",file=conn);
+            cat(fsh$output$tot$biomass$flag,  "   #has aggregate catch biomass (weight)\n",file=conn);
+            cat(fsh$output$tot$sizecomps$flag,"   #has size frequency data\n",file=conn);
+            if (fsh$output$tot$abundance$flag){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
-                cat("BY_SEX              #objective function fitting option\n",file=conn);
-                cat("LOGNORMAL           #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$tot$abundance$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$tot$abundance$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nd_fx[f,1],"  #number of years\n",file=conn);
                 cat("MILLIONS         #catch (numbers) units\n",file=conn);
                 cat(d$x$n,"    #number of factor combinations\n",file=conn);
@@ -290,15 +293,15 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                     cat(toupper(x),"ALL_MATURITY ALL_SHELL\n",file=conn);
                     cat("#year    value	cv_m\n",file=conn);
                     for (y in d$y$nms){
-                        if (!is.na(NT_fyx[f,y,x])) cat(y,NT_fyx[f,y,x],0.05,'\n',file=conn);
+                        if (!is.na(NT_fyx[f,y,x])) cat(y,NT_fyx[f,y,x],fsh$output$tot$abundance$err,'\n',file=conn);
                     }#y
                 }#x
             }
-            if (fsh$output$tot[2]){
+            if (fsh$output$tot$biomass$flag){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
-                cat("BY_SEX     #objective function fitting option\n",file=conn);
-                cat("LOGNORMAL  #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$tot$biomass$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$tot$biomass$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nd_fx[f,1],"  #number of years\n",file=conn);
                 cat("THOUSANDS_MT         #catch (numbers) units\n",file=conn);
                 cat(d$x$n,"    #number of factor combinations\n",file=conn);
@@ -306,15 +309,15 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                     cat(toupper(x),"ALL_MATURITY ALL_SHELL\n",file=conn);
                     cat("#year    value    cv_m\n",file=conn);
                     for (y in d$y$nms){
-                        if (!is.na(BT_fyx[f,y,x])) cat(y,BT_fyx[f,y,x],0.05,'\n',file=conn);
+                        if (!is.na(BT_fyx[f,y,x])) cat(y,BT_fyx[f,y,x],fsh$output$tot$biomass$err,'\n',file=conn);
                     }#y
                 }#x
             }
-            if (fsh$output$tot[3]){
+            if (fsh$output$tot$sizecomps$flag){
                 cat("#------------NUMBERS-AT-SIZE DATA-----------#\n",file=conn);
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
-                cat("BY_SEX    #objective function fitting option\n",file=conn);
-                cat("MULTINOMIAL #likelihood type\n",file=conn);
+                cat(toupper(fsh$output$tot$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
+                cat(toupper(fsh$output$tot$sizecomps$errType),"\t\t#likelihood type\n",file=conn);
                 cat(nd_fx[f,1],"     #number of years of data\n",file=conn);
                 cat("???         #units\n",file=conn);
                 cat(d$zc$n,"  #NUMBER OF SIZE BIN CUTPTS\n",file=conn);
@@ -333,7 +336,7 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
                                 if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
-                                    cat(dp[r,3],50,file=conn);
+                                    cat(dp[r,3],fsh$output$tot$sizecomps$err,file=conn);
                                     for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
                                     cat('\n',file=conn)
                                 }

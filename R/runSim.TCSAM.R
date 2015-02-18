@@ -32,7 +32,7 @@ runSim.TCSAM<-function(fno='tcsam.input.dat',
     #set RNG seed
     set.seed(seed,kind='default',normal.kind='default');
     
-    #crete pdf for pot output, if requested
+    #create pdf for pot output, if requested
     if (!is.null(pdf)){
         pdf(file=pdf,onefile=TRUE,width=width,height=height);
         on.exit(dev.off());

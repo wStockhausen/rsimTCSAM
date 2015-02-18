@@ -83,16 +83,21 @@ mny:mxy    4.3    0.5    0.0    0.0   2.442347      1.386294
 Fisheries #keyword
 #-fishery 1
 'Tanner crab directed fishery'
-#output info
-#abundance  biomass   size comps
-   TRUE       FALSE      TRUE      #retained catch output flags
-   FALSE      TRUE       FALSE     #discard catch output flags
-   FALSE      FALSE      TRUE      #total catch output flags
-#output error info
-#cv-abundance  cv-biomass   ss-size comps
-    0.01         0.02           50      #retained catch
-    0.01         0.02           50      #discarded catch
-    0.01         0.02           50      #total catch
+#output info: retained catch
+#include   aggregate type   pdf type    cv/ss      weighting
+   TRUE      BY_TOTAL      LOGNORMAL      0.05        1.0     #abundance
+   TRUE      BY_TOTAL      LOGNORMAL      0.10        1.0     #biomass
+   TRUE      BY_TOTAL      MULTINOMIAL     50         1.0     #size comps
+#output info: discard catch
+#include   aggregate type   pdf type    cv/ss      weighting
+  TRUE      BY_SEX      LOGNORMAL      0.05        1.0     #abundance
+  TRUE      BY_SEX      LOGNORMAL      0.10        1.0     #biomass
+  TRUE      BY_SEX      MULTINOMIAL     50         1.0     #size comps
+#output info: total catch
+#include   aggregate type   pdf type    cv/ss      weighting
+ TRUE      BY_SEX      LOGNORMAL      0.05        1.0     #abundance
+ TRUE      BY_SEX      LOGNORMAL      0.10        1.0     #biomass
+ TRUE      BY_SEX      MULTINOMIAL     50         1.0     #size comps
 1   #number of time blocks
 #-----time block 1
 1965:mxy   #years
@@ -108,10 +113,11 @@ Fisheries #keyword
 Surveys  #keyword
 #-survey 1
 'NMFS trawl survey'
-#abundance  biomass   size comps
-   TRUE       TRUE      TRUE            #output flags
-#cv-abundance  cv-biomass   ss-size comps
-    0.01         0.02           50      #output error info
+#output info
+#include   aggregate type   pdf type    cv/ss      weighting
+   TRUE      BY_SEX       LOGNORMAL      0.1         1.0     #abundance
+   TRUE      BY_SEX       LOGNORMAL      0.4         1.0     #biomass
+   TRUE      BY_SEX       MULTINOMIAL     25         1.0     #size comps
 1   #number of time blocks
 #-----time block 1
 1975:asy   #years
