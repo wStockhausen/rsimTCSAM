@@ -39,10 +39,10 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
                 MB_yx[y,x] <- MB_yx[y,x] + sum(mp$W_yxmsz[y,x,m,s,] * mp$S1_yxmsz[y,x,m,s,] * N_msz[m,s,]);
             }
             #project population one year forward
-            R_z    <- mp$R_list$R_yxz[y,x,];            #recruitment
+            R_z    <- mp$R_list$R_yxz[y,x,];     #recruitment
             S1_msz <- mp$S1_yxmsz[y,x,,,];       #survival to mating/molting
             P_sz   <- mp$prMolt_yxsz[y,x,,];     #pr(molt)
-            Th_sz  <- mp$prMolt2Mat_yxsz[y,x,,];#pr(molt to maturity)
+            Th_sz  <- mp$prMolt2Mat_yxsz[y,x,,]; #pr(molt to maturity)
             T_szz  <- mp$T_yxszz[y,x,,,];        #size transition matrix
             S2_msz <- mp$S2_yxmsz[y,x,,,];       #survival after molting/mating
             N_yxmsz[y+1,x,,,]<-runOneYear.TM(mc,R_z,S1_msz,P_sz,Th_sz,T_szz,S2_msz,N_msz);
@@ -109,17 +109,17 @@ runOneYear.TM<-function(mc,R_z,S1_msz,P_sz,Th_sz,T_szz,S2_msz,n_msz){
     l<-calcStateTransitionMatrices(mc,S1_msz,P_sz,Th_sz,T_szz,S2_msz);
     
     #get initial numbers-at-size
-    imm.ns <- n_msz[1,1,];#immature, new shell
-    imm.os <- n_msz[1,2,];#immature, old shell
-    mat.ns <- n_msz[2,1,];#  mature, new shell
-    mat.os <- n_msz[2,2,];#  mature, old shell
+    imm.ns <- n_msz['immature','new shell',];#immature, new shell
+    imm.os <- n_msz['immature','old shell',];#immature, old shell
+    mat.ns <- n_msz[  'mature','new shell',];#  mature, new shell
+    mat.os <- n_msz[  'mature','old shell',];#  mature, old shell
     
     #project forward one time step
     np_msz<-dimArray(mc,'m.s.z');
-    np_msz[1,1,] <- l$A %*% imm.ns + l$B %*% imm.os + R_z;#immature, new shell
-    np_msz[1,2,] <- l$C %*% imm.ns + l$D %*% imm.os;      #immature, old shell
-    np_msz[2,1,] <- l$E %*% imm.ns + l$F %*% imm.os;      #  mature, new shell
-    np_msz[2,2,] <- l$G %*% mat.ns + l$H %*% mat.os;      #  mature, old shell
+    np_msz['immature','new shell',] <- l$A %*% imm.ns + l$B %*% imm.os + R_z;#immature, new shell
+    np_msz['immature','old shell',] <- l$C %*% imm.ns + l$D %*% imm.os;      #immature, old shell
+    np_msz[  'mature','new shell',] <- l$E %*% imm.ns + l$F %*% imm.os;      #  mature, new shell
+    np_msz[  'mature','old shell',] <- l$G %*% mat.ns + l$H %*% mat.os;      #  mature, old shell
     
     return(np_msz);
 }

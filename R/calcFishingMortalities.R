@@ -64,8 +64,10 @@ calcFishingMortalities<-function(mc,showPlot=TRUE){
                 sel_xz[x,]<-calcSelectivity(si$type,d$z$vls,si$params);
                 ret_xz[x,]<-0*sel_xz[x,];
                 if (!is.null(ri)) ret_xz[x,]<-calcSelectivity(ri$type,d$z$vls,ri$params);
-                for (y in yrs) {sel_yxz[y,x,]<-sel_xz[x,];}
-                for (y in yrs) {ret_yxz[y,x,]<-ret_xz[x,];}
+                for (y in yrs) {
+                    sel_yxz[y,x,]<-sel_xz[x,];
+                    ret_yxz[y,x,]<-ret_xz[x,];
+                }
             }#x
             sdfr<-melt(sel_xz,value.name='val');
             sdfr$type<-'selectivity';
