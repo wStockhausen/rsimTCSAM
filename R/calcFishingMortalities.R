@@ -26,15 +26,15 @@ calcFishingMortalities<-function(mc,showPlot=TRUE){
     d<-mc$dims;
     fs<-mc$params$fisheries;
     
-    hm_fy     <-dimArray(mc,'f.y',val=NA);
-    devs_fy   <-dimArray(mc,'f.y',val=NA);
-    F_fyxms   <-dimArray(mc,'f.y.x.m.s',val=NA);
-    sel_fyxmsz<-dimArray(mc,'f.y.x.m.s.z',val=NA)
-    ret_fyxmsz<-dimArray(mc,'f.y.x.m.s.z',val=NA);
-    FC_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=NA);
-    FM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=NA);
-    RM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=NA);
-    DM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=NA);
+    hm_fy     <-dimArray(mc,'f.y',val=0);
+    devs_fy   <-dimArray(mc,'f.y',val=0);
+    F_fyxms   <-dimArray(mc,'f.y.x.m.s',val=0);
+    sel_fyxmsz<-dimArray(mc,'f.y.x.m.s.z',val=0)
+    ret_fyxmsz<-dimArray(mc,'f.y.x.m.s.z',val=0);
+    FC_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
+    FM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
+    RM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
+    DM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
     
     F_fyx   <-dimArray(mc,'f.y.x',val=NA);  #sex-specific capture rates by year for fishery f
     for (f in names(fs)){
