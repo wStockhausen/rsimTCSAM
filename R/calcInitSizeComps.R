@@ -22,12 +22,12 @@ calcInitSizeComps<-function(mc,mp,showPlot=TRUE){
     p<-mc$params$rec;
     
     #get initial recruitment information
-    R0   <- NA;              #total equilibrium recruitment
+    R0   <- NA;              #total equilibrium (mean) recruitment
     r_x  <- dimArray(mc,'x');#equilibrium fraction of recruitment by sex
     r_z  <- dimArray(mc,'z');#equilibrium fraction of recruitment by size
     tb<-p$inits;             #use inits
     sdR <- sqrt(log(1+(tb$cvR)^2));
-    R0  <- exp(tb$lnR-(sdR^2)/2);
+    R0  <- exp(tb$lnR+(sdR^2)/2);    #mean recruitment
     if (d$x$n==1){
         r_x['male'] <- 1;
     } else {

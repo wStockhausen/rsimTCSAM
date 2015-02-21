@@ -29,7 +29,7 @@ calcRecruitment<-function(mc,showPlot=TRUE){
         devs<-devs-mean(devs);#enforce sum to zero
 #        names(devs)<-yrs;
         devs_y[yrs] <- devs;
-        r_y <- exp(tb$lnR+devs-(sdR^2)/2);
+        r_y <- exp(tb$lnR+devs);
 #        names(r_y) <- yrs;
         R_y[yrs] <- r_y;#changes R_y from array to vector for some reason
     }
