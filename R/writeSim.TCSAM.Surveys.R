@@ -56,12 +56,20 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
         p <- p + facet_grid(v~.)
         print(p);
     }
-    n_v<-dimArray(mc,'v');
+    ny_v<-dimArray(mc,'v');#number of years of 'data'
+    nc_v<-dimArray(mc,'v');#number of factor combinations for 'data'
     for (v in 1:d$v$n){
         for (y in d$y$nms) {
-            if (sum(N_vyxms[v,y,,,],na.rm=TRUE)>0){n_v[v]<-n_v[v]+1;}
-        }
-    }
+            if (sum(N_vyxms[v,y,,,],na.rm=TRUE)>0){ny_v[v]<-ny_v[v]+1;}
+        }#y
+        for (x in d$x$nms) {
+            for (m in d$m$nms) {
+                for (s in d$s$nms) {
+                    if (any(N_vyxms[v,y,x,m,s]>0,na.rm=TRUE)){nc_v[v]<-nc_v[v]+1;}
+                }#s
+            }#m
+        }#x
+    }#v
     for (v in d$v$nms){
         srv<-mc$params$surveys[[v]];
         cat("\n\n",file=conn)
@@ -82,17 +90,19 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
                 cat(toupper(srv$output$abundance$aggType),"\t\t#objective function fitting option\n",file=conn);
                 cat(toupper(srv$output$abundance$errType),"\t\t#likelihood type\n",file=conn);
-                cat(n_v[v],"  #number of years\n",file=conn);
+                cat(ny_v[v],"  #number of years\n",file=conn);
                 cat("MILLIONS   #catch (numbers) units\n",file=conn);
-                cat(d$x$n*d$m$n*d$s$n,"    #number of factor combinations\n",file=conn);
+                cat(nc_v[v],"    #number of factor combinations\n",file=conn);
                 for (x in d$x$nms){
                     for (m in d$m$nms){
                         for (s in d$s$nms){
-                            cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
-                            cat("#year    value    cv_m\n",file=conn);
-                            for (y in d$y$nms){
-                                if (!is.na(N_vyxms[v,y,x,m,s])) cat(y,N_vyxms[v,y,x,m,s],srv$output$abundance$err,'\n',file=conn);
-                            }#y
+                            if (sum(N_vyxms[v,,x,m,s],na.rm=TRUE)>0){
+                                cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
+                                cat("#year    value    cv_m\n",file=conn);
+                                for (y in d$y$nms){
+                                    if (!is.na(N_vyxms[v,y,x,m,s])) cat(y,N_vyxms[v,y,x,m,s],srv$output$abundance$err,'\n',file=conn);
+                                }#y
+                            }
                         }#s
                     }#m
                 }#x
@@ -102,17 +112,19 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
                 cat(toupper(srv$output$biomass$aggType),"\t\t#objective function fitting option\n",file=conn);
                 cat(toupper(srv$output$biomass$errType),"\t\t#likelihood type\n",file=conn);
-                cat(n_v[v],"  #number of years\n",file=conn);
+                cat(ny_v[v],"  #number of years\n",file=conn);
                 cat("THOUSANDS_MT         #catch (numbers) units\n",file=conn);
-                cat(d$x$n*d$m$n*d$s$n,"    #number of factor combinations\n",file=conn);
+                cat(nc_v[v],"    #number of factor combinations\n",file=conn);
                 for (x in d$x$nms){
                     for (m in d$m$nms){
                         for (s in d$s$nms){
-                            cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
-                            cat("#year    value    cv_m\n",file=conn);
-                            for (y in d$y$nms){
-                                if (!is.na(B_vyxms[v,y,x,m,s])) cat(y,B_vyxms[v,y,x,m,s],srv$output$biomass$err,'\n',file=conn);
-                            }#y
+                            if (sum(N_vyxms[v,,x,m,s],na.rm=TRUE)>0){
+                                cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
+                                cat("#year    value    cv_m\n",file=conn);
+                                for (y in d$y$nms){
+                                    if (!is.na(B_vyxms[v,y,x,m,s])) cat(y,B_vyxms[v,y,x,m,s],srv$output$biomass$err,'\n',file=conn);
+                                }#y
+                            }
                         }#s
                     }#m
                 }#x
@@ -122,13 +134,13 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
                 cat(toupper(srv$output$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
                 cat(toupper(srv$output$sizecomps$errType),"\t\t#likelihood type\n",file=conn);
-                cat(n_v[v],"     #number of years of data\n",file=conn);
+                cat(ny_v[v],"     #number of years of data\n",file=conn);
                 cat("???         #units\n",file=conn);
                 cat(d$zc$n,"  #NUMBER OF SIZE BIN CUTPTS\n",file=conn);
                 cat("#SIZE BIN CUTPTS (mm CW)\n",file=conn);																																	
                 cat(d$zc$nms,"\n",file=conn);
                 cat("#--------------\n",file=conn);
-                cat(d$x$n*d$m$n*d$s$n,"   #number of factor combinations\n",file=conn);
+                cat(nc_v[v],"   #number of factor combinations\n",file=conn);
                 mdfr<-melt(N_vyxmsz[v,,,,,],value.name='var');
                 ddfr<-dcast(mdfr,x+m+s+y~z,fun.aggregate=sum,na.rm=TRUE,value.var='var');
                 for (x in d$x$nms){
