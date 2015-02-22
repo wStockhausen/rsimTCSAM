@@ -4,7 +4,7 @@
 \alias{plogis}
 \title{Calculate the logistic function}
 \usage{
-plogis(z, z50, sd, fsz)
+plogis(z, z50, sd, fsz = 0)
 }
 \arguments{
 \item{z}{- vector of sizes at which to compute selectivities}

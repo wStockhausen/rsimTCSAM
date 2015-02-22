@@ -4,7 +4,7 @@
 \alias{asclogistic50Ln95}
 \title{Calculate an ascending logistic function parameterized by z50 and ln(z95-z50)}
 \usage{
-asclogistic50Ln95(z, z50, lnD)
+asclogistic50Ln95(z, z50, lnD, fsz = 0)
 }
 \arguments{
 \item{z}{- vector of sizes at which to compute selectivities}
