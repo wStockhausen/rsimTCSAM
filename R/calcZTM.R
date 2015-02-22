@@ -27,14 +27,15 @@ calcZTM<-function(mc,showPlot=TRUE){
         prZAM_xzz   <- dimArray(mc,'x.z.zp');#size transition matrix
         for (x in d$x$nms){
             mnZAM_xz[x,]<-exp(tb$a_x[x])*(d$z$vls^tb$b_x[x]);
-            for (z in 1:d$z$n){ #looping over size bins
-                idx<-z:d$zc$n;#index over CUTPOINTS
+            for (z in 1:(d$z$n-1)){ #looping over size bins
+                idx<-z:d$z$n;#index over CUTPOINTS up to start of final bin
                 cumZAM<-pgamma(d$zc$vls[idx],shape=mnZAM_xz[x,z]/tb$s_x[x],scale=tb$s_x[x]);#integrated up each cutpoint
-                prZAM<-first_difference(cumZAM);#contribution to each bin
+                prZAM<-c(first_difference(cumZAM),1.0-cumZAM(length(cumZAM));#contribution to each bin
                 #TODO: no truncation here!!
                 prZAM<-prZAM/sum(prZAM);
-                prZAM_xzz[x,z,z:d$zp$n]<-prZAM;#note that ROWS here are pre-molt, COLUMNS are post-molt
+                prZAM_xzz[x,z,z:d$z$n]<-prZAM;#note that ROWS here are pre-molt, COLUMNS are post-molt
             }#z
+            prZAM_xzz[x,d$z$n,d$z$n]<-1.0;
             for (s in d$s$nms){
                 for (y in yrs) {
                     prZAM_yxszz[y,x,s,,]<-prZAM_xzz[x,,];#indep of shell condition
