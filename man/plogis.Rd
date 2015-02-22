@@ -4,7 +4,7 @@
 \alias{plogis}
 \title{Calculate the logistic function}
 \usage{
-plogis(z, z50, sd)
+plogis(z, z50, sd, fsz)
 }
 \arguments{
 \item{z}{- vector of sizes at which to compute selectivities}
@@ -12,6 +12,8 @@ plogis(z, z50, sd)
 \item{z50}{- size at which selectivity  = 0.5 (logit-scale mean)}
 
 \item{sd}{- standard deviation in selectivity (logit-scale standard deviation)}
+
+\item{fsz}{- if fsz>0, fsz=fully-selected size. if fsz<0, will use max(z) as fsz. if fsz=0, no re-scaling is done}
 }
 \value{
 vector with selectivity values at the elements of z

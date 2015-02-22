@@ -106,9 +106,9 @@ Fisheries #keyword
 #selectivity
 3   #number of curves
 #sex       type          function            np   params 
-  'male'  'selectivity' 'asclogistic50Ln95'   2     80    3.2  #z50    ln(z95-z50)
-'female'  'selectivity' 'asclogistic50Ln95'   2     80    3.2  #z50    ln(z95-z50)
-  'male'  'retention'   'asclogistic50Ln95'   2    140    2.3  #z50    ln(z95-z50)
+  'male'  'selectivity' 'asclogistic50Ln95'   3     80    3.2  182  #z50    ln(z95-z50)  fsz
+'female'  'selectivity' 'asclogistic50Ln95'   3     80    3.2  182  #z50    ln(z95-z50)  fsz
+  'male'  'retention'   'asclogistic50Ln95'   3    140    2.3  182  #z50    ln(z95-z50)  fsz
 #--Surveys
 Surveys  #keyword
 #-survey 1
@@ -126,6 +126,6 @@ Surveys  #keyword
 #selectivity
 2   #number of curves
 #sex       type          function    np   params
-  'male'  'selectivity' 'asclogistic50Ln95'   2     60    3.2  #z50    ln(z95-z50)
-'female'  'selectivity' 'asclogistic50Ln95'   2     60    3.2  #z50    ln(z95-z50)
+  'male'  'selectivity' 'asclogistic50Ln95'   3     60    3.2  182 #z50    ln(z95-z50)  fsz
+'female'  'selectivity' 'asclogistic50Ln95'   3     60    3.2  182 #z50    ln(z95-z50)  fsz
 DONE #keyword
