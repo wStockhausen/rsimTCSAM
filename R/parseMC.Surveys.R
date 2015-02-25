@@ -34,9 +34,9 @@ parseMC.Surveys<-function(rsp,i,dims){
         for (tp in 1:nt){
             t<-rsp[[i]][1]; i <- i+1;
             eval(parse(text=paste('years<-',t)));
-            mnQ  <-parseNum(rsp[[i]][1]);
+            lnQ  <-parseNum(rsp[[i]][1]);
             sdQ  <-parseNum(rsp[[i]][2]);
-            offQX<-parseNum(rsp[[i]][3]);
+            lnQX <-parseNum(rsp[[i]][3]);
             i<-i+1;
             sel<-list();
             nc<-parseNum(rsp[[i]][1]); i<-i+1;
@@ -57,7 +57,7 @@ parseMC.Surveys<-function(rsp,i,dims){
                 i<-i+1;
             }#ic
             block<-list(years=years,
-                        mnQ=mnQ,sdQ=sdQ,offQX=offQX,
+                        lnQ=lnQ,sdQ=sdQ,lnQX=lnQX,
                         sel=sel);
             blocks[[t]]<-block;
         }#t

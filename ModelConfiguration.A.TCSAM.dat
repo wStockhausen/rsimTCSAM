@@ -101,8 +101,8 @@ Fisheries #keyword
 1   #number of time blocks
 #-----time block 1
 1965:mxy   #years
-#discard mortality   mean F   sd F   female multiplier
-      0.3             0.3      0.4         1.0
+#discard mortality   lnF         sd F   ln-scale female multiplier
+      0.3          log(0.3)      0.4          log(1.0)
 #selectivity
 3   #number of curves
 #sex       type          function            np   params 
@@ -121,8 +121,8 @@ Surveys  #keyword
 1   #number of time blocks
 #-----time block 1
 1975:asy   #years
-#mean Q     sd Q  female multiplier
-  1.0        0.0     1.0
+#  lnQ       sd Q  ln-scale female multiplier
+ log(1.0)     0.0     log(1.0)
 #selectivity
 2   #number of curves
 #sex       type          function    np   params

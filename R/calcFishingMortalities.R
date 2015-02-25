@@ -49,13 +49,13 @@ calcFishingMortalities<-function(mc,showPlot=TRUE){
             devs<-rnorm(length(yrs),mean=0,sd=b$sdF);
             devs<-devs-mean(devs);#enforce sum to zero
             devs_fy[f,yrs]<-devs;
-            F_b<-b$mnF*exp(-(b$sdF^2)/2+devs);#annual F's in time block for males
+            F_b<-exp(b$lnF+devs);#annual F's in time block for males
             sel_xz<-dimArray(mc,'x.z');#sex-specific capture selectivity for time block
             ret_xz<-dimArray(mc,'x.z');#sex-specific retention for time block
             for (x in d$x$nms){
                 #set capture rates
                 fac<-1;
-                if (x=='female') fac<-b$offFX;
+                if (x=='female') fac<-exp(b$lnFX);
                 F_fyx[f,yrs,x]<-fac*F_b;
                 
                 #calc selectivity/retention curves

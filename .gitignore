@@ -6,3 +6,4 @@ tcsam.input.dat
 *.csv
 tcsam.input.old.dat
 tcsam.input.A.dat
+*.RData

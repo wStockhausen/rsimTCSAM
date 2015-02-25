@@ -36,12 +36,12 @@ calcSurveyCatchabilities<-function(mc,showPlot=TRUE){
             devs<-rnorm(length(yrs),mean=0,sd=b$sdQ);
             devs<-devs-mean(devs);#enforce sum to zero
             devs_vy[v,yrs]<-devs;
-            Q_b<-b$mnQ*exp(-(b$sdQ^2)/2+devs);#annual Q's in time block for males
+            Q_b<-exp(b$lnQ+devs);      #annual Q's in time block for males
             sel_xz<-dimArray(mc,'x.z');#sex-specific capture selectivity for time block
             for (x in d$x$nms){
                 #set catchabilities
                 fac<-1;
-                if (x=='female') fac<-b$offQX;
+                if (x=='female') fac<-exp(b$lnQX);
                 Q_vyx[v,yrs,x]<-fac*Q_b;
                 
                 #calc selectivity/retention curves

@@ -41,9 +41,9 @@ parseMC.Fisheries<-function(rsp,i,dims){
             t<-rsp[[i]][1]; i<-i+1;
             eval(parse(text=paste('years<-',t)));
             hm   <-parseNum(rsp[[i]][1]);
-            mnF  <-parseNum(rsp[[i]][2]);
+            lnF  <-parseNum(rsp[[i]][2]);
             sdF  <-parseNum(rsp[[i]][3]);
-            offFX<-parseNum(rsp[[i]][4]);
+            lnFX<-parseNum(rsp[[i]][4]);
             i<-i+1;
             sel<-list();
             ret<-list();
@@ -67,7 +67,7 @@ parseMC.Fisheries<-function(rsp,i,dims){
                 i<-i+1;
             }#ic
             block<-list(years=years,
-                        hm=hm,mnF=mnF,sdF=sdF,offFX=offFX,
+                        hm=hm,lnF=lnF,sdF=sdF,lnFX=lnFX,
                         sel=sel,ret=ret);
             blocks[[t]]<-block;
         }#tp
