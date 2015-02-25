@@ -4,7 +4,7 @@
 \alias{writeSim.TCSAM}
 \title{Write simulation results to TCSAM2015 input file.}
 \usage{
-writeSim.TCSAM(mc, mp, mr, fn = "TCAM2015.Data.dat", showPlot = TRUE)
+writeSim.TCSAM(mc, mp, mr, out.dir = ".", showPlot = TRUE)
 }
 \arguments{
 \item{mc}{- model configuration list object}
@@ -13,9 +13,9 @@ writeSim.TCSAM(mc, mp, mr, fn = "TCAM2015.Data.dat", showPlot = TRUE)
 
 \item{mr}{- model results list object}
 
-\item{fn}{- output file name}
-
 \item{showPlot}{- flag to show plots}
+
+\item{fn}{- output file name}
 }
 \description{
 Function to write simulation results to TCSAM2015 input file.

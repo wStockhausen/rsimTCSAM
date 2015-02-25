@@ -4,7 +4,7 @@
 \alias{writeSim.TCSAM.Surveys}
 \title{Write model survey results to output file.}
 \usage{
-writeSim.TCSAM.Surveys(mc, mp, mr, conn, showPlot = TRUE)
+writeSim.TCSAM.Surveys(mc, mp, mr, fnSrvs, showPlot = TRUE)
 }
 \arguments{
 \item{mc}{- model configuration list object}
@@ -13,7 +13,7 @@ writeSim.TCSAM.Surveys(mc, mp, mr, conn, showPlot = TRUE)
 
 \item{mr}{- model results list object}
 
-\item{conn}{- open file connection for output}
+\item{fnSrvs}{- files to write survey data to}
 
 \item{showPlot}{- flag to show plots}
 }

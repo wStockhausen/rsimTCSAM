@@ -6,7 +6,7 @@
 #'@param mc - model configuration list object
 #'@param mp - model processes list object
 #'@param mr - model results list object
-#'@param conn - open file connection for output
+#'@param fnSrvs - files to write survey data to
 #'@param showPlot - flag to show plots
 #'
 #'@import ggplot2
@@ -14,7 +14,7 @@
 #'
 #'@export
 #'
-writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
+writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
     #model dimensions
     d <- mc$dims;
     #--Survey abundance numbers
@@ -71,6 +71,8 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
         }#x
     }#v
     for (v in d$v$nms){
+        cat("writing survey data to '",fnSrvs[[v]],"'\n",sep='');
+        conn<-file(fnSrvs[[v]],open="w");
         srv<-mc$params$surveys[[v]];
         cat("\n\n",file=conn)
         cat("#####################################################################\n",file=conn);
@@ -166,6 +168,7 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,conn,showPlot=TRUE){
         } else {
             cat("#-----no survey catch data\n",file=conn);
         }
+        close(conn);
     }#v
     return(list(N_vyxms=N_vyxms,B_vyxms=B_vyxms))
 }

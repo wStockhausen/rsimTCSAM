@@ -4,11 +4,11 @@
 \alias{runSim.TCSAM}
 \title{Run the TCSAM simulation model to produce a TCSAM2015 input file.}
 \usage{
-runSim.TCSAM(fno = "tcsam.input.dat", seed = NULL, fnd = "devs.csv",
+runSim.TCSAM(out.dir = ".", seed = NULL, fnd = "devs.csv",
   showPlot = TRUE, pdf = NULL, width = 8, height = 6)
 }
 \arguments{
-\item{fno}{- filename for output file (input file to TCSAM2015)}
+\item{out.dir}{- directory path for output files (input files to TCSAM2015)}
 
 \item{seed}{- seed for random number generator (NULL generates system seed)}
 

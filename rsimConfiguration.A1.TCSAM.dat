@@ -1,3 +1,12 @@
+#====================
+# rsimTCSAM configuration file
+#
+# This file runs the model from 1950 to 2014 to test generate
+# test files for TCSAM2015. Basic configuration is:
+#	1 time period for all biological processes
+#	1 fishery, 1 time period for parameters
+#	1 survey,  1 time period for parameters
+#====================
 #-----------------------------------------------------------------------------------
 ModelConfiguration #keyword
 TC     #model type (KC or TC for king crab or Tanner crab)
@@ -16,7 +25,7 @@ DIMENSIONS  #keyword
 2      #number of shell conditions
 'new shell' 'old shell' #labels for shell conditions
 1      #number of fisheries
-'Tanner crab directed fishery' #labels for fisheries
+'TCF'  #labels for fisheries: Tanner crab directed fishery
 1      #number of surveys
 'NMFS trawl survey' #names for surveys
 #---------------------------------------------------------------
@@ -82,7 +91,7 @@ mny:mxy    4.3    0.5    0.0    0.0   2.442347      1.386294
 #--Fisheries
 Fisheries #keyword
 #-fishery 1
-'Tanner crab directed fishery'
+'TCF'  #Tanner crab directed fishery
 #output info: retained catch
 #include   aggregate type   pdf type    cv/ss      weighting
    TRUE      BY_TOTAL      LOGNORMAL      0.05        1.0     #abundance

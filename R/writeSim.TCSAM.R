@@ -11,13 +11,31 @@
 #'
 #'@export
 #'
-writeSim.TCSAM<-function(mc,mp,mr,fn='TCAM2015.Data.dat',showPlot=TRUE){
+writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     d<-mc$dims;
     mxy<-as.character(d$y$mxy);
     
-    conn<-file(fn,open="w");
-    on.exit(close(conn));
+    #create data file names
+    Model.Config        <-file.path(out.dir,'Model.Config.dat');
+    Model.ParametersInfo<-file.path(path.expand(out.dir),'Model.ParametersInfo.dat');
+    Model.Datasets      <-file.path(path.expand(out.dir),'Model.Datasets.dat');
+    Model.Options       <-file.path(path.expand(out.dir),'Model.Options.dat');
+    Model.Data.BioInfo  <-file.path(path.expand(out.dir),'Model.Data.BioInfo.dat');
     
+    fnFshs<-list();
+    for (f in d$f$nms) {
+        str<-gsub("[[:blank:]]","_",f);
+        fnFshs[[f]]<-file.path(path.expand(out.dir),paste('Model.Data.Fishery.',str,'.dat',sep=''));
+    }
+    
+    fnSrvs<-list();
+    for (v in d$v$nms) {
+        str<-gsub("[[:blank:]]","_",v);
+        fnSrvs[[v]]<-file.path(path.expand(out.dir),paste('Model.Data.Survey.',str,'.dat',sep=''));
+    }
+    
+    #write out Model Configuration file
+    conn<-file(Model.Config,open="w");    
     cat("#####################################################################\n",file=conn);
     cat("#TCSAM2015 Model Configuration File                                 #\n",file=conn);
     cat("#####################################################################\n",file=conn);
@@ -41,33 +59,36 @@ writeSim.TCSAM<-function(mc,mp,mr,fn='TCAM2015.Data.dat',showPlot=TRUE){
         cat(str,"  #survey ",ctr,': ',v,"\n",sep='',file=conn);
         ctr<-ctr+1;
     }
-    cat("#--THE FOLLOWING ARE DEFAULT INPUTS: PLEASE CHANGE!\n",file=conn)
+    cat("#--THE FOLLOWING ARE DEFAULT INPUTS: PLEASE CHANGE AS NECESSARY!\n",file=conn)
     cat("FALSE     #run operating model only\n",file=conn);
     cat("TRUE                    #fit to priors\n",file=conn);
-    cat("Model.ParametersInfo.dat       #model parameters info file\n",file=conn)
-    cat("Model.Datasets.dat             #model datasets file\n",file=conn);
-    cat("Model.Options.dat              #model options file\n",file=conn);
-    cat("OFF                     #jitter resampling option\n",file=conn);
+    cat(Model.ParametersInfo,"\t\t\t#model parameters info file\n",file=conn);
+    cat(Model.Datasets,"\t\t\t#model datasets file\n",file=conn);
+    cat(Model.Options,"\t\t\t#model options file\n",file=conn);
+    cat("ON                      #jitter resampling option\n",file=conn);
     cat("0.2                     #jitter range\n",file=conn);
     cat("OFF                     #prior resampling option\n",file=conn);
     cat("1                       #prior variance inflation factor\n",file=conn);
+    close(conn);
     
-    cat("\n\n",file=conn)
+    #write out Model Datasets file
+    conn<-file(Model.Datasets,open="w");    
     cat("#####################################################################\n",file=conn);
     cat("#TCSAM2015 Model Datasets File                                      #\n",file=conn);
     cat("#####################################################################\n",file=conn);
-    cat("Data.BioInfo.dat       #biological info file\n",file=conn)
+    cat(Model.Data.BioInfo,"\t\t\t#biological info file\n",file=conn)
     cat(d$f$n,"  #number of fishery data files\n",file=conn);
     for (f in d$f$nms) {
-        str<-gsub("[[:blank:]]","_",f);
-        cat(paste('Data.Fishery.',str,'.dat',sep=''),"  #data file for",f,"\n",file=conn);
+        cat(fnFshs[[f]],"\t\t\t#data file for",f,"\n",file=conn);
     }
     cat(d$v$n,"  #number of survey data files\n",file=conn);
     for (v in d$v$nms) {
-        str<-gsub("[[:blank:]]","_",v);
-        cat(paste('Data.Survey.',str,'.dat',sep=''),"  #data file for",v,"\n",file=conn);
+        cat(fnSrvs[[v]],"\t\t\t#data file for",v,"\n",file=conn);
     }
-
+    close(conn);
+    
+    #write out biological info file
+    conn<-file(Model.Data.BioInfo,open="w");    
     cat("\n\n",file=conn)
     cat("#####################################################################\n",file=conn);
     cat("#TCSAM2015 Model Biological Info File                               #\n",file=conn);
@@ -98,15 +119,18 @@ writeSim.TCSAM<-function(mc,mp,mr,fn='TCAM2015.Data.dat',showPlot=TRUE){
     cat("0   #number of atypical years\n",file=conn);
     cat("#data for atypical years\n",file=conn);
     cat("#year   midPtFisheries  matingTime\n",file=conn);
+    close(conn);
         
     #Fisheries Data
-    fshs<-writeSim.TCSAM.Fisheries(mc,mp,mr,conn,showPlot=showPlot);
+    fshs<-writeSim.TCSAM.Fisheries(mc,mp,mr,fnFshs,showPlot=showPlot);
     
     #Surveys Data
-    srvs<-writeSim.TCSAM.Surveys(mc,mp,mr,conn,showPlot=showPlot);
+    srvs<-writeSim.TCSAM.Surveys(mc,mp,mr,fnSrvs,showPlot=showPlot);
     
     #Parameters info
-    cat("#---PARAMETERS INFO----------\n",file=conn);
+    fn<-file.path(out.dir,'rsim.ParametersInfo.dat')
+    conn<-file(fn,open="w");    
+    cat("#---PARAMETERS INFO from rsimTCSAM----------\n",file=conn);
     cat("#--recruitment\n",file=conn);
     blocks<-mc$params$rec$blocks;
     cat("blocks:",names(blocks),'\n',file=conn)
@@ -142,6 +166,7 @@ writeSim.TCSAM<-function(mc,mp,mr,fn='TCAM2015.Data.dat',showPlot=TRUE){
             cat(t,':',mp$F_list$devs_fy[f,as.character(tb$years)],'\n',sep='\t',file=conn);
         }#t
     }#f
+    close(conn);
     
     return(list(fisheries=fshs,surveys=srvs));
 }

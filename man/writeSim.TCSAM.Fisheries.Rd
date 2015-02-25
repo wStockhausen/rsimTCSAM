@@ -4,7 +4,7 @@
 \alias{writeSim.TCSAM.Fisheries}
 \title{Write model fisheries results to output file.}
 \usage{
-writeSim.TCSAM.Fisheries(mc, mp, mr, conn, showPlot = TRUE)
+writeSim.TCSAM.Fisheries(mc, mp, mr, fnFshs, showPlot = TRUE)
 }
 \arguments{
 \item{mc}{- model configuration list object}
@@ -13,9 +13,9 @@ writeSim.TCSAM.Fisheries(mc, mp, mr, conn, showPlot = TRUE)
 
 \item{mr}{- model results list object}
 
-\item{conn}{- open file connection for output}
-
 \item{showPlot}{- flag to show plots}
+
+\item{fnSrvs}{- files to write fishery data to}
 }
 \description{
 Function to write model fisheries results to output file.

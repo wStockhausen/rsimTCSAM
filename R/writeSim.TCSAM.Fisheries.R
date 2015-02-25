@@ -6,7 +6,7 @@
 #'@param mc - model configuration list object
 #'@param mp - model processes list object
 #'@param mr - model results list object
-#'@param conn - open file connection for output
+#'@param fnSrvs - files to write fishery data to
 #'@param showPlot - flag to show plots
 #'
 #'@import ggplot2
@@ -14,7 +14,7 @@
 #'
 #'@export
 #'
-writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
+writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,showPlot=TRUE){
     #model dimensions
     d <- mc$dims;
     #--Retained catch abundance/biomass (1000s mt)
@@ -114,8 +114,9 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
     
     #write results to data file
     for (f in d$f$nms){
+        cat("writing fishery data to '",fnFshs[[f]],"'\n",sep='');
+        conn<-file(fnFshs[[f]],open="w");
         fsh<-mc$params$fisheries[[f]];
-        cat("\n\n",file=conn)
         cat("#####################################################################\n",file=conn);
         cat("#TCSAM2015 Model File for",f,"\n",file=conn);
         cat("#####################################################################\n",file=conn);
@@ -348,6 +349,7 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,conn,showPlot=TRUE){
         } else {
             cat("#-----no total catch data\n",file=conn);
         }
+        close(conn);
     }#f
     return(invisible(list(NR_fyx=NR_fyx,BR_fyx=BR_fyx,
                           ND_fyx=ND_fyx,BD_fyx=BD_fyx,

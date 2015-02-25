@@ -1,9 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
-tcsam.input.dat
 *.pdf
 *.csv
-tcsam.input.old.dat
-tcsam.input.A.dat
 *.RData
+rsim.*.dat

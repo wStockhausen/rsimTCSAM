@@ -3,7 +3,7 @@
 #'
 #'@description Function to run the TCSAM simulation model to produce a TCASM2015 input file.
 #'
-#'@param fno - filename for output file (input file to TCSAM2015)
+#'@param out.dir - directory path for output files (input files to TCSAM2015)
 #'@param seed - seed for random number generator (NULL generates system seed)
 #'@param fnd - filename for devs output
 #'@param showPlot - flag (T/F) to show plots
@@ -22,7 +22,7 @@
 #'
 #'@export
 #'
-runSim.TCSAM<-function(fno='tcsam.input.dat',
+runSim.TCSAM<-function(out.dir='.',
                        seed=NULL,
                        fnd='devs.csv',
                        showPlot=TRUE,
@@ -49,14 +49,20 @@ runSim.TCSAM<-function(fno='tcsam.input.dat',
     mr <- runModel(mc,mp,showPlot=showPlot);
     
     #output results to model files
-    mo <- writeSim.TCSAM(mc,mp,mr,fn=fno,showPlot=showPlot);
+    mo <- writeSim.TCSAM(mc,mp,mr,out.dir=out.dir,showPlot=showPlot);
 
-    #write out devs information to separate file
+    #compare initial, final size comps
+    sizecomps<-list();
+    sizecomps[['final']]<-mr$N_yxmsz[as.character(mc$dims$y$mny)];
+    sizecomps[['final']]<-mr$N_yxmsz[as.character(mc$dims$y$mxy)];
+    compareSizeCompsGG(n_xmsz=sizecomps,title='Size Compositions')
+
+    #write out devs information to csv file
     mR <- melt(mp$R_list$devs_y,value.name='recdevs');
     mF <- melt(mp$F_list$devs_fy,value.name='fdevs');
     mQ <- melt(mp$S_list$devs_vy,value.name='qdevs');
     md <- cbind(mR,mF,mQ);
-    write.csv(md,file=fnd,row.names=FALSE)
+    write.csv(md,file=file.path(out.dir,fnd),row.names=FALSE)
         
     return(invisible(list(seed=seed,mp=mp,mc=mc,mr=mr,mo=mo)));
 }
