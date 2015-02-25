@@ -57,7 +57,7 @@ calcInitSizeComps<-function(mc,mp,showPlot=TRUE){
         pl <- pl + geom_bar(alpha=0.5,stat='identity',position='dodge');
         pl <- pl + labs(x='size (mm)',y='initial abundance')
         pl <- pl + guides(fill=guide_legend(''))
-        pl <- pl + facet_wrap(~x+m,ncol=2);
+        pl <- pl + facet_grid(m~x);
         print(pl)
     }
     return(n_xmsz);

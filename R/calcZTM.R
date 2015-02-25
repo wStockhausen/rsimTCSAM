@@ -27,10 +27,10 @@ calcZTM<-function(mc,showPlot=TRUE){
         prZAM_xzz   <- dimArray(mc,'x.z.zp');#size transition matrix
         for (x in d$x$nms){
             mnZAM_xz[x,]<-exp(tb$a_x[x])*(d$z$vls^tb$b_x[x]);
-            for (z in 1:(d$z$n-1)){ #looping over size bins
+            for (z in 1:(d$z$n-1)){ #looping over pre-molt size bins
                 idx<-z:d$z$n;#index over CUTPOINTS up to start of final bin
                 cumZAM<-pgamma(d$zc$vls[idx],shape=mnZAM_xz[x,z]/tb$s_x[x],scale=tb$s_x[x]);#integrated up each cutpoint
-                prZAM<-c(first_difference(cumZAM),1.0-cumZAM(length(cumZAM));#contribution to each bin
+                prZAM<-c(first_difference(cumZAM),1.0-cumZAM[length(cumZAM)]);#contribution to each bin
                 #TODO: no truncation here!!
                 prZAM<-prZAM/sum(prZAM);
                 prZAM_xzz[x,z,z:d$z$n]<-prZAM;#note that ROWS here are pre-molt, COLUMNS are post-molt
