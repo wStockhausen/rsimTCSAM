@@ -53,8 +53,8 @@ runSim.TCSAM<-function(out.dir='.',
 
     #compare initial, final size comps
     sizecomps<-list();
-    sizecomps[['final']]<-mr$N_yxmsz[as.character(mc$dims$y$mny)];
-    sizecomps[['final']]<-mr$N_yxmsz[as.character(mc$dims$y$mxy)];
+    sizecomps[['initial']]<-mr$N_yxmsz[as.character(mc$dims$y$mny),,,,];
+    sizecomps[['final']]  <-mr$N_yxmsz[as.character(mc$dims$y$asy),,,,];
     compareSizeCompsGG(n_xmsz=sizecomps,title='Size Compositions')
 
     #write out devs information to csv file
