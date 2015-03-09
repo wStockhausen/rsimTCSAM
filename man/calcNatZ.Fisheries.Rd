@@ -15,10 +15,21 @@ calcNatZ.Fisheries(mc, mp, N_yxmsz, showPlot = TRUE)
 }
 \value{
 list with the following elements:
-NC_fyxmsz: 6-d array of fishery catches (NOT MORTALITY) by year/sex/maturity/shell condition/size
-NM_fyxmsz: 6-d array of fishery mortality as numbers by year/sex/maturity/shell condition/size
-NR_fyxmsz: 6-d array of retention mortality by year/sex/maturity/shell condition/size
-ND_fyxmsz: 6-d array of discard mortality by year/sex/maturity/shell condition/size
+cpN_fyxms:  5-d array of fishery catches (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
+cpB_fyxms:  5-d array of fishery catches (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
+cpN_fyxmsz: 6-d array of fishery catches (NOT MORTALITY) by fishery/year/sex/maturity/shell condition/size
+dsN_fyxms:  5-d array of fishery discard numbers (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
+dsB_fyxms:  5-d array of fishery discard biomass (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
+dsN_fyxmsz: 6-d array of fishery discard numbers (NOT MORTALITY) by fishery/year/sex/maturity/shell condition/size
+tmN_fyxms:  5-d array of total fishery mortality as numbers by fishery/year/sex/maturity/shell condition
+tmB_fyxms:  5-d array of total fishery mortality as biomass by fishery/year/sex/maturity/shell condition
+tmN_fyxmsz: 6-d array of total fishery mortality as numbers by fishery/year/sex/maturity/shell condition/size
+rmN_fyxms:  5-d array of retention mortality as numbers by fishery/year/sex/maturity/shell condition
+rmB_fyxms:  5-d array of retention mortality as biomass by fishery/year/sex/maturity/shell condition
+rmN_fyxmsz: 6-d array of retention mortality by year/sex/maturity/shell condition/size
+dmN_fyxms:  5-d array of discard mortality as numbers by fishery/year/sex/maturity/shell condition
+dmB_fyxms:  5-d array of discard mortality as biomass by fishery/year/sex/maturity/shell condition
+dmN_fyxmsz: 6-d array of discard mortality by fishery/year/sex/maturity/shell condition/size
 }
 \description{
 Function to calculate fishery catches, mortality at size through the model time interval

@@ -16,9 +16,9 @@ runModel(mc, mp, showPlot = TRUE)
 \value{
 List consisting of:
 iN_xmsz - initial population abundance by sex/maturity/shell condition/size
-N_yxmsz - population abundance by year/sex/maturity/shell condition/size
+P_list - list of population time series (see calcNatZ)
 F_list - list of fisheries results (see calcNatZ.Fisheries)
-N_vyxmsz - survey catches (numbers) by survey/year/sex/maturity/shell condition/size
+S_list - list of survey results (see calcNatZ.Surveys)
 }
 \description{
 Function to run the simulation model

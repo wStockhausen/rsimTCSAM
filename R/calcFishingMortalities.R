@@ -11,11 +11,12 @@
 #'ret_fyxmsz - size-specific retention
 #'devs_fy    - ln-scale deviation in annual capture rates
 #'hm_fy      - handling mortality rate
-#'F_fyxms    - fully-selected fishing capture rate
-#'FC_fyxmsz - size-specific fishing capture rate
-#'FM_fyxmsz - size-specific fishing mortality rate
-#'RM_fyxmsz - size-specific retention mortality rate
-#'DM_fyxmsz - size-specific discard mortality rate
+#'cpF_fyxms  - fully-selected fishing capture rate
+#'cpF_fyxmsz - size-specific fishing capture rate
+#'tmF_fyxmsz - size-specific fishing mortality rate
+#'rmF_fyxmsz - size-specific retention mortality rate
+#'dmF_fyxmsz - size-specific discard mortality rate
+#'tmF_yxmsz  - total fishing mortality across all fisheries
 #'
 #'@import reshape2
 #'@import ggplot2
@@ -28,15 +29,15 @@ calcFishingMortalities<-function(mc,showPlot=TRUE){
     
     hm_fy     <-dimArray(mc,'f.y',val=0);
     devs_fy   <-dimArray(mc,'f.y',val=0);
-    F_fyxms   <-dimArray(mc,'f.y.x.m.s',val=0);
+    cpF_fyxms   <-dimArray(mc,'f.y.x.m.s',val=0);
     sel_fyxmsz<-dimArray(mc,'f.y.x.m.s.z',val=0)
     ret_fyxmsz<-dimArray(mc,'f.y.x.m.s.z',val=0);
-    FC_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
-    FM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
-    RM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
-    DM_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
+    cpF_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
+    tmF_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
+    rmF_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
+    dmF_fyxmsz <-dimArray(mc,'f.y.x.m.s.z',val=0);
     
-    F_fyx   <-dimArray(mc,'f.y.x',val=NA);  #sex-specific capture rates by year for fishery f
+    cpF_fyx   <-dimArray(mc,'f.y.x',val=NA);  #sex-specific capture rates by year for fishery f
     for (f in names(fs)){
         sel_yxz<-dimArray(mc,'y.x.z',val=NA);#sex-specific capture selectivity by year for fishery f
         ret_yxz<-dimArray(mc,'y.x.z',val=NA);#sex-specific retention by year for fishery f
@@ -56,7 +57,7 @@ calcFishingMortalities<-function(mc,showPlot=TRUE){
                 #set capture rates
                 fac<-1;
                 if (x=='female') fac<-exp(b$lnFX);
-                F_fyx[f,yrs,x]<-fac*F_b;
+                cpF_fyx[f,yrs,x]<-fac*F_b;
                 
                 #calc selectivity/retention curves
                 si<-b$sel[[x]];#selectivity info
@@ -76,24 +77,24 @@ calcFishingMortalities<-function(mc,showPlot=TRUE){
             mdfrp<-rbind(sdfr,rdfr)
             mdfrp$t<-t;
             mdfr<-rbind(mdfr,mdfrp);
-            #print(dimnames(F_fyxms))
+            #print(dimnames(cpF_fyxms))
             for (y in yrs){
                 for (x in d$x$nms){
                     for (m in d$m$nms){
                         for (s in d$s$nms) {
                             #no dependence on m,s assumed
                             #cat(f,y,x,m,s,'\n')
-                            F_fyxms[f,y,x,m,s]     <- F_fyx[f,y,x];
+                            cpF_fyxms[f,y,x,m,s]     <- cpF_fyx[f,y,x];
                             sel_fyxmsz[f,y,x,m,s,] <- sel_yxz[y,x,];
                             ret_fyxmsz[f,y,x,m,s,] <- ret_yxz[y,x,];
                             #fishing capture rates
-                            FC_fyxmsz[f,y,x,m,s,]  <- F_fyxms[f,y,x,m,s]*sel_fyxmsz[f,y,x,m,s,];
+                            cpF_fyxmsz[f,y,x,m,s,]  <- cpF_fyxms[f,y,x,m,s]*sel_fyxmsz[f,y,x,m,s,];
                             #retention mortality rates
-                            RM_fyxmsz[f,y,x,m,s,]  <- FC_fyxmsz[f,y,x,m,s,]*(ret_fyxmsz[f,y,x,m,s,]);
+                            rmF_fyxmsz[f,y,x,m,s,]  <- cpF_fyxmsz[f,y,x,m,s,]*(ret_fyxmsz[f,y,x,m,s,]);
                             #discard mortality rates
-                            DM_fyxmsz[f,y,x,m,s,]  <- FC_fyxmsz[f,y,x,m,s,]*((1-ret_fyxmsz[f,y,x,m,s,])*b$hm);
+                            dmF_fyxmsz[f,y,x,m,s,]  <- cpF_fyxmsz[f,y,x,m,s,]*((1-ret_fyxmsz[f,y,x,m,s,])*b$hm);
                             #total fishing mortality rates
-                            FM_fyxmsz[f,y,x,m,s,]  <- RM_fyxmsz[f,y,x,m,s,]+DM_fyxmsz[f,y,x,m,s,];
+                            tmF_fyxmsz[f,y,x,m,s,]  <- rmF_fyxmsz[f,y,x,m,s,]+dmF_fyxmsz[f,y,x,m,s,];
                         }#s
                     }#m
                 }#x
@@ -112,7 +113,7 @@ calcFishingMortalities<-function(mc,showPlot=TRUE){
         }
     }#f
     if (showPlot){
-        mdfr<-melt(F_fyx,value.name='val');
+        mdfr<-melt(cpF_fyx,value.name='val');
         p <- ggplot(aes(x=y,y=val,color=x),data=mdfr);
         p <- p + geom_line();
         p <- p + labs(x='year',y='Capture Rate')
@@ -121,7 +122,14 @@ calcFishingMortalities<-function(mc,showPlot=TRUE){
         print(p)
     }
     
-    return(list(sel_fyxmsz=sel_fyxmsz,ret_fyxmsz=ret_fyxmsz,
-                devs_fy=devs_fy,hm_fy=hm_fy,F_fyxms=F_fyxms,
-                FC_fyxmsz=FC_fyxmsz,FM_fyxmsz=FM_fyxmsz,RM_fyxmsz=RM_fyxmsz,DM_fyxmsz=DM_fyxmsz))
+    #calc total fishing mortality
+    tmF_yxmsz<-dimArray(mc, 'y.x.m.s.z');
+    for (f in d$f$nms){
+        tmF_yxmsz <- tmF_yxmsz + tmF_fyxmsz[f,,,,,];
+    }
+    
+    return(list(sel_fyxmsz=sel_fyxmsz,ret_fyxmsz=ret_fyxmsz,devs_fy=devs_fy,hm_fy=hm_fy,
+                cpF_fyx=cpF_fyx,cpF_fyxms=cpF_fyxms,cpF_fyxmsz=cpF_fyxmsz,
+                tmF_yxmsz=tmF_yxmsz,tmF_fyxmsz=tmF_fyxmsz,
+                rmF_fyxmsz=rmF_fyxmsz,dmF_fyxmsz=dmF_fyxmsz))
 }

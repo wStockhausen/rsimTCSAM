@@ -15,7 +15,8 @@
 readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     #get file name to read
     if (is.null(fn)){
-        fn<-selectFile(ext)
+        fn<-selectFile(ext);
+        if (is.null(fn)) return(NULL);
     }
     
     conn<-file(fn,open='r');

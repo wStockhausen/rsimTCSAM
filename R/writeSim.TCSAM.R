@@ -168,5 +168,5 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     }#f
     close(conn);
     
-    return(list(fisheries=fshs,surveys=srvs));
+#    return(list(fisheries=fshs,surveys=srvs));
 }

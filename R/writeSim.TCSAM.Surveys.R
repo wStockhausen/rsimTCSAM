@@ -17,45 +17,12 @@
 writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
     #model dimensions
     d <- mc$dims;
-    #--Survey abundance numbers
-    N_vyxms<-dimArray(mc,'v.y.x.m.s'); #survey numbers by y, x, m, s
-    B_vyxms<-dimArray(mc,'v.y.x.m.s'); #survey biomass by y, x, m, s
-    W_yxmsz<-mp$W_yxmsz;         #weight-at-size
-    N_vyxmsz<-mr$N_vyxmsz;       #survey abundance by y,x,m,s,z
-    for (v in d$v$nms){
-        for (y in d$y$nms){
-            for (x in d$x$nms){
-                for (m in d$m$nms){
-                    for (s in d$s$nms){
-                        N_vyxms[v,y,x,m,s]<-N_vyxms[v,y,x,m,s]+sum(N_vyxmsz[v,y,x,m,s,]);
-                        B_vyxms[v,y,x,m,s]<-B_vyxms[v,y,x,m,s]+sum(W_yxmsz[y,x,m,s,]*N_vyxmsz[v,y,x,m,s,]);
-                    }#s
-                }#m
-            }#x
-        }#y
-    }#v
-    if (showPlot){
-        mdfr<-melt(N_vyxms,value.name='val');
-        ddfr<-dcast(mdfr,v+y+x~.,fun.aggregate=sum,value.var='val')
-        p <- ggplot(aes(x=y,y=`.`,color=x,shape=x),data=ddfr);
-        p <- p + geom_point();
-        p <- p + geom_line();
-        p <- p + labs(x='year',y="Survey Abundance (millions)")
-        p <- p + guides(color=guide_legend('sex',order=1),
-                        shape=guide_legend('sex'))
-        p <- p + facet_grid(v~.)
-        print(p);
-        mdfr<-melt(B_vyxms,value.name='val');
-        ddfr<-dcast(mdfr,v+y+x~.,fun.aggregate=sum,value.var='val')
-        p <- ggplot(aes(x=y,y=`.`,color=x,shape=x),data=ddfr);
-        p <- p + geom_point();
-        p <- p + geom_line();
-        p <- p + labs(x='year',y="Survey Biomass (1000s t)")
-        p <- p + guides(color=guide_legend('sex',order=1),
-                        shape=guide_legend('sex'))
-        p <- p + facet_grid(v~.)
-        print(p);
-    }
+    
+    #--Survey abundance/biomass numbers
+    N_vyxms<-mr$S_list$N_vyxms; #survey abundance by y,x,m,s
+    B_vyxms<-mr$S_list$B_vyxms; #survey biomass by y,x,m,s
+    N_vyxmsz<-mr$S_list$N_vyxmsz;#survey abundance by y,x,m,s,z
+    
     ny_v<-dimArray(mc,'v');#number of years of 'data'
     nc_v<-dimArray(mc,'v');#number of factor combinations for 'data'
     for (v in 1:d$v$n){
@@ -170,5 +137,5 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
         }
         close(conn);
     }#v
-    return(list(N_vyxms=N_vyxms,B_vyxms=B_vyxms))
+#    return(list(N_vyxms=N_vyxms,B_vyxms=B_vyxms))
 }

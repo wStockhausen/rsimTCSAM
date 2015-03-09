@@ -38,7 +38,8 @@ calcZTM<-function(mc,showPlot=TRUE){
             prZAM_xzz[x,d$z$n,d$z$n]<-1.0;
             for (s in d$s$nms){
                 for (y in yrs) {
-                    prZAM_yxszz[y,x,s,,]<-prZAM_xzz[x,,];#indep of shell condition
+                    #indep of shell condition
+                    prZAM_yxszz[y,x,s,,]<-t(prZAM_xzz[x,,]);#columns now pre-molt, rows post-molt
                 }#y
             }#s
         }#x

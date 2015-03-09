@@ -9,9 +9,9 @@
 #'
 #'@return List consisting of:
 #'iN_xmsz - initial population abundance by sex/maturity/shell condition/size
-#'N_yxmsz - population abundance by year/sex/maturity/shell condition/size
+#'P_list - list of population time series (see calcNatZ)
 #'F_list - list of fisheries results (see calcNatZ.Fisheries)
-#'N_vyxmsz - survey catches (numbers) by survey/year/sex/maturity/shell condition/size
+#'S_list - list of survey results (see calcNatZ.Surveys)
 #'
 #'@export
 #'
@@ -21,15 +21,14 @@ runModel<-function(mc,mp,showPlot=TRUE){
     iN_xmsz<-calcInitSizeComps(mc,mp,showPlot=showPlot);
     
     #calculate time series of population abundance and mature biomass
-    pop.ts<-calcNatZ(mc,mp,iN_xmsz,showPlot=showPlot);
-    N_yxmsz <- pop.ts$N_yxmsz;#numbers-at-size
-    MB_yx   <- pop.ts$MB_yx;  #mature biomass
+    P_list<-calcNatZ(mc,mp,iN_xmsz,showPlot=showPlot);
+    N_yxmsz <- P_list$N_yxmsz;#numbers-at-size
     
     #calculate fishery catches
     F_list<-calcNatZ.Fisheries(mc,mp,N_yxmsz,showPlot=showPlot);
     
     #calculate survey catches
-    N_vyxmsz<-calcNatZ.Surveys(mc,mp,N_yxmsz,showPlot=showPlot);
+    S_list<-calcNatZ.Surveys(mc,mp,N_yxmsz,showPlot=showPlot);
     
-    return(list(iN_xmsz=iN_xmsz,N_yxmsz=N_yxmsz,MB_yx=MB_yx,F_list=F_list,N_vyxmsz=N_vyxmsz))
+    return(list(iN_xmsz=iN_xmsz,P_list=P_list,F_list=F_list,S_list=S_list))
 }

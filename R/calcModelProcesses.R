@@ -34,11 +34,7 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
     
     #calculate total mortality schedules
     #--mortality BEFORE mating (assumes fishing midpoint happens before mating)
-    Z1_yxmsz <- mc$params$mate.time*M_yxmsz;
-    for (f in mc$dims$f$nms){
-        cat(f,'\n')
-        Z1_yxmsz <- Z1_yxmsz + F_list$FM_fyxmsz[f,,,,,];
-    }
+    Z1_yxmsz <- mc$params$mate.time*M_yxmsz + F_list$tmF_yxmsz;;
     #--mortality AFTER mating (assumes fishing midpoint happens before mating)
     Z2_yxmsz <- (1-mc$params$mate.time)*M_yxmsz;
     

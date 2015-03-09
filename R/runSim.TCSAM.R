@@ -13,10 +13,9 @@
 #'
 #'@return list with elements:
 #'seed - RNG seed used
-#'mc - model configuration list object
-#'mp - model processes list object
-#'mr - model results list object
-#'mo - model output list object
+#'mc - model configuration list object (see readModelConfiguration.TCSAM(...))
+#'mp - model processes list object    (see calcModelProcesses(...))
+#'mr - model results list object      (see runModel(...))
 #'
 #'@import reshape2
 #'
@@ -32,15 +31,19 @@ runSim.TCSAM<-function(out.dir='.',
     #set RNG seed
     set.seed(seed,kind='default',normal.kind='default');
     
-    #create pdf for pot output, if requested
+    #get model configuration for Tanner crab
+    mc <- readModelConfiguration.TCSAM();
+    if (is.null(mc)) {
+        cat('Model configuration file not read\n');
+        cat('Returning NULL\n');
+        return(NULL);
+    }
+    
+    #create pdf for plot output, if requested
     if (!is.null(pdf)){
         pdf(file=pdf,onefile=TRUE,width=width,height=height);
         on.exit(dev.off());
     }
-    
-    #get model configuration for Tanner crab
-    mc <- readModelConfiguration.TCSAM();
-#    mc <- ModelConfiguration.TCSAM();
     
     #calculate model processes
     mp <- calcModelProcesses(mc,showPlot=showPlot);
@@ -49,12 +52,12 @@ runSim.TCSAM<-function(out.dir='.',
     mr <- runModel(mc,mp,showPlot=showPlot);
     
     #output results to model files
-    mo <- writeSim.TCSAM(mc,mp,mr,out.dir=out.dir,showPlot=showPlot);
+    writeSim.TCSAM(mc,mp,mr,out.dir=out.dir,showPlot=showPlot);
 
     #compare initial, final size comps
     sizecomps<-list();
-    sizecomps[['initial']]<-mr$N_yxmsz[as.character(mc$dims$y$mny),,,,];
-    sizecomps[['final']]  <-mr$N_yxmsz[as.character(mc$dims$y$asy),,,,];
+    sizecomps[['initial']]<-mr$P_list$N_yxmsz[as.character(mc$dims$y$mny),,,,];
+    sizecomps[['final']]  <-mr$P_list$N_yxmsz[as.character(mc$dims$y$asy),,,,];
     compareSizeCompsGG(n_xmsz=sizecomps,title='Size Compositions')
 
     #write out devs information to csv file
@@ -62,7 +65,10 @@ runSim.TCSAM<-function(out.dir='.',
     mF <- melt(mp$F_list$devs_fy,value.name='fdevs');
     mQ <- melt(mp$S_list$devs_vy,value.name='qdevs');
     md <- cbind(mR,mF,mQ);
-    write.csv(md,file=file.path(out.dir,fnd),row.names=FALSE)
+    write.csv(md,file=file.path(out.dir,fnd),row.names=FALSE);
+
+    #create ouput list
+    rsim<-list(seed=seed,mc=mc,mp=mp,mr=mr);
         
-    return(invisible(list(seed=seed,mp=mp,mc=mc,mr=mr,mo=mo)));
+    return(invisible(rsim));
 }

@@ -17,11 +17,12 @@ sel_fyxmsz - size-specific selectivity
 ret_fyxmsz - size-specific retention
 devs_fy    - ln-scale deviation in annual capture rates
 hm_fy      - handling mortality rate
-F_fyxms    - fully-selected fishing capture rate
-FC_fyxmsz - size-specific fishing capture rate
-FM_fyxmsz - size-specific fishing mortality rate
-RM_fyxmsz - size-specific retention mortality rate
-DM_fyxmsz - size-specific discard mortality rate
+cpF_fyxms  - fully-selected fishing capture rate
+cpF_fyxmsz - size-specific fishing capture rate
+tmF_fyxmsz - size-specific fishing mortality rate
+rmF_fyxmsz - size-specific retention mortality rate
+dmF_fyxmsz - size-specific discard mortality rate
+tmF_yxmsz  - total fishing mortality across all fisheries
 }
 \description{
 Function to calculate size-specific fishery capture and retention rates.

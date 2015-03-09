@@ -52,12 +52,12 @@ calcStateTransitionMatrices<-function(mc,S1_msz,P_sz,Th_sz,T_szz,S2_msz){
     
     #full state transition matrices
     res<-list();
-    res$A <- S2_in %*% t(Tr_in) %*% (I-Th_in) %*% Ph_in %*% S1_in;#imm, new -> imm, new
-    res$B <- S2_in %*% t(Tr_io) %*% (I-Th_io) %*% Ph_io %*% S1_io;#imm, old -> imm, new
+    res$A <- S2_in %*% Tr_in %*% (I-Th_in) %*% Ph_in %*% S1_in;#imm, new -> imm, new
+    res$B <- S2_in %*% Tr_io %*% (I-Th_io) %*% Ph_io %*% S1_io;#imm, old -> imm, new
     res$C <- S2_io %*% (I-Ph_in) %*% S1_in;                    #imm, new -> imm, old
     res$D <- S2_io %*% (I-Ph_io) %*% S1_io;                    #imm, old -> imm, old
-    res$E <- S2_mn %*% t(Tr_in) %*% Th_in %*% Ph_in %*% S1_in;    #imm, new -> mat, new
-    res$F <- S2_mn %*% t(Tr_io) %*% Th_io %*% Ph_io %*% S1_io;    #imm, old -> mat, new
+    res$E <- S2_mn %*% Tr_in %*% Th_in %*% Ph_in %*% S1_in;    #imm, new -> mat, new
+    res$F <- S2_mn %*% Tr_io %*% Th_io %*% Ph_io %*% S1_io;    #imm, old -> mat, new
     res$G <- S2_mo %*% S1_mn;                                  #mat, new -> mat, old
     res$H <- S2_mo %*% S1_mo;                                  #mat, old -> mat, old
     

@@ -44,7 +44,7 @@ calcInitSizeComps<-function(mc,mp,showPlot=TRUE){
         S1_msz <- mp$S1_yxmsz[1,x,,,];       #survival to mating/molting
         P_sz   <- mp$prMolt_yxsz[1,x,,];     #pr(molt)
         Th_sz  <- mp$prMolt2Mat_yxsz[1,x,,]; #pr(molt to maturity)
-        T_szz  <- mp$T_yxszz[1,x,,,];        #size transition matrix
+        T_szz  <- mp$T_yxszz[1,x,,,];        #size transition matrix (columns pre-molt, rows post-molt)
         S2_msz <- mp$S2_yxmsz[1,x,,,];       #survival after molting/mating
         n_xmsz[x,,,]<-calcEquilibriumSizeComp.TM(mc,R_z,S1_msz,P_sz,Th_sz,T_szz,S2_msz);
         chk<-R0*r_x[x]/(1-S1_msz[1,1,1]*S2_msz[1,1,1]);

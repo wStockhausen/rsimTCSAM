@@ -25,10 +25,9 @@ runSim.TCSAM(out.dir = ".", seed = NULL, fnd = "devs.csv",
 \value{
 list with elements:
 seed - RNG seed used
-mc - model configuration list object
-mp - model processes list object
-mr - model results list object
-mo - model output list object
+mc - model configuration list object (see readModelConfiguration.TCSAM(...))
+mp - model processes list object    (see calcModelProcesses(...))
+mr - model results list object      (see runModel(...))
 }
 \description{
 Function to run the TCSAM simulation model to produce a TCASM2015 input file.

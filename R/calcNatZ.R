@@ -8,8 +8,10 @@
 #'@param iN_xmsz - initial numbers at size array
 ##'
 #'@return list with two elements:
-#'N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/size
 #'MB_yx   - 2d array with mature biomass at mating time by year/sex
+#'N_yxms  - 4-d array of population numbers by year/sex/maturity/shell condition
+#'B_yxms  - 4-d array of population biomass by year/sex/maturity/shell condition
+#'N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/size
 #'
 #'@import reshape2
 #'@import ggplot2
@@ -34,10 +36,10 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
             N_msz <- dimArray(mc,'m.s.z');
             N_msz[,,] <- N_yxmsz[y,x,,,];#sex-specifc abundance at start of year y
             #calculate mature biomass at time of mating for year y
-            m<-'mature';
             for (s in d$s$nms){
+                m<-'mature';
                 MB_yx[y,x] <- MB_yx[y,x] + sum(mp$W_yxmsz[y,x,m,s,] * mp$S1_yxmsz[y,x,m,s,] * N_msz[m,s,]);
-            }
+            }#s
             #project population one year forward
             R_z    <- mp$R_list$R_yxz[y,x,];     #recruitment
             S1_msz <- mp$S1_yxmsz[y,x,,,];       #survival to mating/molting
@@ -48,6 +50,21 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
             N_yxmsz[y+1,x,,,]<-runOneYear.TM(mc,R_z,S1_msz,P_sz,Th_sz,T_szz,S2_msz,N_msz);
         }#x
     }#y
+    
+    #calculate aggregate numbers/biomss (millions, 1000s t)
+    N_yxms <- dimArray(mc,'y.x.m.s');#numbers
+    B_yxms <- dimArray(mc,'y.x.m.s');#biomass
+    for (y in d$y$nms){
+        for (x in d$x$nms){
+            for (m in d$m$nms){
+                for (s in d$s$nms){
+                    N_yxms[y,x,m,s]<-sum(N_yxmsz[y,x,m,s,]);
+                    N_yxms[y,x,m,s]<-sum(mp$W_yxmsz[y,x,m,s,] * N_yxmsz[y,x,m,s,]);
+                }#s
+            }#m
+        }#x
+    }#y
+    
     if (showPlot){
         mdfr<-melt(N_yxmsz,value.name='val');
         ddfr<-dcast(mdfr,x+y~.,fun.aggregate=sum,value.var='val');
@@ -80,7 +97,7 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
         print(p);
     }
     
-    return(list(N_yxmsz=N_yxmsz,MB_yx=MB_yx));
+    return(list(MB_yx=MB_yx,N_yxms=N_yxms,B_yxms=B_yxms,N_yxmsz=N_yxmsz));
 }
 
 #'
