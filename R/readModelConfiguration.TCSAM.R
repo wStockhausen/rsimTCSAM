@@ -96,7 +96,7 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     
     #natural mortality
     chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'M');
+    checkKeyword(chk,'NaturalMortality');
     blocks<-list();
     nt<-parseNum(rsp[[i]][1]); i<-i+1;
     for (tp in 1:nt){
@@ -238,14 +238,19 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
                      blocks=blocks);
     cat('--read recruitment parameters\n')
     
+    #selectivity/retention functions
+    res<-parseMC.SelFcns(rsp,i,dims); i<-res$i;
+    params$selfcns<-res$selfcns;
+    cat('--read selectivity/retention function parameters\n')
+    
     #fisheries
-    resF<-parseMC.Fisheries(rsp,i,dims); i<-resF$i;
-    params$fisheries<-resF$fisheries;
+    res<-parseMC.Fisheries(rsp,i,dims); i<-res$i;
+    params$fisheries<-res$fisheries;
     cat('--read fisheries parameters\n')
     
     #surveys
-    resS<-parseMC.Surveys(rsp,i,dims); i<-resS$i;
-    params$surveys<-resS$surveys;
+    res<-parseMC.Surveys(rsp,i,dims); i<-res$i;
+    params$surveys<-res$surveys;
     cat('--read surveys parameters\n')
     
     #-----model configuration
@@ -253,4 +258,4 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     return(mc);
 }
 
-#mc<-readModelConfiguration();
+#mc<-readModelConfiguration.TCSAM();

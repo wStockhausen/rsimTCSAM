@@ -4,17 +4,21 @@
 \alias{calcSurveyCatchabilities}
 \title{Calculate size-specific survey catchabilities.}
 \usage{
-calcSurveyCatchabilities(mc, showPlot = TRUE)
+calcSurveyCatchabilities(mc, sel_cz, showPlot = TRUE)
 }
 \arguments{
 \item{mc}{- model configuration object}
 
+\item{sel_cz}{- selectivity functions}
+
 \item{showPlot}{- flag to show plots}
 }
 \value{
-list with the following elements:
-sel_vyxmsz - size-specific selectivity
-Q_vyxms - fully-selected survey catchability
+list with the following elements:\cr
+sel_vyxmsz - size-specific selectivity\cr
+devs_vy  - ln-scale annual deviations in Q\cr
+Q_vxy    - fully-selected survey catchability\cr
+Q_vyxms  - fully-selected survey catchability\cr
 Q_vyxmsz - size-specific survey catchability
 }
 \description{

@@ -17,4 +17,10 @@ array of appropriate dimensions filled with default value(s)
 \description{
 
 }
+\details{
+To match arrays in TCSAM2015, indices reflecting parameter combinations
+(such as for selectivity functions) should be indicated as "pc_xxx",
+where xxx is the rsim dimension name (e.g., 'selfcns'). The resulting array will use
+'pc' as the corresponding dimension name
+}
 

@@ -21,7 +21,8 @@ parseMC.Dims<-function(rz,i){
                zp=list(n=0,nms=NULL,vls=NULL),
                zc=list(n=0,nms=NULL,vls=NULL),
                f=list(n=0,nms=NULL),
-               v=list(n=0,nms=NULL)
+               v=list(n=0,nms=NULL),
+               selfcns=list(n=0,nms=NULL,lbls=NULL)
                );
     
     #set text row counter
@@ -82,6 +83,12 @@ parseMC.Dims<-function(rz,i){
     dims$v$n<-parseNum(rz[[i+j]][1]); j<-j+1;
     dims$v$nms<-rz[[i+j]][1:dims$v$n]; j<-j+1;
     cat("surveys = ",addQuotes(dims$v$nms),'\n')
+    
+    #selectivity/retention functions
+    dims$selfcns$n<-parseNum(rz[[i+j]][1]); j<-j+1;
+    dims$selfcns$nms<-as.character(1:dims$selfcns$n);
+    dims$selfcns$lbls<-rz[[i+j]][1:dims$selfcns$n]; j<-j+1;
+    cat("selfcns = ",addQuotes(dims$selfcns$lbls),'\n')
     
     cat("--finished reading dims list object\n\n")
     

@@ -4,10 +4,12 @@
 \alias{calcFishingMortalities}
 \title{Calculate size-specific fishery capture and retention rates.}
 \usage{
-calcFishingMortalities(mc, showPlot = TRUE)
+calcFishingMortalities(mc, sel_cz, showPlot = TRUE)
 }
 \arguments{
 \item{mc}{- model configuration object}
+
+\item{sel_cz}{- selectivity functions}
 
 \item{showPlot}{- flag to show plots}
 }
@@ -15,8 +17,8 @@ calcFishingMortalities(mc, showPlot = TRUE)
 list with the following elements
 sel_fyxmsz - size-specific selectivity
 ret_fyxmsz - size-specific retention
-devs_fy    - ln-scale deviation in annual capture rates
-hm_fy      - handling mortality rate
+devs_fy    - ln-scale deviations in annual capture rates
+hm_fxy     - handling mortality rate
 cpF_fyxms  - fully-selected fishing capture rate
 cpF_fyxmsz - size-specific fishing capture rate
 tmF_fyxmsz - size-specific fishing mortality rate

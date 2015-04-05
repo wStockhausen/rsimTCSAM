@@ -26,11 +26,14 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
     #calculate size transition matrix for molting crab
     T_yxszz <- calcZTM(mc,showPlot=showPlot);
     
+    #calculate selectivity/retention functions
+    sel_cz <- calcSelFcns(mc,showPlot=showPlot);
+    
     #calculate fishing mortalities
-    F_list <- calcFishingMortalities(mc,showPlot=showPlot);
+    F_list <- calcFishingMortalities(mc,sel_cz,showPlot=showPlot);
     
     #calculate survey catchabilities (TODO: implement this)
-    S_list <- calcSurveyCatchabilities(mc,showPlot=showPlot);
+    S_list <- calcSurveyCatchabilities(mc,sel_cz,showPlot=showPlot);
     
     #calculate total mortality schedules
     #--mortality BEFORE mating (assumes fishing midpoint happens before mating)
@@ -50,6 +53,7 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
                prMolt_yxsz=prMolt_yxsz,
                prMolt2Mat_yxsz=prMolt2Mat_yxsz,
                T_yxszz=T_yxszz,
+               sel_cz=sel_cz,
                S1_yxmsz=S1_yxmsz,
                S2_yxmsz=S2_yxmsz,
                R_list=R_list,

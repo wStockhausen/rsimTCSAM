@@ -69,6 +69,7 @@ runSim.TCSAM<-function(out.dir='.',
 
     #create ouput list
     rsim<-list(seed=seed,mc=mc,mp=mp,mr=mr);
+    class(rsim)<-'rsimTCSAM';
         
     return(invisible(rsim));
 }
