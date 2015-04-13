@@ -2,7 +2,7 @@
 % Please edit documentation in R/SelectivityFunctions.R
 \name{asclogisticLn50Ln95}
 \alias{asclogisticLn50Ln95}
-\title{Calculate an ascending logistic function parameterized by z50 and ln(z95-z50)}
+\title{Calculate an ascending logistic function parameterized by ln(z50) and ln(z95-z50)}
 \usage{
 asclogisticLn50Ln95(z, lnZ50, lnD, fsz = 0)
 }
@@ -13,13 +13,13 @@ asclogisticLn50Ln95(z, lnZ50, lnD, fsz = 0)
 
 \item{lnD}{- ln-scale difference beteen z50 and z95}
 
-\item{fsz}{- if fsz>0, fsz=fully-selected size. if fsz<0, will use max(z) as fsz. if fsz=0, no re-scaling is done}
+\item{fsz}{- if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done}
 }
 \value{
 vector with selectivity values at the elements of z
 }
 \description{
-Function to calculate an ascending logistic function parameterized by z50 and ln(z95-z50)
+Function to calculate an ascending logistic function parameterized by ln(z50) and ln(z95-z50)
 }
 \details{
 

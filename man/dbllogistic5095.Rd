@@ -17,7 +17,7 @@ dbllogistic5095(z, ascZ50, ascD95, dscZ50, dscD95, fsz = 0)
 
 \item{dscD95}{- increment from z50 to z95 on descending limb}
 
-\item{fsz}{- if fsz>0, fsz=fully-selected size. if fsz<0, will use max(z) as fsz. if fsz=0, no re-scaling is done}
+\item{fsz}{- if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done}
 }
 \value{
 vector with selectivity values at the elements of z

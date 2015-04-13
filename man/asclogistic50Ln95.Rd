@@ -13,7 +13,7 @@ asclogistic50Ln95(z, z50, lnD, fsz = 0)
 
 \item{lnD}{- ln-scale difference beteen z50 and z95}
 
-\item{fsz}{- if fsz>0, fsz=fully-selected size. if fsz<0, will use max(z) as fsz. if fsz=0, no re-scaling is done}
+\item{fsz}{- if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done}
 }
 \value{
 vector with selectivity values at the elements of z

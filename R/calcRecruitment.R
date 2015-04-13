@@ -1,10 +1,10 @@
 #'
-#'@title Calculate recruitment-at-size by year, sex
+#'@title Calculate recruitment-at-size (in millions) by year, sex
 #'
 #'@param mc - model configuration object
 #'@param showPlot - flag (T/F) to show plots
 #'
-#'@return R_yxz: 3d array with numbers  of crab recruiting by year/sex/size
+#'@return R_yxz: 3d array with numbers of crab (in millions) recruiting by year/sex/size
 #'
 #'@import ggplot2
 #'@import reshape2
@@ -76,7 +76,7 @@ calcRecruitment<-function(mc,showPlot=TRUE){
         mdfr<-melt(R_y,value.name='n')
         py <- ggplot(mapping=aes(x=y,y=n),data=mdfr)
         py <- py + geom_line();
-        py <- py + labs(x='year',y='Total Annual Recruitment',title='Recruitment')
+        py <- py + labs(x='year',y='Total Annual Recruitment',title='Recruitment (millions)')
         print(py)
         mdfr<-melt(R_yx,value.name='p')
         px <- ggplot(mapping=aes(x=y,y=p),data=mdfr[mdfr$x=='male',])

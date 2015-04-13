@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcRecruitment.R
 \name{calcRecruitment}
 \alias{calcRecruitment}
-\title{Calculate recruitment-at-size by year, sex}
+\title{Calculate recruitment-at-size (in millions) by year, sex}
 \usage{
 calcRecruitment(mc, showPlot = TRUE)
 }
@@ -12,7 +12,7 @@ calcRecruitment(mc, showPlot = TRUE)
 \item{showPlot}{- flag (T/F) to show plots}
 }
 \value{
-R_yxz: 3d array with numbers  of crab recruiting by year/sex/size
+R_yxz: 3d array with numbers of crab (in millions) recruiting by year/sex/size
 }
 \description{
 
