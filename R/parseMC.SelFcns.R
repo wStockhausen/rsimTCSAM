@@ -9,7 +9,7 @@
 #'
 #'@return list with
 #'i - index starting next section
-#'surveys - list object with selectivity info
+#'selfcns - list object with selectivity info (type,params,label)
 #'
 #'@import wtsUtilities
 #'
@@ -26,7 +26,8 @@ parseMC.SelFcns<-function(rsp,i,dims){
         ft<-rsp[[i]][2];               #function type
         np<-parseNum(rsp[[i]][3]);     #number of parameters for function
         ps<-parseNum(rsp[[i]][3+1:np]);#parameter values
-        selfcns[[s]]<-list(type=ft,params=ps);
+        nm<-rsp[[i]][3+np+1];          #function label
+        selfcns[[s]]<-list(type=ft,params=ps,label=nm);
         i<-i+1;
     }
     

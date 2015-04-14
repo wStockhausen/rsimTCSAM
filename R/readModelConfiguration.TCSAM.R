@@ -241,6 +241,13 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     #selectivity/retention functions
     res<-parseMC.SelFcns(rsp,i,dims); i<-res$i;
     params$selfcns<-res$selfcns;
+    dims$selfcns$n<-length(params$selfcns);
+    dims$selfcns$nms<-1:dims$selfcns$n;
+    dims$selfcns$lbls<-vector(mode='character',length=dims$selfcns$n);
+    for (s in 1:dims$selfcns$n){
+        dims$selfcns$lbls[s]<-params$selfcns[[s]]$label;
+    }
+    cat("selfcns = ",addQuotes(dims$selfcns$lbls),'\n')
     cat('--read selectivity/retention function parameters\n')
     
     #fisheries

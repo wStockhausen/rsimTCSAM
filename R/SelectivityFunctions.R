@@ -11,35 +11,36 @@
 #'
 calcSelectivity<-function(type,z,params){
     fsz <- 0; #fully-selected size for re-scaling selectivity function
-    if (tolower(type)=='logistic'){
+    if (tolower(type)=='asclogistic\n'){
+        cat('sel function=asclogistic\n')
         if (length(params)>2) fsz<-params[3];
-        res<-plogis(z,params[1],params[2],fsz);
-        res<-res/max(res);
+        res<-asclogistic(z,params[1],params[2],fsz);
     } else if (tolower(type)=='asclogistic5095'){
         cat('sel function=asclogistic5095')
         if (length(params)>2) fsz<-params[3];
         res<-asclogistic5095(z,params[1],params[2],fsz);
-        res<-res/max(res);
+    } else if (tolower(type)=='asclogistic50D95'){
+        cat('sel function=asclogistic5095')
+        if (length(params)>2) fsz<-params[3];
+        res<-asclogistic50D95(z,params[1],params[2],fsz);
     } else if (tolower(type)=='asclogistic50Ln95'){
         if (length(params)>2) fsz<-params[3];
-        res<-asclogistic50Ln95(z,params[1],params[2],fsz);
-        res<-res/max(res);
-    } else if (tolower(type)=='asclogisticLn50Ln95'){
+        res<-asclogistic50LnD95(z,params[1],params[2],fsz);
+    } else if (tolower(type)=='asclogisticLn50LnD95'){
         if (length(params)>2) fsz<-params[3];
-        res<-asclogisticLn50Ln95(z,params[1],params[2],fsz);
-        res<-res/max(res);
+        res<-asclogisticLn50LnD95(z,params[1],params[2],fsz);
     } else if (tolower(type)=='dbllogistic'){
         if (length(params)>4) fsz<-params[5];
         res<-dbllogistic(z,params[1],params[2],params[3],params[4],fsz);
-        res<-res/max(res);
+    } else if (tolower(type)=='dbllogisticLnD50'){
+        if (length(params)>4) fsz<-params[5];
+        res<-dbllogisticLnD50(z,params[1],params[2],params[3],params[4],fsz);
     } else if (tolower(type)=='dbllogistic50Ln95'){
         if (length(params)>4) fsz<-params[5];
-        res<-dbllogistic50Ln95(z,params[1],params[2],params[3],params[4],fsz);
-        res<-res/max(res);
-    } else if (tolower(type)=='dbllogisticLn50Ln95'){
+        res<-dbllogistic50LnD95(z,params[1],params[2],params[3],params[4],fsz);
+    } else if (tolower(type)=='dbllogisticLn50LnD95'){
         if (length(params)>4) fsz<-params[5];
-        res<-dbllogisticLn50Ln95(z,params[1],params[2],params[3],params[4],fsz);
-        res<-res/max(res);
+        res<-dbllogisticLn50LnD95(z,params[1],params[2],params[3],params[4],fsz);
     } else {
         cat('Selectivity/retention function type "',type,'" not recognnized.\n',sep='');
         cat('Aborting...\n');
@@ -119,9 +120,24 @@ asclogistic<-function(z,z50,slope,fsz=0){
 #'@return vector with selectivity values at the elements of z
 #'
 asclogistic5095<-function(z,z50,z95,fsz=0){
-    #cat(z,'\n')
-    #cat('z50, lnD = ',z50,lnD,'\n')
     slope<-log(19.0)/(z95-z50);
+    return(asclogistic(z,z50,slope,fsz=fsz));
+}
+#-----------------------------------------------------------------------------------
+#'
+#'@title Calculate an ascending logistic function parameterized by z50 and D95 (=z95-z50)
+#'
+#'@description Function to calculate an ascending logistic function parameterized by z50 and D95
+#'
+#'@param z    - vector of sizes at which to compute selectivities
+#'@param z50 - size at which selectivity  = 0.5 (logit-scale mean)
+#'@param D95 - z95-z50
+#'@param fsz   - if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done
+#'
+#'@return vector with selectivity values at the elements of z
+#'
+asclogistic50D95<-function(z,z50,D95,fsz=0){
+    slope<-log(19.0)/D50;
     return(asclogistic(z,z50,slope,fsz=fsz));
 }
 #-----------------------------------------------------------------------------------
@@ -132,13 +148,13 @@ asclogistic5095<-function(z,z50,z95,fsz=0){
 #'
 #'@param z    - vector of sizes at which to compute selectivities
 #'@param z50 - size at which selectivity  = 0.5 (logit-scale mean)
-#'@param lnD - ln-scale difference beteen z50 and z95
+#'@param lnD95 - ln-scale difference beteen z50 and z95
 #'@param fsz   - if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done
 #'
 #'@return vector with selectivity values at the elements of z
 #'
-asclogistic50Ln95<-function(z,z50,lnD,fsz=0){
-    slope<-log(19.0)/exp(lnD);
+asclogistic50LnD95<-function(z,z50,lnD95,fsz=0){
+    slope<-log(19.0)/exp(lnD95);
     return(asclogistic(z,z50,slope,fsz=fsz));
 }
 #-----------------------------------------------------------------------------------
@@ -149,14 +165,14 @@ asclogistic50Ln95<-function(z,z50,lnD,fsz=0){
 #'
 #'@param z    - vector of sizes at which to compute selectivities
 #'@param lnZ50 - ln-scale size at which selectivity  = 0.5 (logit-scale mean)
-#'@param lnD - ln-scale difference beteen z50 and z95
+#'@param lnD95 - ln-scale difference beteen z50 and z95
 #'@param fsz   - if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done
 #'
 #'@return vector with selectivity values at the elements of z
 #'
-asclogisticLn50Ln95<-function(z,lnZ50,lnD,fsz=0){
+asclogisticLn50LnD95<-function(z,lnZ50,lnD95,fsz=0){
     z50<-exp(lnZ50);
-    slope<-log(19.0)/exp(lnD);
+    slope<-log(19.0)/exp(lnD95);
     return(asclogistic(z,z50,slope,fsz=fsz));
 }
 #-----------------------------------------------------------------------------------
@@ -192,6 +208,25 @@ dbllogistic<-function(z,ascZ50,ascSlope,dscZ50,dscSlope,fsz=0){
 }
 #-----------------------------------------------------------------------------------
 #'
+#'@title Calculate a double logistic function parameterized by z50 and slope for ascending/descending limbs
+#'
+#'@description Function to calculate a double logistic function parameterized by z50 and slope for ascending/descending limbs
+#'
+#'@param z     - vector of sizes at which to compute selectivities
+#'@param ascZ50   - ascending logistic size at which selectivity  = 0.5 (logit-scale mean)
+#'@param ascSlope - ascending logistic slope at z50
+#'@param lnD50    - ln-scale difference between ascending, descending limb z50s
+#'@param dscSlope - descending logistic slope at z50
+#'@param fsz   - if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done
+#'
+#'@return vector with selectivity values at the elements of z
+#'
+dbllogisticLnD50<-function(z,ascZ50,ascSlope,lnD50,dscSlope,fsz=0){
+    dscZ50<-ascZ50+exp(lnD50);
+    return(dbllogistic(ascZ50,ascSlope,dscZ50,dscSlope,fsz));
+}
+#-----------------------------------------------------------------------------------
+#'
 #'@title Calculate a double logistic function parameterized by z50 and D95=z95-z50 for ascending/descending limbs
 #'
 #'@description Function to calculate a double logistic function parameterized by z50 and D95=z95-z50 for ascending/descending limbs
@@ -205,7 +240,7 @@ dbllogistic<-function(z,ascZ50,ascSlope,dscZ50,dscSlope,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
-dbllogistic5095<-function(z,ascZ50,ascD95,dscZ50,dscD95,fsz=0){
+dbllogistic50D95<-function(z,ascZ50,ascD95,dscZ50,dscD95,fsz=0){
     ascSlope<-log(19.0)/ascD95;
     dscSlope<-log(19.0)/dscD95;
     return(dbllogistic(ascZ50,ascSlope,dscZ50,dscSlope,fsz));
@@ -225,7 +260,7 @@ dbllogistic5095<-function(z,ascZ50,ascD95,dscZ50,dscD95,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
-dbllogisticLn50Ln95<-function(z,ascLnZ50,ascLnD95,dscLnZ50,dscLnD95,fsz=0){
+dbllogisticLn50LnD95<-function(z,ascLnZ50,ascLnD95,dscLnZ50,dscLnD95,fsz=0){
     ascZ50<-exp(ascLnZ50);
     ascD95<-exp(ascLnD95);
     dscZ50<-exp(dscLnZ50);

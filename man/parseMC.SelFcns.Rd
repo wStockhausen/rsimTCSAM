@@ -16,7 +16,7 @@ parseMC.SelFcns(rsp, i, dims)
 \value{
 list with
 i - index starting next section
-surveys - list object with selectivity info
+selfcns - list object with selectivity info (type,params,label)
 }
 \description{
 Function to parse the 'selectivity' section of a model configuration file.
