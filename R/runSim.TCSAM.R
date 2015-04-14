@@ -52,7 +52,7 @@ runSim.TCSAM<-function(out.dir='.',
     mr <- runModel(mc,mp,showPlot=showPlot);
     
     #output results to model files
-    writeSim.TCSAM(mc,mp,mr,out.dir=out.dir,showPlot=showPlot);
+    md <- writeSim.TCSAM(mc,mp,mr,out.dir=out.dir,showPlot=showPlot);
 
     #compare initial, final size comps
     sizecomps<-list();

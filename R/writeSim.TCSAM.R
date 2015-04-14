@@ -9,6 +9,8 @@
 #'@param fn - output file name
 #'@param showPlot - flag to show plots
 #'
+#'@return list with elements F_list and S_list
+#'
 #'@export
 #'
 writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
@@ -168,5 +170,5 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     }#f
     close(conn);
     
-#    return(list(fisheries=fshs,surveys=srvs));
+    return(list(F_list=fshs,S_list=NULL));
 }

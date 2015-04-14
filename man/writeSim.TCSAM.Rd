@@ -17,6 +17,9 @@ writeSim.TCSAM(mc, mp, mr, out.dir = ".", showPlot = TRUE)
 
 \item{fn}{- output file name}
 }
+\value{
+list with elements F_list and S_list
+}
 \description{
 Function to write simulation results to TCSAM2015 input file.
 }

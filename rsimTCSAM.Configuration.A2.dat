@@ -24,10 +24,8 @@ DIMENSIONS  #keyword
 'immature' 'mature'     #labels for maturity states
 2      #number of shell conditions
 'new shell' 'old shell' #labels for shell conditions
-1      #number of fisheries
-'TCF' #labels for fisheries: Tanner crab directed fishery
-#4      #number of fisheries
-#'TCF' 'SCF' 'RKF' 'GTF'  #labels for fisheries: Tanner crab directed fishery
+4      #number of fisheries
+'TCF' 'SCF' 'RKF' 'GTF'  #labels for fisheries
 1      #number of surveys
 'NMFS trawl survey' #names for surveys
 #---------------------------------------------------------------
@@ -112,32 +110,32 @@ mny:mxy    log(71)    0.5     0.0    0.0   log(11.5)     log(4.0)
 Selectivity  #required keyword
 26  #number of curves
 #index       function      np   params
-   1   'asclogistic5095'   3     47    70   0  'survey selectivity male, -1981'    #params: z50    z95  fsz
-   2   'asclogistic5095'   3     60   110   0  'survey selectivity female, -1981'  #z50    z95  fsz
-   3   'asclogistic5095'   3     30    87   0  'survey selectivity, male, 1982+'   #z50    z95  fsz 
-   4   'asclogistic5095'   3     -4    96   0  'survey selectivity, female, 1982+' #z50    z95  fsz  #
-   5   'asclogistic'       3    138   0.75  0  'TCF retention' #z50    slope  fsz
-   6   'asclogistic'       3    110   0.73  0  'TCF selectivity, male, period 1' #z50    slope  fsz  # 
-   7   'asclogistic'       3    125   0.84  0  'TCF selectivity, male, period 2' #z50    slope  fsz  #
-   8   'asclogistic'       3    120   0.14  0  'TCF selectivity, female '#z50    slope  fsz  # 
-   9   'dbllogisticLnD50'  5     87   0.36  4 0.37  0  'SCF selectivity, male, period 1' #z50 slope lnD50 slope fsz  #
-  10   'dbllogisticLnD50'  5     94   0.23  4 0.18  0  'SCF selectivity, male, period 2' #z50 slope lnD50 slope fsz  #
-  11   'dbllogisticLnD50'  5    105   0.17  4 0.17  0  'SCF selectivity, male, period 3' #z50 slope lnD50 slope fsz  #
-  12   'asclogistic'       3    111   0.05  0  'SCF selectivity, female, period 1' #z50    slope  fsz  #
-  13   'asclogistic'       3     76   0.25  0  'SCF selectivity, female, period 2' #z50    slope  fsz  #
-  14   'asclogistic'       3     85   0.16  0  'SCF selectivity, female, period 3' #z50    slope  fsz  #
-  15   'asclogistic'       3    150   0.10  0  'RKF selectivity, male, period 1'   #z50    slope  fsz  #
-  16   'asclogistic'       3    132   0.10  0  'RKF selectivity, male, period 2'   #z50    slope  fsz  #
-  17   'asclogistic'       3    150   0.10  0  'RKF selectivity, male, period 3'   #z50    slope  fsz  #
-  18   'asclogistic'       3    150   0.20  0  'RKF selectivity, female, period 1' #z50    slope  fsz  #
-  19   'asclogistic'       3    103   0.20  0  'RKF selectivity, female, period 2' #z50    slope  fsz  #
-  20   'asclogistic'       3    157   0.20  0  'RKF selectivity, female, period 3' #z50    slope  fsz  # 
-  21   'asclogistic'       3     54   0.10  0  'GTF selectivity, male, period 1'   #z50    slope  fsz  #
-  22   'asclogistic'       3     65   0.05  0  'GTF selectivity, male, period 2'   #z50    slope  fsz  #
-  23   'asclogistic'       3     94   0.07  0  'GTF selectivity, male, period 3'   #z50    slope  fsz  #
-  24   'asclogistic'       3    125   0.03  0  'GTF selectivity, female, period 1' #z50    slope  fsz  #
-  25   'asclogistic'       3    175   0.01  0  'GTF selectivity, female, period 2' #z50    slope  fsz  #
-  26   'asclogistic'       3    148   0.05  0  'GTF selectivity, female, period 3' #z50    slope  fsz  #
+   1   'asclogistic5095'   3     47    70   -1  'survey selectivity male, -1981'    #params: z50    z95  fsz
+   2   'asclogistic5095'   3     60   110  -1  'survey selectivity female, -1981'  #z50    z95  fsz
+   3   'asclogistic5095'   3     30    87  -1  'survey selectivity, male, 1982+'   #z50    z95  fsz 
+   4   'asclogistic5095'   3     -4    96  -1  'survey selectivity, female, 1982+' #z50    z95  fsz  #
+   5   'asclogistic'       3    138   0.75 -1  'TCF retention' #z50    slope  fsz
+   6   'asclogistic'       3    110   0.73 -1  'TCF selectivity, male, period 1' #z50    slope  fsz  # 
+   7   'asclogistic'       3    125   0.84 -1  'TCF selectivity, male, period 2' #z50    slope  fsz  #
+   8   'asclogistic'       3    120   0.14 -1  'TCF selectivity, female '#z50    slope  fsz  # 
+   9   'dbllogisticLnD50'  5     87   0.36  4 0.37 -1  'SCF selectivity, male, period 1' #z50 slope lnD50 slope fsz  #
+  10   'dbllogisticLnD50'  5     94   0.23  4 0.18 -1  'SCF selectivity, male, period 2' #z50 slope lnD50 slope fsz  #
+  11   'dbllogisticLnD50'  5    105   0.17  4 0.17 -1  'SCF selectivity, male, period 3' #z50 slope lnD50 slope fsz  #
+  12   'asclogistic'       3    111   0.05 -1  'SCF selectivity, female, period 1' #z50    slope  fsz  #
+  13   'asclogistic'       3     76   0.25 -1  'SCF selectivity, female, period 2' #z50    slope  fsz  #
+  14   'asclogistic'       3     85   0.16 -1  'SCF selectivity, female, period 3' #z50    slope  fsz  #
+  15   'asclogistic'       3    150   0.10 -1  'RKF selectivity, male, period 1'   #z50    slope  fsz  #
+  16   'asclogistic'       3    132   0.10 -1  'RKF selectivity, male, period 2'   #z50    slope  fsz  #
+  17   'asclogistic'       3    150   0.10 -1  'RKF selectivity, male, period 3'   #z50    slope  fsz  #
+  18   'asclogistic'       3    150   0.20 -1  'RKF selectivity, female, period 1' #z50    slope  fsz  #
+  19   'asclogistic'       3    103   0.20 -1  'RKF selectivity, female, period 2' #z50    slope  fsz  #
+  20   'asclogistic'       3    157   0.20 -1  'RKF selectivity, female, period 3' #z50    slope  fsz  # 
+  21   'asclogistic'       3     54   0.10 -1  'GTF selectivity, male, period 1'   #z50    slope  fsz  #
+  22   'asclogistic'       3     65   0.05 -1  'GTF selectivity, male, period 2'   #z50    slope  fsz  #
+  23   'asclogistic'       3     94   0.07 -1  'GTF selectivity, male, period 3'   #z50    slope  fsz  #
+  24   'asclogistic'       3    125   0.03 -1  'GTF selectivity, female, period 1' #z50    slope  fsz  #
+  25   'asclogistic'       3    175   0.01 -1  'GTF selectivity, female, period 2' #z50    slope  fsz  #
+  26   'asclogistic'       3    148   0.05 -1  'GTF selectivity, female, period 3' #z50    slope  fsz  #
 #--Fisheries
 Fisheries  #required keyword
 #-fishery 1
@@ -172,14 +170,14 @@ c(1987:1996,2005:2009,2013)   #years
 'SCF'  #snow crab discard fishery
 #output info: retained catch
 #include   aggregate type   pdf type    cv/ss      weighting
-   TRUE      BY_TOTAL      LOGNORMAL     0.05        1.0     #abundance
-   TRUE      BY_TOTAL      LOGNORMAL     0.10        1.0     #biomass
-   TRUE      BY_TOTAL      MULTINOMIAL    50         1.0     #size comps
+   FALSE      BY_TOTAL      LOGNORMAL     0.05        1.0     #abundance
+   FALSE      BY_TOTAL      LOGNORMAL     0.10        1.0     #biomass
+   FALSE     BY_TOTAL      MULTINOMIAL    50         1.0     #size comps
 #output info: discard catch
 #include   aggregate type   pdf type    cv/ss      weighting
-  TRUE      BY_SEX      LOGNORMAL       0.05        1.0     #abundance
-  TRUE      BY_SEX      LOGNORMAL       0.10        1.0     #biomass
-  TRUE      BY_SEX      MULTINOMIAL      50         1.0     #size comps
+  FALSE     BY_SEX      LOGNORMAL       0.05        1.0     #abundance
+  FALSE     BY_SEX      LOGNORMAL       0.10        1.0     #biomass
+  FALSE     BY_SEX      MULTINOMIAL      50         1.0     #size comps
 #output info: total catch
 #include   aggregate type   pdf type    cv/ss      weighting
  TRUE      BY_SEX      LOGNORMAL        0.05        1.0     #abundance
@@ -205,14 +203,14 @@ c(1987:1996,2005:2009,2013)   #years
 'RKF'  #BBRKC discard fishery
 #output info: retained catch
 #include   aggregate type   pdf type    cv/ss      weighting
-   TRUE      BY_TOTAL      LOGNORMAL     0.05        1.0     #abundance
-   TRUE      BY_TOTAL      LOGNORMAL     0.10        1.0     #biomass
-   TRUE      BY_TOTAL      MULTINOMIAL    50         1.0     #size comps
+   FALSE      BY_TOTAL      LOGNORMAL     0.05        1.0     #abundance
+   FALSE      BY_TOTAL      LOGNORMAL     0.10        1.0     #biomass
+   FALSE     BY_TOTAL      MULTINOMIAL    50         1.0     #size comps
 #output info: discard catch
 #include   aggregate type   pdf type    cv/ss      weighting
-  TRUE      BY_SEX      LOGNORMAL       0.05        1.0     #abundance
-  TRUE      BY_SEX      LOGNORMAL       0.10        1.0     #biomass
-  TRUE      BY_SEX      MULTINOMIAL      50         1.0     #size comps
+  FALSE     BY_SEX      LOGNORMAL       0.05        1.0     #abundance
+  FALSE     BY_SEX      LOGNORMAL       0.10        1.0     #biomass
+  FALSE     BY_SEX      MULTINOMIAL      50         1.0     #size comps
 #output info: total catch
 #include   aggregate type   pdf type    cv/ss      weighting
  TRUE      BY_SEX      LOGNORMAL        0.05        1.0     #abundance
@@ -238,14 +236,14 @@ c(1978:1983,1986:1993,1996)   #years
 'GTF'  #groundfish trawl discard fishery
 #output info: retained catch
 #include   aggregate type   pdf type    cv/ss      weighting
-   TRUE      BY_TOTAL      LOGNORMAL     0.05        1.0     #abundance
-   TRUE      BY_TOTAL      LOGNORMAL     0.10        1.0     #biomass
-   TRUE      BY_TOTAL      MULTINOMIAL    50         1.0     #size comps
+   FALSE      BY_TOTAL      LOGNORMAL     0.05        1.0     #abundance
+   FALSE      BY_TOTAL      LOGNORMAL     0.10        1.0     #biomass
+   FALSE     BY_TOTAL      MULTINOMIAL    50         1.0     #size comps
 #output info: discard catch
 #include   aggregate type   pdf type    cv/ss      weighting
-  TRUE      BY_SEX      LOGNORMAL       0.05        1.0     #abundance
-  TRUE      BY_SEX      LOGNORMAL       0.10        1.0     #biomass
-  TRUE      BY_SEX      MULTINOMIAL      50         1.0     #size comps
+  FALSE     BY_SEX      LOGNORMAL       0.05        1.0     #abundance
+  FALSE     BY_SEX      LOGNORMAL       0.10        1.0     #biomass
+  FALSE     BY_SEX      MULTINOMIAL      50         1.0     #size comps
 #output info: total catch
 #include   aggregate type   pdf type    cv/ss      weighting
  TRUE      BY_SEX      LOGNORMAL        0.05        1.0     #abundance

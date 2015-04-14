@@ -13,9 +13,12 @@ writeSim.TCSAM.Fisheries(mc, mp, mr, fnFshs, showPlot = TRUE)
 
 \item{mr}{- model results list object}
 
-\item{showPlot}{- flag to show plots}
+\item{fnFshs}{- files to write fishery data to}
 
-\item{fnSrvs}{- files to write fishery data to}
+\item{showPlot}{- flag to show plots}
+}
+\value{
+list with retained, discarded, captured numbers and biomass by f,y,x
 }
 \description{
 Function to write model fisheries results to output file.
