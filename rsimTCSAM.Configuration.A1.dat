@@ -4,8 +4,8 @@
 # This file runs the model from 1950 to 2014 to test generate
 # test files for TCSAM2015. Basic configuration is:
 #	1 time period for all biological processes
-#	1 fishery, 1 time period for parameters
-#	1 survey,  1 time period for parameters
+#	1 fishery, 1 time period for parameters, same F, selectivity for M/F
+#	1 survey,  1 time period for parameters, same Q, selectivity for M/F
 #====================
 #-----------------------------------------------------------------------------------
 ModelConfiguration #keyword
@@ -28,8 +28,6 @@ DIMENSIONS  #keyword
 'TCF'  #labels for fisheries: Tanner crab directed fishery
 1      #number of surveys
 'NMFS trawl survey' #names for surveys
-4      #number of selectivity/retention curves
-'NMFS trawl survey' 'TCF male retention' 'TCF male selectivity' 'TCF female selectivity' #labels for selectivity/retention curves
 #---------------------------------------------------------------
 #-----parameters
 PARAMETERS  #keyword
@@ -88,57 +86,56 @@ Growth  #required keyword
 1         #number of time blocks
 mny:mxy   #time block 1
 #sex          ln(a)           ln(b)            ln(scale)
-  'male'   -0.798507696   -0.051293294       -0.287682072
-'female'   -0.597837001   -0.105360516       -0.287682072
+  'male'     log(0.43)      log(0.97)          log(0.75)
+'female'     log(0.70)      log(0.88)          log(0.75)
 #--Recruitment
 Recruitment  #required keyword
 #initialization
-#lnR    cvR   lnXR   sdXR   lnAlphaZ      lnBetaZ
-4.3      0.5   0.0    0.0   2.442347      1.386294
+#lnR       cvR    lnXR   sdXR   lnAlphaZ      lnBetaZ
+log(71)    0.5     0.0    0.0   log(11.5)     log(4.0)
 1  #number of time blocks
-#years     lnR    cvR   lnXR   sdXR   lnAlphaZ      lnBetaZ
-mny:mxy    4.3    0.5    0.0    0.0   2.442347      1.386294
+#years        lnR     cvR    lnXR   sdXR   lnAlphaZ      lnBetaZ
+mny:mxy    log(71)    0.5     0.0    0.0   log(11.5)     log(4.0)
 #--Selectivity/Retention functions
 Selectivity  #required keyword
-4   #number of curves
+3   #number of curves
 #index       function        np   params
-   1   'asclogistic50Ln95'   3     60    3.2  182  #z50    ln(z95-z50)  fsz  #survey selectivity (male/female)
-   2   'asclogistic50Ln95'   3    140    2.3  182  #z50    ln(z95-z50)  fsz  #TCF fishery retention
-   3   'asclogistic50Ln95'   3     80    3.2  182  #z50    ln(z95-z50)  fsz  #TCF male selectivity
-   4   'asclogistic50Ln95'   3     80    3.2  182  #z50    ln(z95-z50)  fsz  #TCF female selectivity
+   1   'asclogistic5095'   3     60    120  182  'NMFS trawl survey' #z50    z95  fsz
+   2   'asclogistic5095'   3    138    150  182  'TCF retention'     #z50    z95  fsz
+   3   'asclogistic5095'   3     80    120  182  'TCF selectivity'   #z50    z95  fsz
 #--Fisheries
 Fisheries  #required keyword
 #-fishery 1
 'TCF'  #Tanner crab directed fishery
 #output info: retained catch
 #include   aggregate type   pdf type    cv/ss      weighting
-   TRUE      BY_TOTAL      LOGNORMAL      0.05        1.0     #abundance
-   TRUE      BY_TOTAL      LOGNORMAL      0.10        1.0     #biomass
-   TRUE      BY_TOTAL      MULTINOMIAL     50         1.0     #size comps
+   TRUE      BY_TOTAL      LOGNORMAL     0.05        1.0     #abundance
+   TRUE      BY_TOTAL      LOGNORMAL     0.10        1.0     #biomass
+   TRUE      BY_TOTAL      MULTINOMIAL    50         1.0     #size comps
 #output info: discard catch
 #include   aggregate type   pdf type    cv/ss      weighting
-  TRUE      BY_SEX      LOGNORMAL      0.05        1.0     #abundance
-  TRUE      BY_SEX      LOGNORMAL      0.10        1.0     #biomass
-  TRUE      BY_SEX      MULTINOMIAL     50         1.0     #size comps
+  TRUE      BY_SEX      LOGNORMAL       0.05        1.0     #abundance
+  TRUE      BY_SEX      LOGNORMAL       0.10        1.0     #biomass
+  TRUE      BY_SEX      MULTINOMIAL      50         1.0     #size comps
 #output info: total catch
 #include   aggregate type   pdf type    cv/ss      weighting
- TRUE      BY_SEX      LOGNORMAL      0.05        1.0     #abundance
- TRUE      BY_SEX      LOGNORMAL      0.10        1.0     #biomass
- TRUE      BY_SEX      MULTINOMIAL     50         1.0     #size comps
+ TRUE      BY_SEX      LOGNORMAL        0.05        1.0     #abundance
+ TRUE      BY_SEX      LOGNORMAL        0.10        1.0     #biomass
+ TRUE      BY_SEX      MULTINOMIAL       50         1.0     #size comps
 1   #number of time blocks
 #-----time block 1
-1965:mxy   #years
+c(1965:1996,2004:2009,2013:mxy)   #years
 #sex      discard mortality   lnF         sd F   SelFcnIndex    RetFcnIndex
   'male'       0.3          log(0.3)      0.4         3              2
-'female'       0.3          log(0.3)      0.4         4              0
+'female'       0.3          log(0.3)      0.4         3              0
 #--Surveys
 Surveys  #required keyword
 #-survey 1
 'NMFS trawl survey'
 #output info
 #include   aggregate type   pdf type    cv/ss      weighting
-   TRUE      BY_SEX       LOGNORMAL      0.1         1.0     #abundance
-   TRUE      BY_SEX       LOGNORMAL      0.4         1.0     #biomass
+   TRUE      BY_SEX       LOGNORMAL      0.15        1.0     #abundance
+   TRUE      BY_SEX       LOGNORMAL      0.20        1.0     #biomass
    TRUE      BY_SEX       MULTINOMIAL     25         1.0     #size comps
 1   #number of time blocks
 #-----time block 1

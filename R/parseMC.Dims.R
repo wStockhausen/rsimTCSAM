@@ -85,10 +85,10 @@ parseMC.Dims<-function(rz,i){
     cat("surveys = ",addQuotes(dims$v$nms),'\n')
     
     #selectivity/retention functions
-    dims$selfcns$n<-parseNum(rz[[i+j]][1]); j<-j+1;
-    dims$selfcns$nms<-as.character(1:dims$selfcns$n);
-    dims$selfcns$lbls<-rz[[i+j]][1:dims$selfcns$n]; j<-j+1;
-    cat("selfcns = ",addQuotes(dims$selfcns$lbls),'\n')
+#     dims$selfcns$n<-parseNum(rz[[i+j]][1]); j<-j+1;
+#     dims$selfcns$nms<-as.character(1:dims$selfcns$n);
+#     dims$selfcns$lbls<-rz[[i+j]][1:dims$selfcns$n]; j<-j+1;
+#     cat("selfcns = ",addQuotes(dims$selfcns$lbls),'\n')
     
     cat("--finished reading dims list object\n\n")
     

@@ -11,34 +11,40 @@
 #'
 calcSelectivity<-function(type,z,params){
     fsz <- 0; #fully-selected size for re-scaling selectivity function
-    if (tolower(type)=='asclogistic\n'){
+    if (type=='asclogistic'){
         cat('sel function=asclogistic\n')
         if (length(params)>2) fsz<-params[3];
         res<-asclogistic(z,params[1],params[2],fsz);
-    } else if (tolower(type)=='asclogistic5095'){
-        cat('sel function=asclogistic5095')
+    } else if (type=='asclogistic5095'){
+        cat('sel function =',type,'\n')
         if (length(params)>2) fsz<-params[3];
         res<-asclogistic5095(z,params[1],params[2],fsz);
-    } else if (tolower(type)=='asclogistic50D95'){
-        cat('sel function=asclogistic5095')
+    } else if (type=='asclogistic50D95'){
+        cat('sel function =',type,'\n')
         if (length(params)>2) fsz<-params[3];
         res<-asclogistic50D95(z,params[1],params[2],fsz);
-    } else if (tolower(type)=='asclogistic50Ln95'){
+    } else if (type=='asclogistic50LnD95'){
+        cat('sel function =',type,'\n')
         if (length(params)>2) fsz<-params[3];
         res<-asclogistic50LnD95(z,params[1],params[2],fsz);
-    } else if (tolower(type)=='asclogisticLn50LnD95'){
+    } else if (type=='asclogisticLn50LnD95'){
+        cat('sel function =',type,'\n')
         if (length(params)>2) fsz<-params[3];
         res<-asclogisticLn50LnD95(z,params[1],params[2],fsz);
-    } else if (tolower(type)=='dbllogistic'){
+    } else if (type=='dbllogistic'){
+        cat('sel function =',type,'\n')
         if (length(params)>4) fsz<-params[5];
         res<-dbllogistic(z,params[1],params[2],params[3],params[4],fsz);
-    } else if (tolower(type)=='dbllogisticLnD50'){
+    } else if (type=='dbllogisticLnD50'){
+        cat('sel function =',type,'\n')
         if (length(params)>4) fsz<-params[5];
         res<-dbllogisticLnD50(z,params[1],params[2],params[3],params[4],fsz);
-    } else if (tolower(type)=='dbllogistic50Ln95'){
+    } else if (type=='dbllogistic50Ln95'){
+        cat('sel function =',type,'\n')
         if (length(params)>4) fsz<-params[5];
-        res<-dbllogistic50LnD95(z,params[1],params[2],params[3],params[4],fsz);
-    } else if (tolower(type)=='dbllogisticLn50LnD95'){
+        res<-dbllogistic50Ln95(z,params[1],params[2],params[3],params[4],fsz);
+    } else if (type=='dbllogisticLn50LnD95'){
+        cat('sel function =',type,'\n')
         if (length(params)>4) fsz<-params[5];
         res<-dbllogisticLn50LnD95(z,params[1],params[2],params[3],params[4],fsz);
     } else {
@@ -60,6 +66,8 @@ calcSelectivity<-function(type,z,params){
 #'@param fsz   - if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done
 #'
 #'@return vector with selectivity values at the elements of z
+#'
+#'@export
 #'
 plogis<-function(z,z50,sd,fsz=0){
     #cat(z,'\n')
@@ -90,6 +98,8 @@ plogis<-function(z,z50,sd,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
+#'@export
+#'
 asclogistic<-function(z,z50,slope,fsz=0){
     #cat(z,'\n')
     #cat('z50, lnD = ',z50,lnD,'\n')
@@ -119,6 +129,8 @@ asclogistic<-function(z,z50,slope,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
+#'@export
+#'
 asclogistic5095<-function(z,z50,z95,fsz=0){
     slope<-log(19.0)/(z95-z50);
     return(asclogistic(z,z50,slope,fsz=fsz));
@@ -135,6 +147,8 @@ asclogistic5095<-function(z,z50,z95,fsz=0){
 #'@param fsz   - if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done
 #'
 #'@return vector with selectivity values at the elements of z
+#'
+#'@export
 #'
 asclogistic50D95<-function(z,z50,D95,fsz=0){
     slope<-log(19.0)/D50;
@@ -153,6 +167,8 @@ asclogistic50D95<-function(z,z50,D95,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
+#'@export
+#'
 asclogistic50LnD95<-function(z,z50,lnD95,fsz=0){
     slope<-log(19.0)/exp(lnD95);
     return(asclogistic(z,z50,slope,fsz=fsz));
@@ -169,6 +185,8 @@ asclogistic50LnD95<-function(z,z50,lnD95,fsz=0){
 #'@param fsz   - if fsz>0, fsz=fully-selected size. if fsz<0, function is normalized to max. if fsz=0, no re-scaling is done
 #'
 #'@return vector with selectivity values at the elements of z
+#'
+#'@export
 #'
 asclogisticLn50LnD95<-function(z,lnZ50,lnD95,fsz=0){
     z50<-exp(lnZ50);
@@ -190,13 +208,15 @@ asclogisticLn50LnD95<-function(z,lnZ50,lnD95,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
+#'@export
+#'
 dbllogistic<-function(z,ascZ50,ascSlope,dscZ50,dscSlope,fsz=0){
     #cat(z,'\n')
     #cat('z50, lnD = ',z50,lnD,'\n')
-    res <- 1.0/(1.0+exp(-ascSlope*(z-ascZ50)))*1.0/(1.0+exp(-dscSlope*(z-dscZ50)));
+    res <- 1.0/(1.0+exp(-ascSlope*(z-ascZ50)))*1.0/(1.0+exp(dscSlope*(z-dscZ50)));
     scl <-1;
     if (fsz>0){
-        scl<-(1.0+exp(-ascSlope*(fsz-ascZ50)))*(1.0+exp(-dscSlope*(fsz-dscZ50)));
+        scl<-(1.0+exp(-ascSlope*(fsz-ascZ50)))*(1.0+exp(dscSlope*(fsz-dscZ50)));
     } else if (fsz<0){
         scl<-1.0/max(res);
     }
@@ -221,9 +241,11 @@ dbllogistic<-function(z,ascZ50,ascSlope,dscZ50,dscSlope,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
+#'@export
+#'
 dbllogisticLnD50<-function(z,ascZ50,ascSlope,lnD50,dscSlope,fsz=0){
     dscZ50<-ascZ50+exp(lnD50);
-    return(dbllogistic(ascZ50,ascSlope,dscZ50,dscSlope,fsz));
+    return(dbllogistic(z,ascZ50,ascSlope,dscZ50,dscSlope,fsz));
 }
 #-----------------------------------------------------------------------------------
 #'
@@ -240,10 +262,12 @@ dbllogisticLnD50<-function(z,ascZ50,ascSlope,lnD50,dscSlope,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
+#'@export
+#'
 dbllogistic50D95<-function(z,ascZ50,ascD95,dscZ50,dscD95,fsz=0){
     ascSlope<-log(19.0)/ascD95;
     dscSlope<-log(19.0)/dscD95;
-    return(dbllogistic(ascZ50,ascSlope,dscZ50,dscSlope,fsz));
+    return(dbllogistic(z,ascZ50,ascSlope,dscZ50,dscSlope,fsz));
 }
 #-----------------------------------------------------------------------------------
 #'
@@ -260,10 +284,12 @@ dbllogistic50D95<-function(z,ascZ50,ascD95,dscZ50,dscD95,fsz=0){
 #'
 #'@return vector with selectivity values at the elements of z
 #'
+#'@export
+#'
 dbllogisticLn50LnD95<-function(z,ascLnZ50,ascLnD95,dscLnZ50,dscLnD95,fsz=0){
     ascZ50<-exp(ascLnZ50);
     ascD95<-exp(ascLnD95);
     dscZ50<-exp(dscLnZ50);
     dscD95<-exp(dscLnD95);
-    return(dbllogistic5095(ascZ50,ascD95,dscZ50,dscD95,fsz));
+    return(dbllogistic5095(z,ascZ50,ascD95,dscZ50,dscD95,fsz));
 }
