@@ -13,9 +13,9 @@ writeSim.TCSAM(mc, mp, mr, out.dir = ".", showPlot = TRUE)
 
 \item{mr}{- model results list object}
 
-\item{showPlot}{- flag to show plots}
+\item{out.dir}{- folder for output files}
 
-\item{fn}{- output file name}
+\item{showPlot}{- flag to show plots}
 }
 \value{
 list with elements F_list and S_list

@@ -68,7 +68,7 @@ runSim.TCSAM<-function(out.dir='.',
     write.csv(md,file=file.path(out.dir,fnd),row.names=FALSE);
 
     #create ouput list
-    rsim<-list(seed=seed,mc=mc,mp=mp,mr=mr);
+    rsim<-list(seed=seed,mc=mc,mp=mp,mr=mr,md=md);
     class(rsim)<-'rsimTCSAM';
         
     return(invisible(rsim));

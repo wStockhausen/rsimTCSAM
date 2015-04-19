@@ -4,7 +4,7 @@
 \alias{writeSim.TCSAM.Fisheries}
 \title{Write model fisheries results to output file.}
 \usage{
-writeSim.TCSAM.Fisheries(mc, mp, mr, fnFshs, showPlot = TRUE)
+writeSim.TCSAM.Fisheries(mc, mp, mr, fnFshs, out.dir = ".", showPlot = TRUE)
 }
 \arguments{
 \item{mc}{- model configuration list object}
@@ -15,10 +15,12 @@ writeSim.TCSAM.Fisheries(mc, mp, mr, fnFshs, showPlot = TRUE)
 
 \item{fnFshs}{- files to write fishery data to}
 
+\item{out.dir}{- folder to write survey data to}
+
 \item{showPlot}{- flag to show plots}
 }
 \value{
-list with retained, discarded, captured numbers and biomass by f,y,x
+list with retained, discarded, captured numbers and biomass by f,y,x,s
 }
 \description{
 Function to write model fisheries results to output file.

@@ -114,14 +114,14 @@ Fisheries  #required keyword
    TRUE      BY_TOTAL      MULTINOMIAL    50         1.0     #size comps
 #output info: discard catch
 #include   aggregate type   pdf type    cv/ss      weighting
-  TRUE      BY_SEX      LOGNORMAL       0.05        1.0     #abundance
-  TRUE      BY_SEX      LOGNORMAL       0.10        1.0     #biomass
-  TRUE      BY_SEX      MULTINOMIAL      50         1.0     #size comps
+  TRUE      BY_XS      LOGNORMAL       0.05        1.0     #abundance
+  TRUE      BY_XS      LOGNORMAL       0.10        1.0     #biomass
+  TRUE      BY_XS      MULTINOMIAL      50         1.0     #size comps
 #output info: total catch
 #include   aggregate type   pdf type    cv/ss      weighting
- TRUE      BY_SEX      LOGNORMAL        0.05        1.0     #abundance
- TRUE      BY_SEX      LOGNORMAL        0.10        1.0     #biomass
- TRUE      BY_SEX      MULTINOMIAL       50         1.0     #size comps
+ TRUE      BY_XS      LOGNORMAL        0.05        1.0     #abundance
+ TRUE      BY_XS      LOGNORMAL        0.10        1.0     #biomass
+ TRUE      BY_XS      MULTINOMIAL       50         1.0     #size comps
 1   #number of time blocks
 #-----time block 1
 c(1965:1996,2004:2009,2013:mxy)   #years
@@ -134,9 +134,9 @@ Surveys  #required keyword
 'NMFS trawl survey'
 #output info
 #include   aggregate type   pdf type    cv/ss      weighting
-   TRUE      BY_SEX       LOGNORMAL      0.15        1.0     #abundance
-   TRUE      BY_SEX       LOGNORMAL      0.20        1.0     #biomass
-   TRUE      BY_SEX       MULTINOMIAL     25         1.0     #size comps
+   TRUE      BY_XMS       LOGNORMAL      0.15        1.0     #abundance
+   TRUE      BY_XMS       LOGNORMAL      0.20        1.0     #biomass
+   TRUE      BY_XMS       MULTINOMIAL     25         1.0     #size comps
 1   #number of time blocks
 #-----time block 1
 1975:asy   #years

@@ -7,14 +7,17 @@
 #'@param mp - model processes list object
 #'@param mr - model results list object
 #'@param fnSrvs - files to write survey data to
+#'@param out.dir - folder to write survey data to
 #'@param showPlot - flag to show plots
+#'
+#'@return NULL 
 #'
 #'@import ggplot2
 #'@import reshape2
 #'
 #'@export
 #'
-writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
+writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
     #model dimensions
     d <- mc$dims;
     
@@ -32,14 +35,14 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
         for (x in d$x$nms) {
             for (m in d$m$nms) {
                 for (s in d$s$nms) {
-                    if (any(N_vyxms[v,y,x,m,s]>0,na.rm=TRUE)){nc_v[v]<-nc_v[v]+1;}
+                    if (any(N_vyxms[v,,x,m,s]>0,na.rm=TRUE)){nc_v[v]<-nc_v[v]+1;}
                 }#s
             }#m
         }#x
     }#v
     for (v in d$v$nms){
-        cat("writing survey data to '",fnSrvs[[v]],"'\n",sep='');
-        conn<-file(fnSrvs[[v]],open="w");
+        cat("writing survey data to '",file.path(out.dir,fnSrvs[[v]]),"'\n",sep='');
+        conn<-file(file.path(out.dir,fnSrvs[[v]]),open="w");
         srv<-mc$params$surveys[[v]];
         cat("\n\n",file=conn)
         cat("#####################################################################\n",file=conn);
@@ -67,7 +70,7 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
                         for (s in d$s$nms){
                             if (sum(N_vyxms[v,,x,m,s],na.rm=TRUE)>0){
                                 cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
-                                cat("#year    value    cv_m\n",file=conn);
+                                cat("#year    value    cv\n",file=conn);
                                 for (y in d$y$nms){
                                     if (!is.na(N_vyxms[v,y,x,m,s])) cat(y,N_vyxms[v,y,x,m,s],srv$output$abundance$err,'\n',file=conn);
                                 }#y
@@ -75,7 +78,7 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
                         }#s
                     }#m
                 }#x
-            }
+            }#abundance$flag
             if (srv$output$biomass$flag){
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
@@ -89,7 +92,7 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
                         for (s in d$s$nms){
                             if (sum(N_vyxms[v,,x,m,s],na.rm=TRUE)>0){
                                 cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
-                                cat("#year    value    cv_m\n",file=conn);
+                                cat("#year    value    cv\n",file=conn);
                                 for (y in d$y$nms){
                                     if (!is.na(B_vyxms[v,y,x,m,s])) cat(y,B_vyxms[v,y,x,m,s],srv$output$biomass$err,'\n',file=conn);
                                 }#y
@@ -97,14 +100,14 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
                         }#s
                     }#m
                 }#x
-            }
+            }#biomass$flag
             if (srv$output$sizecomps$flag){
                 cat("#------------NUMBERS-AT-SIZE DATA-----------#\n",file=conn);
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
                 cat(toupper(srv$output$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
                 cat(toupper(srv$output$sizecomps$errType),"\t\t#likelihood type\n",file=conn);
                 cat(ny_v[v],"     #number of years of data\n",file=conn);
-                cat("???         #units\n",file=conn);
+                cat("MILLIONS         #units\n",file=conn);
                 cat(d$zc$n,"  #NUMBER OF SIZE BIN CUTPTS\n",file=conn);
                 cat("#SIZE BIN CUTPTS (mm CW)\n",file=conn);																																	
                 cat(d$zc$nms,"\n",file=conn);
@@ -131,11 +134,11 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,showPlot=TRUE){
                         }#s
                     }#m
                 }#x
-            }
+            }#sizecomps$flag
         } else {
             cat("#-----no survey catch data\n",file=conn);
         }
         close(conn);
     }#v
-#    return(list(N_vyxms=N_vyxms,B_vyxms=B_vyxms))
+    return(NULL)
 }

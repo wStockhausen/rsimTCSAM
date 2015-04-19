@@ -6,7 +6,7 @@
 #'@param mc - model configuration list object
 #'@param mp - model processes list object
 #'@param mr - model results list object
-#'@param fn - output file name
+#'@param out.dir - folder for output files
 #'@param showPlot - flag to show plots
 #'
 #'@return list with elements F_list and S_list
@@ -18,26 +18,26 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     mxy<-as.character(d$y$mxy);
     
     #create data file names
-    Model.Config        <-file.path(out.dir,'Model.Config.dat');
-    Model.ParametersInfo<-file.path(path.expand(out.dir),'Model.ParametersInfo.dat');
-    Model.Datasets      <-file.path(path.expand(out.dir),'Model.Datasets.dat');
-    Model.Options       <-file.path(path.expand(out.dir),'Model.Options.dat');
-    Model.Data.BioInfo  <-file.path(path.expand(out.dir),'Model.Data.BioInfo.dat');
+    Model.Config        <-'Model.Config.dat';
+    Model.ParametersInfo<-'Model.ParametersInfo.dat';
+    Model.Datasets      <-'Model.Datasets.dat';
+    Model.Options       <-'Model.Options.dat';
+    Model.Data.BioInfo  <-'Model.Data.BioInfo.dat';
     
     fnFshs<-list();
     for (f in d$f$nms) {
         str<-gsub("[[:blank:]]","_",f);
-        fnFshs[[f]]<-file.path(path.expand(out.dir),paste('Model.Data.Fishery.',str,'.dat',sep=''));
+        fnFshs[[f]]<-paste('Model.Data.Fishery.',str,'.dat',sep='');
     }
     
     fnSrvs<-list();
     for (v in d$v$nms) {
         str<-gsub("[[:blank:]]","_",v);
-        fnSrvs[[v]]<-file.path(path.expand(out.dir),paste('Model.Data.Survey.',str,'.dat',sep=''));
+        fnSrvs[[v]]<-paste('Model.Data.Survey.',str,'.dat',sep='');
     }
     
     #write out Model Configuration file
-    conn<-file(Model.Config,open="w");    
+    conn<-file(file.path(out.dir,Model.Config),open="w");    
     cat("#####################################################################\n",file=conn);
     cat("#TCSAM2015 Model Configuration File                                 #\n",file=conn);
     cat("#####################################################################\n",file=conn);
@@ -74,7 +74,7 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     close(conn);
     
     #write out Model Datasets file
-    conn<-file(Model.Datasets,open="w");    
+    conn<-file(file.path(out.dir,Model.Datasets),open="w");    
     cat("#####################################################################\n",file=conn);
     cat("#TCSAM2015 Model Datasets File                                      #\n",file=conn);
     cat("#####################################################################\n",file=conn);
@@ -90,7 +90,7 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     close(conn);
     
     #write out biological info file
-    conn<-file(Model.Data.BioInfo,open="w");    
+    conn<-file(file.path(out.dir,Model.Data.BioInfo),open="w");    
     cat("\n\n",file=conn)
     cat("#####################################################################\n",file=conn);
     cat("#TCSAM2015 Model Biological Info File                               #\n",file=conn);
@@ -124,10 +124,10 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     close(conn);
         
     #Fisheries Data
-    fshs<-writeSim.TCSAM.Fisheries(mc,mp,mr,fnFshs,showPlot=showPlot);
+    fshs<-writeSim.TCSAM.Fisheries(mc,mp,mr,fnFshs,out.dir=out.dir,showPlot=showPlot);
     
     #Surveys Data
-    srvs<-writeSim.TCSAM.Surveys(mc,mp,mr,fnSrvs,showPlot=showPlot);
+    srvs<-writeSim.TCSAM.Surveys(mc,mp,mr,fnSrvs,out.dir=out.dir,showPlot=showPlot);
     
     #Parameters info
     fn<-file.path(out.dir,'rsim.ParametersInfo.dat')
@@ -138,8 +138,9 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     cat("blocks:",names(blocks),'\n',file=conn)
     for (t in names(blocks)){
         tb<-blocks[[t]];
-        cat(t,':',tb$years,'\n',sep='\t',file=conn);
-        cat(t,':',mp$R_list$devs_y[as.character(tb$years)],'\n',sep='\t',file=conn);
+        cat(t,':\n',sep='',file=conn);
+        cat('years:',tb$years,'\n',sep='\t',file=conn);
+        cat('devs:',mp$R_list$devs_y[as.character(tb$years)],'\n',sep='\t',file=conn);
     }#t
     cat("#--molt-to-maturity\n",file=conn);
     cat("#sex","shell condition","years",mc$dims$z$nms,'\n',sep='\t',file=conn)
@@ -148,11 +149,11 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     for (t in names(blocks)){
         tb<-blocks[[t]];
         yr<-as.character(tb$years[1]);#get first year of block
-        cat(yr,'\n',file=conn)
+        cat(t,'\n',file=conn)
         for (x in mc$dims$x$nms){
             for (s in mc$dims$s$nms){
                 lgt<-log(mp$prMolt2Mat_yxsz[yr,x,s,]/(1-mp$prMolt2Mat_yxsz[yr,x,s,]));
-                cat(x,s,t,':',lgt,'\n',sep='\t',file=conn);
+                cat(x,s,':',lgt,'\n',sep='\t',file=conn);
             }#s
         }#x        
     }#t
@@ -164,11 +165,12 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
         cat("blocks:",names(blocks),'\n',file=conn)
         for (t in names(blocks)){
             tb<-blocks[[t]];
-            cat(t,':',tb$years,'\n',sep='\t',file=conn);
-            cat(t,':',mp$F_list$devs_fy[f,as.character(tb$years)],'\n',sep='\t',file=conn);
+            cat(t,':\n',sep='',file=conn);
+            cat('years:',tb$years,'\n',sep='\t',file=conn);
+            cat('devs:',mp$F_list$devs_fy[f,as.character(tb$years)],'\n',sep='\t',file=conn);
         }#t
     }#f
     close(conn);
     
-    return(list(F_list=fshs,S_list=NULL));
+    return(list(F_list=fshs,S_list=srvs));
 }
