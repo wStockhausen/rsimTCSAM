@@ -294,7 +294,7 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),"ALL_MATURITY",toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year    value    cv\n",file=conn);
                             for (y in d$y$nms){
-                                if (sum(NR_fyxs[f,y,,],na.rm=TRUE)>0) cat(y,BC_fyxs[f,y,x,s],fsh$output$tot$biomass$err,'\n',file=conn);
+                                if (sum(NC_fyxs[f,y,,],na.rm=TRUE)>0) cat(y,BC_fyxs[f,y,x,s],fsh$output$tot$biomass$err,'\n',file=conn);
                             }#y
                         }
                     }#s
