@@ -66,63 +66,24 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     cat('--read mate.time, fish.time\n')
         
     #weight at size
-    chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'WatZ');
-    blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
-    for (tp in 1:nt){
-        t<-rsp[[i]][1]; i<-i+1;
-        eval(parse(text=paste('years<-',t)));
-        a<-dimArray(list(dims=dims),'x.m');
-        b<-dimArray(list(dims=dims),'x.m');
-        for (xp in 1:dims$x$n){
-            for (mp in 1:dims$m$n){
-                x<-rsp[[i]][1]; 
-                m<-rsp[[i]][2]; 
-                av<-parseNum(rsp[[i]][3]); 
-                bv<-parseNum(rsp[[i]][4]);
-                a[x,m]<-av;
-                b[x,m]<-bv;
-                i<-i+1;
-            }#mp
-        }#xp
-        blocks[[t]]<-list(years=years,
-                          a_xm=a,
-                          b_xm=b
-                         );
-    }#blocks
-    params$wAtZ<-list(blocks=blocks);
+    res<-parseMC.WatZ(rsp,i,dims); i<-res$i;
+    params$wAtZ<-res$params;
+    dims$wAtZ<-list();
+    dims$wAtZ$n<-length(params$wAtZ$blocks);
+    dims$wAtZ$nms<-names(params$wAtZ$blocks);
+    dims$wAtZ$lbls<-names(params$wAtZ$blocks);
+    cat("wAtZ = ",addQuotes(dims$wAtZ$lbls),'\n')
     cat('--read weight-at-size parameters\n')
     
     #natural mortality
-    chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'NaturalMortality');
-    blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
-    for (tp in 1:nt){
-        t<-rsp[[i]][1]; i<-i+1;
-        eval(parse(text=paste('years<-',t)));
-        M0_xms  <- dimArray(list(dims=dims),'x.m.s');
-        cvM_xms <- dimArray(list(dims=dims),'x.m.s');
-        for (xp in 1:dims$x$n){
-            for (mp in 1:dims$m$n){
-                for (sp in 1:dims$s$n){
-                    x<-rsp[[i]][1]; 
-                    m<-rsp[[i]][2]; 
-                    s<-rsp[[i]][3]; 
-                    M0_xms[x,m,s]  <- parseNum(rsp[[i]][4]);;
-                    cvM_xms[x,m,s] <- parseNum(rsp[[i]][5]);;
-                    i<-i+1;
-                }
-            }
-        }
-        blocks[[t]]<-list(years=years,
-                          M0_xms=M0_xms,
-                          cvM_xms=cvM_xms
-                         );
-    }#blocks
-    params$nm<-list(blocks=blocks);
-    cat('--read natural mortality parameters\n')
+    res<-parseMC.NaturalMortality(rsp,i,dims); i<-res$i;
+    params$natmort<-res$params;
+    dims$natmort<-list();
+    dims$natmort$n<-length(params$natmort$blocks);
+    dims$natmort$nms<-names(params$natmort$blocks);
+    dims$natmort$lbls<-names(params$natmort$blocks);
+    cat("natmort = ",addQuotes(dims$natmort$lbls),'\n')
+    cat('--read natural mortality function parameters\n')
     
     #molting
     chk<-rsp[[i]][1]; i<-i+1;
@@ -152,57 +113,23 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     cat('--read molting parameters\n')
     
     #molt to maturity
-    chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'MoltToMaturity');
-    blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
-    for (tp in 1:nt){
-        t<-rsp[[i]][1]; i<-i+1;
-        eval(parse(text=paste('years<-',t)));
-        z50_xs<-dimArray(list(dims=dims),'x.s');
-        sdv_xs<-dimArray(list(dims=dims),'x.s');
-        for (xp in 1:dims$x$n){
-            for (sp in 1:dims$s$n){
-                x<-rsp[[i]][1]; 
-                s<-rsp[[i]][2]; 
-                z50_xs[x,s]<-parseNum(rsp[[i]][3]); 
-                sdv_xs[x,s]<-parseNum(rsp[[i]][4]); 
-                i<-i+1;
-            }#sp
-        }#xp
-        blocks[[t]]<-list(years=years,
-                          z50_xs=z50_xs,
-                          sdv_xs=sdv_xs
-                          );
-    }#blocks
-    params$moltToMaturity<-list(blocks=blocks);
+    res<-parseMC.PrM2M(rsp,i,dims); i<-res$i;
+    params$prM2M<-res$params;
+    dims$prM2M<-list();
+    dims$prM2M$n<-length(params$prM2M$blocks);
+    dims$prM2M$nms<-names(params$prM2M$blocks);
+    dims$prM2M$lbls<-names(params$prM2M$blocks);
+    cat("prM2M = ",addQuotes(dims$prM2M$lbls),'\n')
     cat('--read molt-to-maturity parameters\n')
     
     #growth
-    chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'Growth');
-    blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
-    for (tp in 1:nt){
-        t<-rsp[[i]][1]; i<-i+1;
-        eval(parse(text=paste('years<-',t)));
-        a<-dimArray(list(dims=dims),'x');
-        b<-dimArray(list(dims=dims),'x');
-        s<-dimArray(list(dims=dims),'x');
-        for (xp in 1:dims$x$n){
-            x<-rsp[[i]][1]; 
-            a[x]<-exp(parseNum(rsp[[i]][2])); 
-            b[x]<-exp(parseNum(rsp[[i]][3])); 
-            s[x]<-exp(parseNum(rsp[[i]][4])); 
-            i<-i+1;
-        }#xp
-        blocks[[t]]<-list(years=years,
-                          a_x=a,
-                          b_x=b,
-                          s_x=s
-                         );
-    }#blocks
-    params$growth<-list(blocks=blocks);
+    res<-parseMC.Growth(rsp,i,dims); i<-res$i;
+    params$growth<-res$params;
+    dims$growth<-list();
+    dims$growth$n   <-length(params$growth$blocks);
+    dims$growth$nms <-names(params$growth$blocks);
+    dims$growth$lbls<-names(params$growth$blocks);
+    cat("growth = ",addQuotes(dims$growth$lbls),'\n')
     cat('--read growth parameters\n')
     
     #recruitment

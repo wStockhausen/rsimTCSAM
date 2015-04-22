@@ -12,19 +12,28 @@
 #'
 calcModelProcesses<-function(mc,showPlot=TRUE){
     #calculate weight-at-size
-    W_yxmsz <- calcWatZ(mc,showPlot=showPlot);
+    W_list  <- calcWatZ(mc,showPlot=showPlot);
+    W_cxmz  <- W_list$W_cxmz;
+    W_yxmsz <- W_list$W_yxmsz;
     
     #calculate natural mortality
-    M_yxmsz <- calcNaturalMortality(mc,showPlot=showPlot);
+    M_list <- calcNaturalMortality(mc,showPlot=showPlot);
+    M_cxm   <- M_list$M_cxm;
+    M_yxmsz <- M_list$M_yxmsz;
     
     #calculate molting probabilities for immature crab
     prMolt_yxsz<-calcPrMolt(mc,showPlot=showPlot);
     
     #calculate pr(molt to maturity|size, molt) 
-    prMolt2Mat_yxsz <- calcPrMoltToMaturity(mc,showPlot=showPlot);
+    prM2M_list <- calcPrM2M(mc,showPlot=showPlot);
+    prMolt2Mat_cxz  <- prM2M_list$prM2M_cxz;
+    prMolt2Mat_yxsz <- prM2M_list$prM2M_yxsz;
     
     #calculate size transition matrix for molting crab
-    T_yxszz <- calcZTM(mc,showPlot=showPlot);
+    T_list <- calcZTM(mc,showPlot=showPlot);
+    mnZAM_cxz <- T_list$mnZAM_cxz;
+    T_cxzz  <- T_list$T_cxzz;
+    T_yxszz <- T_list$T_yxszz;
     
     #calculate selectivity/retention functions
     sel_cz <- calcSelFcns(mc,showPlot=showPlot);
@@ -48,10 +57,15 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
     #calculate recruitment
     R_list <- calcRecruitment(mc,showPlot=showPlot);#note this won't work for Tier 1
     
-    mp <- list(W_yxmsz=W_yxmsz,
+    mp <- list(W_cxmz=W_cxmz,
+               W_yxmsz=W_yxmsz,
+               M_cxm=M_cxm,
                M_yxmsz=M_yxmsz,
                prMolt_yxsz=prMolt_yxsz,
+               prMolt2Mat_cxz=prMolt2Mat_cxz,
                prMolt2Mat_yxsz=prMolt2Mat_yxsz,
+               mnZAM_cxz=mnZAM_cxz,
+               T_cxzz=T_cxzz,
                T_yxszz=T_yxszz,
                sel_cz=sel_cz,
                S1_yxmsz=S1_yxmsz,

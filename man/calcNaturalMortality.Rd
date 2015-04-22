@@ -10,7 +10,7 @@ calcNaturalMortality(mc, showPlot = TRUE)
 \item{mc}{- model configuration object}
 }
 \value{
-array M_yxmsz
+list  with array M_yxmsz and M_cxm
 }
 \description{
 

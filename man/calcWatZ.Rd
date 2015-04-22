@@ -10,7 +10,9 @@ calcWatZ(mc, showPlot = TRUE)
 \item{mc}{- model configuration object}
 }
 \value{
-W_yxmsz: 5d array with weight-at-size in KG by year/sex/maturity state/shell condition
+list with elements
+W_cxmz: 4d array with weight-at-size in KG by time block/sex/maturity state (in grams)
+W_yxmsz: 5d array with weight-at-size in KG by year/sex/maturity state/shell condition (in kg)
 }
 \description{
 

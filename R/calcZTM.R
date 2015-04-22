@@ -5,7 +5,8 @@
 #'
 #'@param mc - model configuration object
 #'
-#'@return prZAM_yxszz: 5d array with size transition matrices by year/sex/shell condition
+#'@return list with elements:
+#'T_yxszz: 5d array with size transition matrices by year/sex/shell condition
 #'
 #'@import ggplot2
 #'@import reshape2
@@ -16,52 +17,47 @@ calcZTM<-function(mc,showPlot=TRUE){
     d<-mc$dims;
     p<-mc$params$growth;
     
+    mnZAM_cxz   <- dimArray(mc,'pc_growth.x.z')
+    prZAM_cxzz  <- dimArray(mc,'pc_growth.x.z.zp')
     prZAM_yxszz <- dimArray(mc,'y.x.s.z.zp')
     mdfr.pr<-NULL;
     mdfr.mn<-NULL;
     for (t in names(p$blocks)){
         tb<-p$blocks[[t]];
         yrs<-as.character(tb$years);
-
-        mnZAM_xz    <- dimArray(mc,'x.z');   #mean post-molt size
         prZAM_xzz   <- dimArray(mc,'x.z.zp');#size transition matrix
         for (x in d$x$nms){
-            mnZAM_xz[x,]<-exp(tb$a_x[x])*(d$z$vls^tb$b_x[x]);
+            mnZAM_cxz[t,x,]<-exp(tb$a_x[x])*(d$z$vls^tb$b_x[x]);
             for (z in 1:(d$z$n-1)){ #looping over pre-molt size bins
                 idx<-z:d$z$n;#index over CUTPOINTS up to start of final bin
-                cumZAM<-pgamma(d$zc$vls[idx],shape=mnZAM_xz[x,z]/tb$s_x[x],scale=tb$s_x[x]);#integrated up each cutpoint
+                cumZAM<-pgamma(d$zc$vls[idx],shape=mnZAM_cxz[t,x,z]/tb$s_x[x],scale=tb$s_x[x]);#integrated up each cutpoint
                 prZAM<-c(first_difference(cumZAM),1.0-cumZAM[length(cumZAM)]);#contribution to each bin
                 #TODO: no truncation here!!
                 prZAM<-prZAM/sum(prZAM);
                 prZAM_xzz[x,z,z:d$z$n]<-prZAM;#note that ROWS here are pre-molt, COLUMNS are post-molt
             }#z
             prZAM_xzz[x,d$z$n,d$z$n]<-1.0;
+            prZAM_cxzz[t,x,,]<-t(prZAM_xzz[x,,]);#columns now pre-molt, rows post-molt
             for (s in d$s$nms){
                 for (y in yrs) {
                     #indep of shell condition
-                    prZAM_yxszz[y,x,s,,]<-t(prZAM_xzz[x,,]);#columns now pre-molt, rows post-molt
+                    prZAM_yxszz[y,x,s,,]<-prZAM_cxzz[t,x,,];
                 }#y
             }#s
         }#x
-        mdfrp.mn<-melt(mnZAM_xz,value.name='val');
-        mdfrp.mn$t<-t;
-        mdfr.mn<-rbind(mdfr.mn,mdfrp.mn);
-        mdfrp.pr<-melt(prZAM_xzz,value.name='val');
-        mdfrp.pr$t<-t;
-        mdfr.pr<-rbind(mdfr.pr,mdfrp.pr);
     }#t
     if (showPlot){
-        mdfr<-melt(mnZAM_xz,value.name='val');
-        pl <- ggplot(aes(x=z,y=val,color=x,shape=x),data=mdfr.mn);
+        mdfr<-melt(mnZAM_cxz,value.name='val');
+        pl <- ggplot(aes(x=z,y=val,color=x,shape=x),data=mdfr);
         pl <- pl + geom_abline(intercept=0,slope=1,linetype=3,color='black')
         pl <- pl + geom_line(width=2);
         pl <- pl + geom_point(size=5);
         pl <- pl + guides(color=guide_legend(''),shape=guide_legend(''));
         pl <- pl + labs(x='pre-molt size (mm)',y='mean post-molt size (mm)',title='Mean Growth');
-        pl <- pl + facet_grid(t~.);
+        pl <- pl + facet_grid(pc~.);
         print(pl);
-        mdfr<-melt(prZAM_xzz,value.name='val');
-        pl <- ggplot(aes(x=z,y=zp,fill=val,size=val),data=mdfr.pr);
+        mdfr<-melt(prZAM_cxzz,value.name='val');
+        pl <- ggplot(aes(x=z,y=zp,fill=val,size=val),data=mdfr);
         pl <- pl + geom_point(alpha=0.6,shape=21);
         pl <- pl + scale_size_area(max_size=10);
         pl <- pl + scale_fill_gradient()
@@ -69,8 +65,8 @@ calcZTM<-function(mc,showPlot=TRUE){
         pl <- pl + labs(x='pre-molt size (mm)',y='post-molt size (mm)',title='Growth Transition Matrices');
         pl <- pl + guides(fill=guide_colorbar(expression(pr*bgroup("(",paste(Z[post],"|",Z[pre]),")")),order=1,alpha=1),
                         size=guide_legend('',order=2));
-        pl <- pl + facet_grid(t~x);
+        pl <- pl + facet_grid(pc~x);
         print(pl);
     }
-    return(prZAM_yxszz)
+    return(list(mnZAM_cxz=mnZAM_cxz,T_cxzz=prZAM_cxzz,T_yxszz=prZAM_yxszz))
 }

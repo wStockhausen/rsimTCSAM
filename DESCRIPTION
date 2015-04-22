@@ -1,8 +1,8 @@
 Package: rsimTCSAM
 Type: Package
 Title: Simulation model for testing TCSAM2015.
-Version: 0.8.6
-Date: 2015-04-20
+Version: 0.9.0
+Date: 2015-04-22
 Author: William Stockhausen
 Maintainer: William Stockhausen <william.stockhausen@noaa.gov>
 Description: This provides a simulation model for testing the TCSAM2015 stock asssessment model.

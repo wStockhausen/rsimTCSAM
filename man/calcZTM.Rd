@@ -10,7 +10,8 @@ calcZTM(mc, showPlot = TRUE)
 \item{mc}{- model configuration object}
 }
 \value{
-prZAM_yxszz: 5d array with size transition matrices by year/sex/shell condition
+list with elements:
+T_yxszz: 5d array with size transition matrices by year/sex/shell condition
 }
 \description{
 Function to calculate size transition matrices by year, sex, shell condition

@@ -54,25 +54,17 @@ mny:asy #time block 1 (asy=assessment year)
 NaturalMortality  #required keyword
 2      #number of time blocks
 c(mny:1979,1985:mxy)  #time block 1
-#sex      maturity  shell condition      M    cv   
-  'male'      'mature'    'new shell'  0.230  0.0
-  'male'      'mature'    'old shell'  0.230  0.0
-  'male'    'immature'    'new shell'  0.276  0.0
-  'male'    'immature'    'old shell'  0.276  0.0
-'female'      'mature'    'new shell'  0.253  0.0
-'female'      'mature'    'old shell'  0.253  0.0
-'female'    'immature'    'new shell'  0.304  0.0
-'female'    'immature'    'old shell'  0.304  0.0
+#sex      maturity          M    cv   
+  'male'      'mature'     0.230  0.0
+  'male'    'immature'    0.276  0.0
+'female'      'mature'     0.253  0.0
+'female'    'immature'     0.304  0.0
 1980:1984  #time block 2
-#sex      maturity  shell condition      M    cv   
-  'male'      'mature'    'new shell'  0.345  0.0
-  'male'      'mature'    'old shell'  0.345  0.0
-  'male'    'immature'    'new shell'  0.414  0.0
-  'male'    'immature'    'old shell'  0.414  0.0
-'female'      'mature'    'new shell'  0.380  0.0
-'female'      'mature'    'old shell'  0.380  0.0
-'female'    'immature'    'new shell'  0.455  0.0
-'female'    'immature'    'old shell'  0.455  0.0
+#sex      maturity         M    cv   
+  'male'      'mature'    0.345  0.0
+  'male'    'immature'    0.414  0.0
+'female'      'mature'    0.380  0.0
+'female'    'immature'    0.455  0.0
 #--Molting
 Molting  #required keyword
 1   #number of time blocks
@@ -86,11 +78,9 @@ mny:mxy  #time block 1
 MoltToMaturity  #required keyword
 1        #number of time blocks
 mny:mxy  #time block 1
-#sex       shell condition   z50    sdv
-  'male'  'new shell'       100    10
-  'male'  'old shell'       100    10
-'female'  'new shell'        80    10
-'female'  'old shell'        80    10
+#sex       z50    sdv
+  'male'  100    10
+'female'   80    10
 #--Growth
 Growth  #required keyword
 1         #number of time blocks
