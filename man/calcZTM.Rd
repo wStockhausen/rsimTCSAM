@@ -11,6 +11,8 @@ calcZTM(mc, showPlot = TRUE)
 }
 \value{
 list with elements:
+mnZAM_cxz: mean size after molt, by time block and sex
+T_cxzz: 4d array with size transition matrices by time block/sex
 T_yxszz: 5d array with size transition matrices by year/sex/shell condition
 }
 \description{

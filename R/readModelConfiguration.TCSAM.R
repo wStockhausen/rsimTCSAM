@@ -133,36 +133,13 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
     cat('--read growth parameters\n')
     
     #recruitment
-    chk<-rsp[[i]][1]; i<-i+1;
-    checkKeyword(chk,'Recruitment');
-    #read initialization section
-    inits<-list();
-    inits$lnR      <- parseNum(rsp[[i]][1]); #ln-scale mean recruitment
-    inits$cvR      <- parseNum(rsp[[i]][2]); #ln-scale value for ln-scale recruitment standard deviation
-    inits$lgtMnXR  <- parseNum(rsp[[i]][3]); #logit-scale nominal sex ratio
-    inits$lgtSdXR  <- parseNum(rsp[[i]][4]); #logit-scale standard deviation for sex ratio deviations
-    inits$lnAlphaZ <- parseNum(rsp[[i]][5]); #ln-scale alpha parameter for rec. size distribution
-    inits$lnBetaZ  <- parseNum(rsp[[i]][6]); #ln-scale beta parameter for rec. size distribution
-    i<-i+1;
-    #read time blocks
-    blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
-    for (tp in 1:nt){
-        block<-list();
-        t<-rsp[[i]][1];
-        eval(parse(text=paste('years<-',t)));
-        block$years<-years;
-        block$lnR      <- parseNum(rsp[[i]][2]); #ln-scale mean recruitment
-        block$cvR      <- parseNum(rsp[[i]][3]); #ln-scale value for ln-scale recruitment standard deviation
-        block$lgtMnXR  <- parseNum(rsp[[i]][4]); #logit-scale nominal sex ratio
-        block$lgtSdXR  <- parseNum(rsp[[i]][5]); #logit-scale standard deviation for sex ratio deviations
-        block$lnAlphaZ <- parseNum(rsp[[i]][6]); #ln-scale alpha parameter for rec. size distribution
-        block$lnBetaZ  <- parseNum(rsp[[i]][7]); #ln-scale beta parameter for rec. size distribution
-        blocks[[t]]<-block;
-        i<-i+1;
-    }#blocks
-    params$rec<-list(inits=inits,
-                     blocks=blocks);
+    res<-parseMC.Recruitment(rsp,i,dims); i<-res$i;
+    params$rec<-res$params;
+    dims$rec<-list();
+    dims$rec$n   <-length(params$rec$blocks);
+    dims$rec$nms <-names(params$rec$blocks);
+    dims$rec$lbls<-names(params$rec$blocks);
+    cat("rec = ",addQuotes(dims$rec$lbls),'\n')
     cat('--read recruitment parameters\n')
     
     #selectivity/retention functions

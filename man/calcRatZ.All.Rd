@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcRecruitment.R
 \name{calcRatZ.All}
 \alias{calcRatZ.All}
-\title{Calculate proportions recruiting-at-size over all years}
+\title{Calculate proportions recruiting-at-size over all time blocks}
 \usage{
 calcRatZ.All(mc, showPlot = TRUE)
 }
@@ -12,7 +12,7 @@ calcRatZ.All(mc, showPlot = TRUE)
 \item{showPlot}{- flag (T/F) to show plots}
 }
 \value{
-R_yz: d array with annual proportions of crab recruiting by size
+R_cz: d array with annual proportions (by time block) of crab recruiting by size
 }
 \description{
 

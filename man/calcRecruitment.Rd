@@ -12,6 +12,12 @@ calcRecruitment(mc, showPlot = TRUE)
 \item{showPlot}{- flag (T/F) to show plots}
 }
 \value{
+list with elements:
+devs_y: annual ln-scale recruitment deviations
+R_y: annual total recruitment (millions)
+Rx_c: (logit-scale) mean recruitment sex ratio (males), by time block
+R_cz: proportion recruitment-at-size by time block
+R_yx: proportion of recruitment by sex by year
 R_yxz: 3d array with numbers of crab (in millions) recruiting by year/sex/size
 }
 \description{

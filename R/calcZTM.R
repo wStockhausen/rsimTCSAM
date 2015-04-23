@@ -6,6 +6,8 @@
 #'@param mc - model configuration object
 #'
 #'@return list with elements:
+#'mnZAM_cxz: mean size after molt, by time block and sex 
+#'T_cxzz: 4d array with size transition matrices by time block/sex
 #'T_yxszz: 5d array with size transition matrices by year/sex/shell condition
 #'
 #'@import ggplot2
@@ -34,10 +36,10 @@ calcZTM<-function(mc,showPlot=TRUE){
                 prZAM<-c(first_difference(cumZAM),1.0-cumZAM[length(cumZAM)]);#contribution to each bin
                 #TODO: no truncation here!!
                 prZAM<-prZAM/sum(prZAM);
-                prZAM_xzz[x,z,z:d$z$n]<-prZAM;#note that ROWS here are pre-molt, COLUMNS are post-molt
+                prZAM_xzz[x,z,z:d$z$n]<-prZAM;#note that ROWS (z) here are pre-molt, COLUMNS (zp) are post-molt
             }#z
             prZAM_xzz[x,d$z$n,d$z$n]<-1.0;
-            prZAM_cxzz[t,x,,]<-t(prZAM_xzz[x,,]);#columns now pre-molt, rows post-molt
+            prZAM_cxzz[t,x,,]<-t(prZAM_xzz[x,,]);#columns (zp) now pre-molt, rows (z) post-molt
             for (s in d$s$nms){
                 for (y in yrs) {
                     #indep of shell condition
@@ -57,7 +59,7 @@ calcZTM<-function(mc,showPlot=TRUE){
         pl <- pl + facet_grid(pc~.);
         print(pl);
         mdfr<-melt(prZAM_cxzz,value.name='val');
-        pl <- ggplot(aes(x=z,y=zp,fill=val,size=val),data=mdfr);
+        pl <- ggplot(aes(x=zp,y=z,fill=val,size=val),data=mdfr);
         pl <- pl + geom_point(alpha=0.6,shape=21);
         pl <- pl + scale_size_area(max_size=10);
         pl <- pl + scale_fill_gradient()

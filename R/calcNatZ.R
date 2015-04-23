@@ -59,7 +59,7 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
             for (m in d$m$nms){
                 for (s in d$s$nms){
                     N_yxms[y,x,m,s]<-sum(N_yxmsz[y,x,m,s,]);
-                    N_yxms[y,x,m,s]<-sum(mp$W_yxmsz[y,x,m,s,] * N_yxmsz[y,x,m,s,]);
+                    B_yxms[y,x,m,s]<-sum(mp$W_yxmsz[y,x,m,s,] * N_yxmsz[y,x,m,s,]);
                 }#s
             }#m
         }#x
