@@ -21,6 +21,7 @@ calcZTM<-function(mc,showPlot=TRUE){
     
     mnZAM_cxz   <- dimArray(mc,'pc_growth.x.z')
     prZAM_cxzz  <- dimArray(mc,'pc_growth.x.z.zp')
+    mnZAM_yxsz  <- dimArray(mc,'y.x.s.z')
     prZAM_yxszz <- dimArray(mc,'y.x.s.z.zp')
     mdfr.pr<-NULL;
     mdfr.mn<-NULL;
@@ -43,6 +44,7 @@ calcZTM<-function(mc,showPlot=TRUE){
             for (s in d$s$nms){
                 for (y in yrs) {
                     #indep of shell condition
+                    mnZAM_yxsz[y,x,s,] <-mnZAM_cxz[t,x,];
                     prZAM_yxszz[y,x,s,,]<-prZAM_cxzz[t,x,,];
                 }#y
             }#s
@@ -70,5 +72,5 @@ calcZTM<-function(mc,showPlot=TRUE){
         pl <- pl + facet_grid(pc~x);
         print(pl);
     }
-    return(list(mnZAM_cxz=mnZAM_cxz,T_cxzz=prZAM_cxzz,T_yxszz=prZAM_yxszz))
+    return(list(mnZAM_cxz=mnZAM_cxz,T_cxzz=prZAM_cxzz,mnZAM_yxsz=mnZAM_yxsz,T_yxszz=prZAM_yxszz))
 }

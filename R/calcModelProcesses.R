@@ -31,9 +31,6 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
     
     #calculate size transition matrix for molting crab
     T_list <- calcZTM(mc,showPlot=showPlot);
-    mnZAM_cxz <- T_list$mnZAM_cxz;
-    T_cxzz  <- T_list$T_cxzz;
-    T_yxszz <- T_list$T_yxszz;
     
     #calculate selectivity/retention functions
     sel_cz <- calcSelFcns(mc,showPlot=showPlot);
@@ -64,9 +61,7 @@ calcModelProcesses<-function(mc,showPlot=TRUE){
                prMolt_yxsz=prMolt_yxsz,
                prMolt2Mat_cxz=prMolt2Mat_cxz,
                prMolt2Mat_yxsz=prMolt2Mat_yxsz,
-               mnZAM_cxz=mnZAM_cxz,
-               T_cxzz=T_cxzz,
-               T_yxszz=T_yxszz,
+               T_list=T_list,
                sel_cz=sel_cz,
                S1_yxmsz=S1_yxmsz,
                S2_yxmsz=S2_yxmsz,

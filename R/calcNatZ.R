@@ -45,7 +45,7 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
             S1_msz <- mp$S1_yxmsz[y,x,,,];       #survival to mating/molting
             P_sz   <- mp$prMolt_yxsz[y,x,,];     #pr(molt)
             Th_sz  <- mp$prMolt2Mat_yxsz[y,x,,]; #pr(molt to maturity)
-            T_szz  <- mp$T_yxszz[y,x,,,];        #size transition matrix
+            T_szz  <- mp$T_list$T_yxszz[y,x,,,]; #size transition matrix
             S2_msz <- mp$S2_yxmsz[y,x,,,];       #survival after molting/mating
             N_yxmsz[y+1,x,,,]<-runOneYear.TM(mc,R_z,S1_msz,P_sz,Th_sz,T_szz,S2_msz,N_msz);
         }#x
