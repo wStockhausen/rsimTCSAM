@@ -12,10 +12,10 @@
 #'
 #'@export
 #'
-readModelConfiguration.TCSAM<-function(fn=NULL,ext='*'){
+readModelConfiguration.TCSAM<-function(fn=NULL,ext='dat'){
     #get file name to read
     if (is.null(fn)){
-        fn<-selectFile(ext);
+        fn<-selectFile(ext,caption='Select rsimTCSAM configuration file');
         if (is.null(fn)) return(NULL);
     }
     

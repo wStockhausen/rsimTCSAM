@@ -97,6 +97,8 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
             cat(fsh$output$ret$biomass$flag,  "   #has aggregate catch biomass (weight)\n",file=conn);
             cat(fsh$output$ret$sizecomps$flag,"   #has size frequency data\n",file=conn);
             if (fsh$output$ret$abundance$flag){
+                cv     <-fsh$output$ret$abundance$err;
+                errType<-fsh$output$ret$abundance$errType;
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
                 cat(toupper(fsh$output$ret$abundance$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -110,13 +112,21 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),"ALL_MATURITY",toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year    value    cv\n",file=conn);
                             for (y in d$y$nms){
-                                if (sum(NR_fyxs[f,y,,],na.rm=TRUE)>0) cat(y,NR_fyxs[f,y,x,s],fsh$output$ret$abundance$err,'\n',file=conn);
+                                if (sum(NR_fyxs[f,y,,],na.rm=TRUE)>0) {
+                                    val <- NR_fyxs[f,y,x,s];
+                                    if (fsh$output$ret$abundance$addErr){
+                                        val <- addError(val,cv=cv,type=errType);
+                                    }
+                                    cat(y,val,cv,'\n',file=conn);
+                                }
                             }#y
                         }
                     }#s
                 }#x
             }#ret$abundance$flag
             if (fsh$output$ret$biomass$flag){
+                cv     <-fsh$output$ret$biomass$err;
+                errType<-fsh$output$ret$biomass$errType;
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
                 cat(toupper(fsh$output$ret$biomass$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -130,13 +140,21 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),"ALL_MATURITY",toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year    value    cv\n",file=conn);
                             for (y in d$y$nms){
-                                if (sum(NR_fyxs[f,y,,],na.rm=TRUE)>0) cat(y,BR_fyxs[f,y,x,s],fsh$output$ret$biomass$err,'\n',file=conn);
+                                if (sum(NR_fyxs[f,y,,],na.rm=TRUE)>0) {
+                                    val <- BR_fyxs[f,y,x,s];
+                                    if (fsh$output$ret$biomass$addErr){
+                                        val <- addError(val,cv=cv,type=errType);
+                                    }
+                                    cat(y,val,cv,'\n',file=conn);
+                                }
                             }#y
                         }
                     }#s
                 }#x
             }#ret$biomass$flag
             if (fsh$output$ret$sizecomps$flag){
+                ss     <-fsh$output$ret$sizecomps$err;
+                errType<-fsh$output$ret$sizecomps$errType;
                 cat("#------------NUMBERS-AT-SIZE DATA-----------#\n",file=conn);
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
                 cat(toupper(fsh$output$ret$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -158,9 +176,12 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),'ALL_MATURITY',toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
-                                if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
-                                    cat(dp[r,3],fsh$output$ret$sizecomps$err,file=conn);
-                                    for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+                                vals<-dp[r,3+(1:d$z$n)];
+                                if (sum(vals,na.rm=TRUE)>0){
+                                    vals<-addError(vals,ss=ss,type=errType)
+                                    cat(dp[r,3],ss,file=conn);
+                                    #for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+                                    cat(vals,file=conn);
                                     cat('\n',file=conn)
                                 }
                             }#r
@@ -179,6 +200,8 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
             cat(fsh$output$dsc$biomass$flag,  "   #has aggregate catch biomass (weight)\n",file=conn);
             cat(fsh$output$dsc$sizecomps$flag,"   #has size frequency data\n",file=conn);
             if (fsh$output$dsc$abundance$flag){
+                cv     <-fsh$output$dsc$abundance$err;
+                errType<-fsh$output$dsc$abundance$errType;
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
                 cat(toupper(fsh$output$dsc$abundance$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -192,13 +215,21 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),"ALL_MATURITY",toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year    value    cv\n",file=conn);
                             for (y in d$y$nms){
-                                if (sum(ND_fyxs[f,y,,],na.rm=TRUE)>0) cat(y,ND_fyxs[f,y,x,s],fsh$output$dsc$abundance$err,'\n',file=conn);
+                                if (sum(ND_fyxs[f,y,,],na.rm=TRUE)>0) {
+                                    val <- ND_fyxs[f,y,x,s];
+                                    if (fsh$output$dsc$abundance$addErr){
+                                        val <- addError(val,cv=cv,type=errType);
+                                    }
+                                    cat(y,val,cv,'\n',file=conn);
+                                }
                             }#y
                         }
                     }#s
                 }#x
             }#dsc$abundance$flag
             if (fsh$output$dsc$biomass$flag){
+                cv     <-fsh$output$dsc$biomass$err;
+                errType<-fsh$output$dsc$biomass$errType;
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
                 cat(toupper(fsh$output$dsc$biomass$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -212,13 +243,21 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),"ALL_MATURITY",toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year    value    cv\n",file=conn);
                             for (y in d$y$nms){
-                                if (sum(ND_fyxs[f,y,,],na.rm=TRUE)>0) cat(y,BD_fyxs[f,y,x,s],fsh$output$dsc$biomass$err,'\n',file=conn);
+                                if (sum(ND_fyxs[f,y,,],na.rm=TRUE)>0) {
+                                    val <- BD_fyxs[f,y,x,s];
+                                    if (fsh$output$dsc$biomass$addErr){
+                                        val <- addError(val,cv=cv,type=errType);
+                                    }
+                                    cat(y,val,cv,'\n',file=conn);
+                                }
                             }#y
                         }
                     }#s
                 }#x
             }#dsc$biomass$flag
             if (fsh$output$dsc$sizecomps$flag){
+                ss     <-fsh$output$dsc$sizecomps$err;
+                errType<-fsh$output$dsc$sizecomps$errType;
                 cat("#------------NUMBERS-AT-SIZE DATA-----------#\n",file=conn);
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
                 cat(toupper(fsh$output$dsc$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -240,9 +279,17 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),'ALL_MATURITY',toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
-                                if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
-                                    cat(dp[r,3],fsh$output$dsc$sizecomps$err,file=conn);
-                                    for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+#                                 if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
+#                                     cat(dp[r,3],fsh$output$dsc$sizecomps$err,file=conn);
+#                                     for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+#                                     cat('\n',file=conn)
+#                                 }
+                                vals<-dp[r,3+(1:d$z$n)];
+                                if (sum(vals,na.rm=TRUE)>0){
+                                    vals<-addError(vals,ss=ss,type=errType)
+                                    cat(dp[r,3],ss,file=conn);
+                                    #for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+                                    cat(vals,file=conn);
                                     cat('\n',file=conn)
                                 }
                             }#r
@@ -261,6 +308,8 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
             cat(fsh$output$tot$biomass$flag,  "   #has aggregate catch biomass (weight)\n",file=conn);
             cat(fsh$output$tot$sizecomps$flag,"   #has size frequency data\n",file=conn);
             if (fsh$output$tot$abundance$flag){
+                cv     <-fsh$output$tot$abundance$err;
+                errType<-fsh$output$tot$abundance$errType;
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
                 cat(toupper(fsh$output$tot$abundance$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -274,13 +323,21 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),"ALL_MATURITY",toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year    value    cv\n",file=conn);
                             for (y in d$y$nms){
-                                if (sum(NC_fyxs[f,y,,],na.rm=TRUE)>0) cat(y,NC_fyxs[f,y,x,s],fsh$output$tot$abundance$err,'\n',file=conn);
+                                if (sum(NC_fyxs[f,y,,],na.rm=TRUE)>0) {
+                                    val <- NC_fyxs[f,y,x,s];
+                                    if (fsh$output$tot$abundance$addErr){
+                                        val <- addError(val,cv=cv,type=errType);
+                                    }
+                                    cat(y,val,cv,'\n',file=conn);
+                                }
                             }#y
                         }
                     }#s
                 }#x
             }#tot$abundance$flag
             if (fsh$output$tot$biomass$flag){
+                cv     <-fsh$output$tot$biomass$err;
+                errType<-fsh$output$tot$biomass$errType;
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
                 cat(toupper(fsh$output$tot$biomass$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -294,13 +351,21 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),"ALL_MATURITY",toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year    value    cv\n",file=conn);
                             for (y in d$y$nms){
-                                if (sum(NC_fyxs[f,y,,],na.rm=TRUE)>0) cat(y,BC_fyxs[f,y,x,s],fsh$output$tot$biomass$err,'\n',file=conn);
+                                if (sum(NC_fyxs[f,y,,],na.rm=TRUE)>0) {
+                                    val <- BC_fyxs[f,y,x,s];
+                                    if (fsh$output$tot$biomass$addErr){
+                                        val <- addError(val,cv=cv,type=errType);
+                                    }
+                                    cat(y,val,cv,'\n',file=conn);
+                                }
                             }#y
                         }
                     }#s
                 }#x
             }#tot$biomass$flag
             if (fsh$output$tot$sizecomps$flag){
+                ss     <-fsh$output$tot$sizecomps$err;
+                errType<-fsh$output$tot$sizecomps$errType;
                 cat("#------------NUMBERS-AT-SIZE DATA-----------#\n",file=conn);
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
                 cat(toupper(fsh$output$tot$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -322,9 +387,17 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),'ALL_MATURITY',toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
-                                if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
-                                    cat(dp[r,3],fsh$output$tot$sizecomps$err,file=conn);
-                                    for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+#                                 if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
+#                                     cat(dp[r,3],fsh$output$tot$sizecomps$err,file=conn);
+#                                     for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+#                                     cat('\n',file=conn)
+#                                 }
+                                vals<-dp[r,3+(1:d$z$n)];
+                                if (sum(vals,na.rm=TRUE)>0){
+                                    vals<-addError(vals,ss=ss,type=errType)
+                                    cat(dp[r,3],ss,file=conn);
+                                    #for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+                                    cat(vals,file=conn);
                                     cat('\n',file=conn)
                                 }
                             }#r

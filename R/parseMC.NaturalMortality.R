@@ -16,6 +16,7 @@
 #'@export
 #'
 parseMC.NaturalMortality<-function(rsp,i,dims){
+    cat('parsing Natural Mortality\n')
     #get y dims for parsing time blocks
     mny<-dims$y$mny;
     mxy<-dims$y$mxy;
@@ -44,5 +45,6 @@ parseMC.NaturalMortality<-function(rsp,i,dims){
                           cvM_xm=cvM_xm
                          );
     }#blocks
+    cat('finished parsing Natural Mortality\n')
     return(list(i=i,params=list(blocks=blocks)))
 }

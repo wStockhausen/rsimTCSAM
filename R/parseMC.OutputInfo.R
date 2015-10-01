@@ -34,6 +34,7 @@ parseMC.OutputInfo<-function(rsp,i){
 #'aggType - TCSAM aggregation type (e.g., BY_TOTAL, BY_SEX)
 #'errType - TCSAM error structure type (e.g., LOGNORMAL, MULTINOMIAL)
 #'err - output cv or sample size
+#'addErr - flag to actually add error to output
 #'wgt - likelihood weight
 #'
 #'@importFrom wtsUtilities parseNum
@@ -46,6 +47,7 @@ parseMC.OILine<-function(rsp,i){
     lst$aggType<-rsp[[i]][2];
     lst$errType<-rsp[[i]][3];
     lst$err    <-wtsUtilities::parseNum(rsp[[i]][4]);
-    lst$wgt    <-wtsUtilities::parseNum(rsp[[i]][5]);
+    lst$addErr <-as.logical(rsp[[i]][5]);
+    lst$wgt    <-wtsUtilities::parseNum(rsp[[i]][6]);
     return(lst);
 }

@@ -58,6 +58,8 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
             cat(srv$output$biomass$flag,  "   #has aggregate catch biomass (weight)\n",file=conn);
             cat(srv$output$sizecomps$flag,"   #has size frequency data\n",file=conn);
             if (srv$output$abundance$flag){
+                cv     <-srv$output$abundance$err;
+                errType<-srv$output$abundance$errType;
                 cat("#------------AGGREGATE CATCH ABUNDANCE (NUMBERS)------------#\n",file=conn);
                 cat("AGGREGATE_ABUNDANCE #required keyword\n",file=conn);
                 cat(toupper(srv$output$abundance$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -72,7 +74,13 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
                                 cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                                 cat("#year    value    cv\n",file=conn);
                                 for (y in d$y$nms){
-                                    if (!is.na(N_vyxms[v,y,x,m,s])) cat(y,N_vyxms[v,y,x,m,s],srv$output$abundance$err,'\n',file=conn);
+                                    val <- N_vyxms[v,y,x,m,s];
+                                    if (!is.na(val)) {
+                                        if (srv$output$abundance$addErr){
+                                            val <- addError(val,cv=cv,type=errType);
+                                        }
+                                        cat(y,val,cv,'\n',file=conn);
+                                    }
                                 }#y
                             }
                         }#s
@@ -80,6 +88,8 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
                 }#x
             }#abundance$flag
             if (srv$output$biomass$flag){
+                cv     <-srv$output$biomass$err;
+                errType<-srv$output$biomass$errType;
                 cat("#------------AGGREGATE CATCH ABUNDANCE (BIOMASS)------------#\n",file=conn);
                 cat("AGGREGATE_BIOMASS #required keyword\n",file=conn);
                 cat(toupper(srv$output$biomass$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -94,7 +104,13 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
                                 cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                                 cat("#year    value    cv\n",file=conn);
                                 for (y in d$y$nms){
-                                    if (!is.na(B_vyxms[v,y,x,m,s])) cat(y,B_vyxms[v,y,x,m,s],srv$output$biomass$err,'\n',file=conn);
+                                    val <- B_vyxms[v,y,x,m,s];
+                                    if (!is.na(val)) {
+                                        if (srv$output$biomass$addErr){
+                                            val <- addError(val,cv=cv,type=errType);
+                                        }
+                                        cat(y,val,cv,'\n',file=conn);
+                                    }
                                 }#y
                             }
                         }#s
@@ -102,6 +118,8 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
                 }#x
             }#biomass$flag
             if (srv$output$sizecomps$flag){
+                cv     <-srv$output$sizecomps$err;
+                errType<-srv$output$sizecomps$errType;
                 cat("#------------NUMBERS-AT-SIZE DATA-----------#\n",file=conn);
                 cat("SIZE_FREQUENCY_DATA  #required keyword\n",file=conn);
                 cat(toupper(srv$output$sizecomps$aggType),"\t\t#objective function fitting option\n",file=conn);
@@ -123,10 +141,14 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
                             if (sum(dp[,4+(1:d$z$n)],na.rm=TRUE)>0){
                                 cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                                 cat("#year  ss  ",d$z$nms,'\n',file=conn);
+                                ss<-srv$output$sizecomps$err
                                 for (r in 1:nrow(dp)){
-                                    if (sum(dp[r,4+(1:d$z$n)],na.rm=TRUE)>0){
-                                        cat(dp[r,4],srv$output$sizecomps$err,file=conn);
-                                        for (j in 4+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
+                                    vals<-dp[r,4+(1:d$z$n)];
+                                    if (sum(vals,na.rm=TRUE)>0){
+                                        vals<-addError(vals,ss=ss,type=errType)
+                                        cat(dp[r,4],ss,' ',file=conn);
+                                        #for (j in 1:d$z$n) cat(' ',vals[j],file=conn);
+                                        cat(vals,file=conn);
                                         cat('\n',file=conn)
                                     }
                                 }#r
