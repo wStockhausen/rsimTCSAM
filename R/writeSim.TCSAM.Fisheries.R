@@ -78,17 +78,18 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
         cat("#####################################################################\n",file=conn);
         cat("#TCSAM2015 Model File for",f,"\n",file=conn);
         cat("#####################################################################\n",file=conn);
-        cat("FISHERY_DATA     #required keyword\n",file=conn);
+        cat("FISHERY     #required keyword\n",file=conn);
         cat(gsub('[[:blank:]]',"_",f),"    #fishery name\n",file=conn);
-        cat("FALSE","   #has effort data?\n",file=conn);
         anyRet<-any(fsh$output$ret$abundance$flag,fsh$output$ret$biomass$flag,fsh$output$ret$sizecomps$flag);
         anyDsc<-any(fsh$output$dsc$abundance$flag,fsh$output$dsc$biomass$flag,fsh$output$dsc$sizecomps$flag);
         anyTot<-any(fsh$output$tot$abundance$flag,fsh$output$tot$biomass$flag,fsh$output$tot$sizecomps$flag);
-        cat(anyRet,"   #has retained catch?\n",file=conn);
-        cat(anyDsc,"   #has observed discard catch\n",file=conn);
-        cat(anyTot,"   #has observed total catch\n",file=conn);
-        cat("#------------EFFORT DATA-----------#\n",file=conn);
-        cat("#-----no effort data\n",file=conn);
+        cat("FALSE","   #has index catch data?\n",file=conn);
+        cat(anyRet,"   #has retained catch data?\n",file=conn);
+        cat(anyDsc,"   #has observed discard catch data\n",file=conn);
+        cat(anyTot,"   #has observed total catch data\n",file=conn);
+        cat("FALSE","   #has effort data?\n",file=conn);
+        cat("#------------INDEX CATCH DATA------------#\n",file=conn);
+        cat("#-----no index catch data\n",file=conn);
         cat("#------------RETAINED CATCH DATA------------#\n",file=conn);
         if (anyRet){
             #retained catch
@@ -408,6 +409,8 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
         } else {
             cat("#-----no total catch data\n",file=conn);
         }
+        cat("#------------EFFORT DATA-----------#\n",file=conn);
+        cat("#-----no effort data\n",file=conn);
         close(conn);
     }#f
     return(invisible(list(NR_fyxs=NR_fyxs,BR_fyxs=BR_fyxs,

@@ -48,10 +48,16 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
         cat("#####################################################################\n",file=conn);
         cat("#TCSAM2015 Model File for",v,"\n",file=conn);
         cat("#####################################################################\n",file=conn);
-        cat("SURVEY_DATA     #required keyword\n",file=conn);
+        cat("SURVEY     #required keyword\n",file=conn);
         cat(gsub('[[:blank:]]',"_",v),"    #survey name\n",file=conn);
-        cat("#------------SURVEY CATCH DATA------------#\n",file=conn);
-        if (srv$output$abundance$flag|srv$output$biomass$flag|srv$output$sizecomps$flag){
+        anyIdx<-any(srv$output$abundance$flag,srv$output$biomass$flag,srv$output$sizecomps$flag);
+        cat(anyIdx,"    #has index catch data?\n",file=conn);
+        cat("FALSE   #has retained catch data?\n",file=conn);
+        cat("FALSE   #has observed discard catch data\n",file=conn);
+        cat("FALSE   #has observed total catch data\n",file=conn);
+        cat("FALSE   #has effort data?\n",file=conn);
+        cat("#------------INDEX CATCH DATA------------#\n",file=conn);
+        if (anyIdx){
             #total catch
             cat("CATCH_DATA  #required keyword\n",file=conn);
             cat(srv$output$abundance$flag,"   #has aggregate catch abundance (numbers)\n",file=conn);
