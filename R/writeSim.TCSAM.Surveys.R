@@ -147,11 +147,13 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
                             if (sum(dp[,4+(1:d$z$n)],na.rm=TRUE)>0){
                                 cat(toupper(x),toupper(gsub('[[:blank:]]','_',m)),toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                                 cat("#year  ss  ",d$z$nms,'\n',file=conn);
-                                ss<-srv$output$sizecomps$err
+                                ss<-srv$output$sizecomps$err;
                                 for (r in 1:nrow(dp)){
-                                    vals<-dp[r,4+(1:d$z$n)];
+                                    vals<-unlist(dp[r,4+(1:d$z$n),drop=TRUE]);
                                     if (sum(vals,na.rm=TRUE)>0){
-                                        vals<-addError(vals,ss=ss,type=errType)
+                                        if (srv$output$sizecomps$addErr) {
+                                            vals<-addError(vals,ss=ss,type=errType);
+                                        }
                                         cat(dp[r,4],ss,' ',file=conn);
                                         #for (j in 1:d$z$n) cat(' ',vals[j],file=conn);
                                         cat(vals,file=conn);

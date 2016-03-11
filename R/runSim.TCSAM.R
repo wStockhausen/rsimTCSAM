@@ -14,8 +14,10 @@
 #'@return list with elements:
 #'seed - RNG seed used
 #'mc - model configuration list object (see readModelConfiguration.TCSAM(...))
-#'mp - model processes list object    (see calcModelProcesses(...))
-#'mr - model results list object      (see runModel(...))
+#'mp - model processes list object     (see calcModelProcesses(...))
+#'mr - model results list object       (see runModel(...))
+#'md - model data                      (see writeSim.TCSAM(...))
+#'mo - model OFL list object           (see calcOFL(...))
 #'
 #'@import reshape2
 #'
@@ -64,11 +66,16 @@ runSim.TCSAM<-function(out.dir='.',
     mR <- melt(mp$R_list$devs_y,value.name='recdevs');
     mF <- melt(mp$F_list$devs_fy,value.name='fdevs');
     mQ <- melt(mp$S_list$devs_vy,value.name='qdevs');
-    md <- cbind(mR,mF,mQ);
-    write.csv(md,file=file.path(out.dir,fnd),row.names=FALSE);
+    mdvs <- cbind(mR,mF,mQ);
+    write.csv(mdvs,file=file.path(out.dir,fnd),row.names=FALSE);
+    
+    #calc OFL
+    ##TODO->implement this: 
+    ##mo<-calcOFL(mc,mp,mr,showPlot=showPlot);
+    mo<-NULL;
 
     #create ouput list
-    rsim<-list(seed=seed,mc=mc,mp=mp,mr=mr,md=md);
+    rsim<-list(seed=seed,mc=mc,mp=mp,mr=mr,md=md,mo=mo);
     class(rsim)<-'rsimTCSAM';
         
     return(invisible(rsim));

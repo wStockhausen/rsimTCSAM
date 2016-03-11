@@ -180,7 +180,7 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
         mdfr<-rbind(ncdfr,nmdfr,rmdfr,dmdfr);
         ddfr<-dcast(mdfr,f+type+x+y~.,fun.aggregate=sum,value.var='val');
         p <- ggplot(aes(x=y,y=`.`,color=type,linetype=type,shape=type),data=ddfr);
-        p <- p + geom_line(alpha=0.8,width=2);
+        p <- p + geom_line(alpha=0.8,size=2);
         p <- p + geom_point(alpha=0.8);
         p <- p + labs(x='year',y='Fishery Catch/Mortality (millions)');
         p <- p + facet_grid(f ~ x);

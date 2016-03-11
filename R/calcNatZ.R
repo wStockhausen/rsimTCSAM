@@ -69,7 +69,7 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
         mdfr<-melt(N_yxmsz,value.name='val');
         ddfr<-dcast(mdfr,x+y~.,fun.aggregate=sum,value.var='val');
         p <- ggplot(aes(x=y,y=`.`,color=x,shape=x),data=ddfr);
-        p <- p + geom_line(alpha=0.8,width=2);
+        p <- p + geom_line(alpha=0.8,size=2);
         p <- p + geom_point(alpha=0.8);
         p <- p + labs(x='year',y='Population Abundance');
         p <- p + guides(color=guide_legend('',order=1,alpha=1),
@@ -78,7 +78,7 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
         
         mdfrp<-melt(MB_yx,value.name='val');
         p <- ggplot(aes(x=y,y=val,color=x,shape=x),data=mdfrp);
-        p <- p + geom_line(alpha=0.8,width=1);
+        p <- p + geom_line(alpha=0.8,size=1);
         p <- p + geom_point(alpha=0.8);
         p <- p + labs(x='year',y='Mature Biomass (at time of mating)');
         p <- p + guides(color=guide_legend('',order=1,alpha=1),

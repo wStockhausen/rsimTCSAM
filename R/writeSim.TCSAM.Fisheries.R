@@ -177,10 +177,12 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),'ALL_MATURITY',toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
-                                vals<-dp[r,3+(1:d$z$n)];
+                                vals<-unlist(dp[r,3+(1:d$z$n),drop=TRUE]);
                                 if (sum(vals,na.rm=TRUE)>0){
-                                    vals<-addError(vals,ss=ss,type=errType)
-                                    cat(dp[r,3],ss,file=conn);
+                                    if (fsh$output$ret$sizecomps$addErr){
+                                        vals<-addError(vals,ss=ss,type=errType);
+                                    }
+                                    cat(dp[r,3],ss,'  ',file=conn);
                                     #for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
                                     cat(vals,file=conn);
                                     cat('\n',file=conn)
@@ -280,15 +282,12 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),'ALL_MATURITY',toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
-#                                 if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
-#                                     cat(dp[r,3],fsh$output$dsc$sizecomps$err,file=conn);
-#                                     for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
-#                                     cat('\n',file=conn)
-#                                 }
-                                vals<-dp[r,3+(1:d$z$n)];
+                                vals<-unlist(dp[r,3+(1:d$z$n),drop=TRUE]);
                                 if (sum(vals,na.rm=TRUE)>0){
-                                    vals<-addError(vals,ss=ss,type=errType)
-                                    cat(dp[r,3],ss,file=conn);
+                                    if (fsh$output$dsc$sizecomps$addErr){
+                                        vals<-addError(vals,ss=ss,type=errType);
+                                    }
+                                    cat(dp[r,3],ss,'  ',file=conn);
                                     #for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
                                     cat(vals,file=conn);
                                     cat('\n',file=conn)
@@ -388,18 +387,15 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
                             cat(toupper(x),'ALL_MATURITY',toupper(gsub('[[:blank:]]','_',s)),'\n',file=conn);
                             cat("#year  ss  ",d$z$nms,'\n',file=conn);
                             for (r in 1:nrow(dp)){
-#                                 if (sum(dp[r,3+(1:d$z$n)],na.rm=TRUE)>0){
-#                                     cat(dp[r,3],fsh$output$tot$sizecomps$err,file=conn);
-#                                     for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
-#                                     cat('\n',file=conn)
-#                                 }
-                                vals<-dp[r,3+(1:d$z$n)];
+                                vals<-unlist(dp[r,3+(1:d$z$n),drop=TRUE]);
                                 if (sum(vals,na.rm=TRUE)>0){
-                                    vals<-addError(vals,ss=ss,type=errType)
-                                    cat(dp[r,3],ss,file=conn);
+                                    if (fsh$output$tot$sizecomps$addErr){
+                                        vals<-addError(vals,ss=ss,type=errType);
+                                    }
+                                    cat(dp[r,3],ss,'  ',file=conn);
                                     #for (j in 3+(1:d$z$n)) cat(' ',dp[r,j],file=conn);
                                     cat(vals,file=conn);
-                                    cat('\n',file=conn)
+                                    cat('\n',file=conn);
                                 }
                             }#r
                         }

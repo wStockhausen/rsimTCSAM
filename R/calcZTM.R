@@ -54,7 +54,7 @@ calcZTM<-function(mc,showPlot=TRUE){
         mdfr<-melt(mnZAM_cxz,value.name='val');
         pl <- ggplot(aes(x=z,y=val,color=x,shape=x),data=mdfr);
         pl <- pl + geom_abline(intercept=0,slope=1,linetype=3,color='black')
-        pl <- pl + geom_line(width=2);
+        pl <- pl + geom_line(size=2);
         pl <- pl + geom_point(size=5);
         pl <- pl + guides(color=guide_legend(''),shape=guide_legend(''));
         pl <- pl + labs(x='pre-molt size (mm)',y='mean post-molt size (mm)',title='Mean Growth');
