@@ -177,13 +177,17 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     conn<-file(fn,open="w");    
     cat("#---OFL INFO from rsimTCSAM----------\n",file=conn);
     cat("#--recruitment\n",file=conn);
+    mny<-as.character(mc$dims$y$mny);
+    mxy<-as.character(mc$dims$y$mxy);
+    asy<-as.character(mc$dims$y$asy);
     yrs<-as.character(1982:mc$dims$y$mxy);
     avgRM<-mean(mp$R_list$R_y[yrs]*mp$R_list$R_yx[yrs,  'male'],na.rm=TRUE);
     avgRF<-mean(mp$R_list$R_y[yrs]*mp$R_list$R_yx[yrs,'female'],na.rm=TRUE);
     cat("avgRM = ",avgRM,"\n",file=conn);
     cat("avgRF = ",avgRF,"\n",file=conn);
-    cat("MMB100 = ",mr$P_list$MB_yx[mc$dims$y$mny,'male'],"\n",file=conn);
-    cat("MMBcur = ",mr$P_list$MB_yx[mc$dims$y$mxy,'male'],"\n",file=conn);
+    cat("MMB100 = ",mr$P_list$MB_yx[mny,'male'],"\n",file=conn);
+    cat("MMBcur = ",mr$P_list$MB_yx[mxy,'male'],"\n",file=conn);
+    cat("MMBrat = ",mr$P_list$MB_yx[mxy,'male']/mr$P_list$MB_yx[mny,'male'],"\n",file=conn);
     cat("init n-at-z\n",file=conn);
     for (x in mc$dims$x$nms) {
         for (m in mc$dims$m$nms) {
@@ -196,7 +200,7 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     for (x in mc$dims$x$nms) {
         for (m in mc$dims$m$nms) {
             for (s in mc$dims$s$nms) {
-                cat(x,m,s,paste(mr$P_list$N_xmsz[mc$dims$y$asy,x,m,s,],collapse=" "),"\n",file=conn);
+                cat(x,m,s,paste(mr$P_list$N_yxmsz[asy,x,m,s,],collapse=" "),"\n",file=conn);
             }
         }
     }
