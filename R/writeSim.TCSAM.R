@@ -152,7 +152,7 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
         cat(t,'\n',file=conn)
         for (x in mc$dims$x$nms){
             for (s in mc$dims$s$nms){
-                lgt<-log(mp$prMolt2Mat_yxsz[yr,x,s,]/(1-mp$prMolt2Mat_yxsz[yr,x,s,]));
+                lgt<-log(mp$prM2M_yxsz[yr,x,s,]/(1-mp$prM2M_yxsz[yr,x,s,]));
                 cat(x,s,':',lgt,'\n',sep='\t',file=conn);
             }#s
         }#x        
