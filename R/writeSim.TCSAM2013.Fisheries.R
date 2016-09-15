@@ -1,7 +1,7 @@
 #'
-#'@title Write model fisheries results to output file.
+#'@title Write rsim fisheries results to TCSAM2013 input file.
 #'
-#'@description Function to write model fisheries results to output file.
+#'@description Function to write model fisheries results to TCSAM2013 input file.
 #'
 #'@param mc - model configuration list object
 #'@param mp - model processes list object
@@ -17,7 +17,7 @@
 #'
 #'@export
 #'
-writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
+writeSim.TCSAM2013.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
     #model dimensions
     d <- mc$dims;
         
@@ -76,7 +76,7 @@ writeSim.TCSAM.Fisheries<-function(mc,mp,mr,fnFshs,out.dir='.',showPlot=TRUE){
         conn<-file(file.path(out.dir,fnFshs[[f]]),open="w");
         fsh<-mc$params$fisheries[[f]];
         cat("#####################################################################\n",file=conn);
-        cat("#TCSAM2015 Model File for",f,"\n",file=conn);
+        cat("#TCSAM2013 Model File for",f,"\n",file=conn);
         cat("#####################################################################\n",file=conn);
         cat("FISHERY     #required keyword\n",file=conn);
         cat(gsub('[[:blank:]]',"_",f),"    #fishery name\n",file=conn);

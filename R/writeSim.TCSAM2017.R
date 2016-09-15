@@ -1,7 +1,7 @@
 #'
-#'@title Write simulation results to TCSAM2015 input file.
+#'@title Write simulation results to TCSAM2017 input file.
 #'
-#'@description Function to write simulation results to TCSAM2015 input file.
+#'@description Function to write simulation results to TCSAM2017 input file.
 #'
 #'@param mc - model configuration list object
 #'@param mp - model processes list object
@@ -13,7 +13,7 @@
 #'
 #'@export
 #'
-writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
+writeSim.TCSAM2017<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     d<-mc$dims;
     mxy<-as.character(d$y$mxy);
     
@@ -39,7 +39,7 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     #write out Model Configuration file
     conn<-file(file.path(out.dir,Model.Config),open="w");    
     cat("#####################################################################\n",file=conn);
-    cat("#TCSAM2015 Model Configuration File                                 #\n",file=conn);
+    cat("#TCSAM2017 Model Configuration File                                 #\n",file=conn);
     cat("#####################################################################\n",file=conn);
     cat('rsimTest',"  # model scenario","\n",file=conn);
     cat(d$y$mny,"  # model start year (pop. model start year)","\n",file=conn);
@@ -76,7 +76,7 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     #write out Model Datasets file
     conn<-file(file.path(out.dir,Model.Datasets),open="w");    
     cat("#####################################################################\n",file=conn);
-    cat("#TCSAM2015 Model Datasets File                                      #\n",file=conn);
+    cat("#TCSAM2017 Model Datasets File                                      #\n",file=conn);
     cat("#####################################################################\n",file=conn);
     cat(Model.Data.BioInfo,"\t\t\t#biological info file\n",file=conn)
     cat(d$f$n,"  #number of fishery data files\n",file=conn);
@@ -93,7 +93,7 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     conn<-file(file.path(out.dir,Model.Data.BioInfo),open="w");    
     cat("\n\n",file=conn)
     cat("#####################################################################\n",file=conn);
-    cat("#TCSAM2015 Model Biological Info File                               #\n",file=conn);
+    cat("#TCSAM2017 Model Biological Info File                               #\n",file=conn);
     cat("#####################################################################\n",file=conn);
     cat("BIO_DATA     #required keyword\n",file=conn);
     cat("#------------------\n",file=conn);
@@ -124,10 +124,10 @@ writeSim.TCSAM<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     close(conn);
         
     #Fisheries Data
-    fshs<-writeSim.TCSAM.Fisheries(mc,mp,mr,fnFshs,out.dir=out.dir,showPlot=showPlot);
+    fshs<-writeSim.TCSAM2017.Fisheries(mc,mp,mr,fnFshs,out.dir=out.dir,showPlot=showPlot);
     
     #Surveys Data
-    srvs<-writeSim.TCSAM.Surveys(mc,mp,mr,fnSrvs,out.dir=out.dir,showPlot=showPlot);
+    srvs<-writeSim.TCSAM2017.Surveys(mc,mp,mr,fnSrvs,out.dir=out.dir,showPlot=showPlot);
     
     #Parameters info
     fn<-file.path(out.dir,'rsim.ParametersInfo.dat')

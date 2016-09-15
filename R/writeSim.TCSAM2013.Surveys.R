@@ -1,7 +1,7 @@
 #'
-#'@title Write model survey results to output file.
+#'@title Write model survey results to TCSAM2013 input file.
 #'
-#'@description Function to write model survey results to output file.
+#'@description Function to write model survey results to TCSAM2013 input file.
 #'
 #'@param mc - model configuration list object
 #'@param mp - model processes list object
@@ -17,7 +17,7 @@
 #'
 #'@export
 #'
-writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
+writeSim.TCSAM2013.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
     #model dimensions
     d <- mc$dims;
     
@@ -46,7 +46,7 @@ writeSim.TCSAM.Surveys<-function(mc,mp,mr,fnSrvs,out.dir='.',showPlot=TRUE){
         srv<-mc$params$surveys[[v]];
         cat("\n\n",file=conn)
         cat("#####################################################################\n",file=conn);
-        cat("#TCSAM2015 Model File for",v,"\n",file=conn);
+        cat("#TCSAM2013 Model File for",v,"\n",file=conn);
         cat("#####################################################################\n",file=conn);
         cat("SURVEY     #required keyword\n",file=conn);
         cat(gsub('[[:blank:]]',"_",v),"    #survey name\n",file=conn);
