@@ -14,10 +14,7 @@
 #'
 getMDFR.Pop.MeanGrowthIncrements<-function(rsims,verbose=FALSE){
     if (verbose) cat("--Getting mean growth increments\n");
-    if (inherits(rsims,'rsimTCSAM')){
-        rsims<-list(rsim=rsims);#wrap in list
-    }
-    
+
     mdfrp<-getMDFR('mp/T_list/mnZAM_cxz',rsims,verbose);
     mdfrp$y<-'';
     ums<-as.character(unique(mdfrp$case))
@@ -28,6 +25,9 @@ getMDFR.Pop.MeanGrowthIncrements<-function(rsims,verbose=FALSE){
     mdfrp<-mdfrp[,c('case','pc','y','x','z','val')];
 
     mdfr<-getMDFR.CanonicalFormat(mdfrp);
+    mdfr$type<-"population";
+    mdfr$m<-"immature";
+    mdfr$s<-"all";
 
     if (verbose) cat("--Done. \n");
     return(mdfr);

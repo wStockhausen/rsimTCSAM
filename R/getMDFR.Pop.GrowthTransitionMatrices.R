@@ -15,10 +15,7 @@
 #'
 getMDFR.Pop.GrowthTransitionMatrices<-function(rsims,verbose=FALSE){
     if (verbose) cat("--Getting growth transition matrices.\n");
-    if (inherits(rsims,'rsimTCSAM')){
-        rsims<-list(rsim=rsims);#wrap in list
-    }
-    
+
     mdfrp<-getMDFR('mp/T_list/T_cxzz',rsims,verbose);
     mdfrp$y<-'';
     ums<-as.character(unique(mdfrp$case))
@@ -34,6 +31,9 @@ getMDFR.Pop.GrowthTransitionMatrices<-function(rsims,verbose=FALSE){
     mdfrp$zp<-zp;
     
     mdfr<-getMDFR.CanonicalFormat(mdfrp);
+    mdfr$type<-"population";
+    mdfr$m<-"immature";
+    mdfr$s<-"all";
     
     if (verbose) cat("--Done. \n");
     return(mdfr);

@@ -14,10 +14,7 @@
 #'
 getMDFR.Pop.RecSizeDistribution<-function(rsims,verbose=FALSE){
     if (verbose) cat("--Getting recruitment size distribution.\n");
-    if (inherits(rsims,'rsimTCSAM')){
-        rsims<-list(rsim=rsims);#wrap in list
-    }
-    
+
     path<-'mp/R_list/R_cz';
     mdfrp<-getMDFR(path,rsims,verbose);
     mdfrp$y<-'';
@@ -29,6 +26,11 @@ getMDFR.Pop.RecSizeDistribution<-function(rsims,verbose=FALSE){
     mdfrp<-mdfrp[,c('case','pc','y','z','val')];
 
     mdfr<-getMDFR.CanonicalFormat(mdfrp);
+    mdfr$type<-"population";
+    mdfr$x<-"all";
+    mdfr$m<-"immature";
+    mdfr$s<-"all";
+
 
     if (verbose) cat("--Done. \n");
     return(mdfr);
