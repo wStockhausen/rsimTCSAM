@@ -18,22 +18,22 @@ writeSim.TCSAM2013<-function(mc,mp,mr,out.dir='.',showPlot=TRUE){
     mxy<-as.character(d$y$mxy);
     
     #create data file names
-    Model.Config        <-'Model.Config.dat';
-    Model.ParametersInfo<-'Model.ParametersInfo.dat';
-    Model.Datasets      <-'Model.Datasets.dat';
-    Model.Options       <-'Model.Options.dat';
-    Model.Data.BioInfo  <-'Model.Data.BioInfo.dat';
+    Model.Config        <-'TCSAM2013.Model.Config.dat';
+    Model.ParametersInfo<-'TCSAM2013.Model.ParametersInfo.dat';
+    Model.Datasets      <-'TCSAM2013.Model.Datasets.dat';
+    Model.Options       <-'TCSAM2013.Model.Options.dat';
+    Model.Data.BioInfo  <-'TCSAM2013.Model.Data.BioInfo.dat';
     
     fnFshs<-list();
     for (f in d$f$nms) {
         str<-gsub("[[:blank:]]","_",f);
-        fnFshs[[f]]<-paste('Model.Data.Fishery.',str,'.dat',sep='');
+        fnFshs[[f]]<-paste('TCSAM2013.Model.Data.Fishery.',str,'.dat',sep='');
     }
     
     fnSrvs<-list();
     for (v in d$v$nms) {
         str<-gsub("[[:blank:]]","_",v);
-        fnSrvs[[v]]<-paste('Model.Data.Survey.',str,'.dat',sep='');
+        fnSrvs[[v]]<-paste('TCSAM2013.Model.Data.Survey.',str,'.dat',sep='');
     }
     
     #write out Model Configuration file

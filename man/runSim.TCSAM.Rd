@@ -2,7 +2,7 @@
 % Please edit documentation in R/runSim.TCSAM.R
 \name{runSim.TCSAM}
 \alias{runSim.TCSAM}
-\title{Run the TCSAM simulation model to produce a TCSAM2015 input file.}
+\title{Run the TCSAM simulation model to produce a TCSAM2015 input file}
 \usage{
 runSim.TCSAM(out.dir = ".", seed = NULL, fnd = "devs.csv",
   showPlot = TRUE, pdf = NULL, width = 8, height = 6)
@@ -33,5 +33,9 @@ mo - model OFL list object           (see calcOFL(...))
 }
 \description{
 Function to run the TCSAM simulation model to produce a TCASM2015 input file.
+}
+\details{
+The rsimTCSAM object created by the model run is saved as variable \code{rsim} in 'rsimTCSAM.RData'
+in the folder specified by \code{out.dir}.
 }
 

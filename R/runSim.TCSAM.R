@@ -1,5 +1,5 @@
 #'
-#'@title Run the TCSAM simulation model to produce a TCSAM2015 input file.
+#'@title Run the TCSAM simulation model to produce a TCSAM2015 input file
 #'
 #'@description Function to run the TCSAM simulation model to produce a TCASM2015 input file.
 #'
@@ -18,6 +18,9 @@
 #'mr - model results list object       (see runModel(...))
 #'md - model data                      (see writeSim.TCSAM(...))
 #'mo - model OFL list object           (see calcOFL(...))
+#'
+#'@details The rsimTCSAM object created by the model run is saved as variable \code{rsim} in 'rsimTCSAM.RData'
+#'in the folder specified by \code{out.dir}.
 #'
 #'@import reshape2
 #'
@@ -54,7 +57,8 @@ runSim.TCSAM<-function(out.dir='.',
     mr <- runModel(mc,mp,showPlot=showPlot);
     
     #output results to model files
-    md <- writeSim.TCSAM(mc,mp,mr,out.dir=out.dir,showPlot=showPlot);
+    md  <- writeSim.TCSAM02(mc,mp,mr,out.dir=out.dir,showPlot=showPlot);
+    mdp <- writeSim.TCSAM2013(mc,mp,mr,out.dir=out.dir,showPlot=showPlot);
 
     #compare initial, final size comps
     sizecomps<-list();
@@ -77,6 +81,9 @@ runSim.TCSAM<-function(out.dir='.',
     #create ouput list
     rsim<-list(seed=seed,mc=mc,mp=mp,mr=mr,md=md,mo=mo);
     class(rsim)<-'rsimTCSAM';
+    
+    #save output list
+    save(rsim,file=file.path(out.dir,"rsimTCSAM.RData"),eval.promises=TRUE);
         
     return(invisible(rsim));
 }
