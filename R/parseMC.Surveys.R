@@ -11,8 +11,6 @@
 #'i - index starting next section
 #'surveys - list object with surveys info
 #'
-#'@import wtsUtilities
-#'
 #'@export
 #'
 parseMC.Surveys<-function(rsp,i,dims){
@@ -28,16 +26,16 @@ parseMC.Surveys<-function(rsp,i,dims){
         v<-rsp[[i]][1]; i<-i+1;#survey name
         resOI<-parseMC.OutputInfo(rsp,i); i<-resOI$i;
         blocks<-list();
-        nt<-parseNum(rsp[[i]][1]); i<-i+1;
+        nt<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
         for (tp in 1:nt){
             t<-rsp[[i]][1]; i <- i+1;
             eval(parse(text=paste('years<-',t)));
             params<-list();
             for (ix in 1:dims$x$n){
                 x    <-rsp[[i]][1];           #sex
-                lnQ  <-parseNum(rsp[[i]][2]); #log(Q)
-                sdQ  <-parseNum(rsp[[i]][3]); #sd(Q)
-                idSel<-parseNum(rsp[[i]][4]); #selectivity function index
+                lnQ  <-wtsUtilities::parseNum(rsp[[i]][2]); #log(Q)
+                sdQ  <-wtsUtilities::parseNum(rsp[[i]][3]); #sd(Q)
+                idSel<-wtsUtilities::parseNum(rsp[[i]][4]); #selectivity function index
                 params[[x]]<-list(lnQ=lnQ,sdQ=sdQ,idSel=idSel);
                 i<-i+1;
             }#ix

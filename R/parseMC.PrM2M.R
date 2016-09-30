@@ -11,8 +11,6 @@
 #'i - index starting next section
 #'params - list object with molt-to-maturity time blocks
 #'
-#'@import wtsUtilities
-#'
 #'@export
 #'
 parseMC.PrM2M<-function(rsp,i,dims){
@@ -24,7 +22,7 @@ parseMC.PrM2M<-function(rsp,i,dims){
     chk<-rsp[[i]][1]; i<-i+1;
     checkKeyword(chk,'MoltToMaturity');
     blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
+    nt<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
     for (tp in 1:nt){
         t<-rsp[[i]][1]; i<-i+1;
         eval(parse(text=paste('years<-',t)));
@@ -32,8 +30,8 @@ parseMC.PrM2M<-function(rsp,i,dims){
         sdv_x<-dimArray(list(dims=dims),'x');
         for (xp in 1:dims$x$n){
             x<-rsp[[i]][1]; 
-            z50_x[x]<-parseNum(rsp[[i]][2]); 
-            sdv_x[x]<-parseNum(rsp[[i]][3]); 
+            z50_x[x]<-wtsUtilities::parseNum(rsp[[i]][2]); 
+            sdv_x[x]<-wtsUtilities::parseNum(rsp[[i]][3]); 
             i<-i+1;
         }#xp
         blocks[[t]]<-list(years=years,

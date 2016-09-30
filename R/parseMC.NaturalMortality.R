@@ -11,8 +11,6 @@
 #'i - index starting next section
 #'params - list object with natural mortality time blocks
 #'
-#'@import wtsUtilities
-#'
 #'@export
 #'
 parseMC.NaturalMortality<-function(rsp,i,dims){
@@ -25,7 +23,7 @@ parseMC.NaturalMortality<-function(rsp,i,dims){
     chk<-rsp[[i]][1]; i<-i+1;
     checkKeyword(chk,'NaturalMortality');
     blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
+    nt<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
     for (tp in 1:nt){
         t<-rsp[[i]][1]; i<-i+1;
         eval(parse(text=paste('years<-',t)));
@@ -35,8 +33,8 @@ parseMC.NaturalMortality<-function(rsp,i,dims){
             for (mp in 1:dims$m$n){
                 x<-rsp[[i]][1]; 
                 m<-rsp[[i]][2]; 
-                M0_xm[x,m]  <- parseNum(rsp[[i]][3]);;
-                cvM_xm[x,m] <- parseNum(rsp[[i]][4]);;
+                M0_xm[x,m]  <- wtsUtilities::parseNum(rsp[[i]][3]);;
+                cvM_xm[x,m] <- wtsUtilities::parseNum(rsp[[i]][4]);;
                 i<-i+1;
             }
         }

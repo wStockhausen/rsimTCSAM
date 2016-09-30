@@ -11,8 +11,6 @@
 #'i - index starting next section
 #'params - list object with growth time blocks
 #'
-#'@import wtsUtilities
-#'
 #'@export
 #'
 parseMC.Growth<-function(rsp,i,dims){
@@ -24,7 +22,7 @@ parseMC.Growth<-function(rsp,i,dims){
     chk<-rsp[[i]][1]; i<-i+1;
     checkKeyword(chk,'Growth');
     blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
+    nt<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
     for (tp in 1:nt){
         t<-rsp[[i]][1]; i<-i+1;
         eval(parse(text=paste('years<-',t)));
@@ -33,9 +31,9 @@ parseMC.Growth<-function(rsp,i,dims){
         s<-dimArray(list(dims=dims),'x');
         for (xp in 1:dims$x$n){
             x<-rsp[[i]][1]; 
-            a[x]<-exp(parseNum(rsp[[i]][2])); 
-            b[x]<-exp(parseNum(rsp[[i]][3])); 
-            s[x]<-exp(parseNum(rsp[[i]][4])); 
+            a[x]<-exp(wtsUtilities::parseNum(rsp[[i]][2])); 
+            b[x]<-exp(wtsUtilities::parseNum(rsp[[i]][3])); 
+            s[x]<-exp(wtsUtilities::parseNum(rsp[[i]][4])); 
             i<-i+1;
         }#xp
         blocks[[t]]<-list(years=years,

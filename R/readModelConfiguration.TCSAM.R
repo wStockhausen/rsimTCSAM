@@ -8,14 +8,12 @@
 #'
 #'@return model configuration list object
 #'
-#'@import wtsUtilities 
-#'
 #'@export
 #'
 readModelConfiguration.TCSAM<-function(fn=NULL,ext='dat'){
     #get file name to read
     if (is.null(fn)){
-        fn<-selectFile(ext,caption='Select rsimTCSAM configuration file');
+        fn<-wtsUtilities::selectFile(ext,caption='Select rsimTCSAM configuration file');
         if (is.null(fn)) return(NULL);
     }
     
@@ -61,8 +59,8 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='dat'){
     checkKeyword(chk,'PARAMETERS');
     
     #mating and fishing times
-    params$mate.time<-parseNum(rsp[[i]][1]); i<-i+1;
-    params$fish.time<-parseNum(rsp[[i]][1]); i<-i+1;
+    params$mate.time<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
+    params$fish.time<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
     cat('--read mate.time, fish.time\n')
         
     #weight at size
@@ -89,7 +87,7 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='dat'){
     chk<-rsp[[i]][1]; i<-i+1;
     checkKeyword(chk,'Molting');
     blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
+    nt<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
     for (tp in 1:nt){
         t<-rsp[[i]][1]; i<-i+1;
         eval(parse(text=paste('years<-',t)));
@@ -99,8 +97,8 @@ readModelConfiguration.TCSAM<-function(fn=NULL,ext='dat'){
             for (sp in 1:dims$s$n){
                 x<-rsp[[i]][1]; 
                 s<-rsp[[i]][2]; 
-                z50_xs[x,s]<-parseNum(rsp[[i]][3]); 
-                sdv_xs[x,s]<-parseNum(rsp[[i]][4]); 
+                z50_xs[x,s]<-wtsUtilities::parseNum(rsp[[i]][3]); 
+                sdv_xs[x,s]<-wtsUtilities::parseNum(rsp[[i]][4]); 
                 i<-i+1;
             }#sp
         }#xp

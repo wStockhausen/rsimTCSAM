@@ -11,8 +11,6 @@
 #'i - index starting next section
 #'fisheries - list object with fisheries info
 #'
-#'@import wtsUtilities
-#'
 #'@export
 #'
 parseMC.Fisheries<-function(rsp,i,dims){
@@ -30,18 +28,18 @@ parseMC.Fisheries<-function(rsp,i,dims){
         dscOI<-parseMC.OutputInfo(rsp,i); i<-dscOI$i;#discard catch output info
         totOI<-parseMC.OutputInfo(rsp,i); i<-totOI$i;#total catch output info
         blocks<-list();
-        nt<-parseNum(rsp[[i]][1]); i<-i+1;
+        nt<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
         for (tp in 1:nt){
             t<-rsp[[i]][1]; i<-i+1;
             eval(parse(text=paste('years<-',t)));
             params<-list();
             for (ix in 1:dims$x$n){
                 x    <-rsp[[i]][1];          #sex
-                hm   <-parseNum(rsp[[i]][2]);#handling mortality
-                lnF  <-parseNum(rsp[[i]][3]);#log(F)
-                sdF  <-parseNum(rsp[[i]][4]);#sd(F)
-                idSel<-parseNum(rsp[[i]][5]);#selectivityfunction index
-                idRet<-parseNum(rsp[[i]][6]);#retention function index
+                hm   <-wtsUtilities::parseNum(rsp[[i]][2]);#handling mortality
+                lnF  <-wtsUtilities::parseNum(rsp[[i]][3]);#log(F)
+                sdF  <-wtsUtilities::parseNum(rsp[[i]][4]);#sd(F)
+                idSel<-wtsUtilities::parseNum(rsp[[i]][5]);#selectivityfunction index
+                idRet<-wtsUtilities::parseNum(rsp[[i]][6]);#retention function index
                 params[[x]]<-list(hm=hm,lnF=lnF,sdF=sdF,idSel=idSel,idRet=idRet);
                 i<-i+1;
             }#ix

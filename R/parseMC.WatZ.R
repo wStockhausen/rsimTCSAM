@@ -11,8 +11,6 @@
 #'i - index starting next section
 #'params - list object with weight-at-size time blocks
 #'
-#'@import wtsUtilities
-#'
 #'@export
 #'
 parseMC.WatZ<-function(rsp,i,dims){
@@ -24,7 +22,7 @@ parseMC.WatZ<-function(rsp,i,dims){
     chk<-rsp[[i]][1]; i<-i+1;
     checkKeyword(chk,'WatZ');
     blocks<-list();
-    nt<-parseNum(rsp[[i]][1]); i<-i+1;
+    nt<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
     for (tp in 1:nt){
         t<-rsp[[i]][1]; i<-i+1;
         eval(parse(text=paste('years<-',t)));
@@ -34,8 +32,8 @@ parseMC.WatZ<-function(rsp,i,dims){
             for (mp in 1:dims$m$n){
                 x<-rsp[[i]][1]; 
                 m<-rsp[[i]][2]; 
-                av<-parseNum(rsp[[i]][3]); 
-                bv<-parseNum(rsp[[i]][4]);
+                av<-wtsUtilities::parseNum(rsp[[i]][3]); 
+                bv<-wtsUtilities::parseNum(rsp[[i]][4]);
                 a[x,m]<-av;
                 b[x,m]<-bv;
                 i<-i+1;

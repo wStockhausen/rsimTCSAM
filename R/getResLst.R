@@ -36,16 +36,16 @@ getResLst<-function(path=NULL){
 
     cat("Reading model report from file:\n",path,"\n")
     source(path,local=TRUE);
-    if(!any(names(res)=='mc')){
+    if(!any(names(rsim)=='mc')){
             cat("The file '",path,"'\n",
                 "\tdoes not appear to be a rsimTCSAM model results file.\n",
                 "\trsimTCSAM results files are R lists, with 'mc' as the first element.\n",
                 "\tReturning NULL.\n",sep="");
             return(NULL);
     }
-    class(res)<-c('rsimTCSAM',class(res));#set class attribute to 'rsimTCSAM' for identification
+    class(rsim)<-c('rsimTCSAM',class(rsim));#set class attribute to 'rsimTCSAM' for identification
     
-    resLst<-list(rep=res);
+    resLst<-list(rep=rsim);
     class(resLst)<-c('rsimTCSAM.resLst',class(resLst));
 
     return(resLst);

@@ -11,8 +11,6 @@
 #'i - index starting next section
 #'selfcns - list object with selectivity info (type,params,label)
 #'
-#'@import wtsUtilities
-#'
 #'@export
 #'
 parseMC.SelFcns<-function(rsp,i,dims){
@@ -20,12 +18,12 @@ parseMC.SelFcns<-function(rsp,i,dims){
     checkKeyword(chk,'Selectivity');
     
     selfcns<-list();
-    ns<-parseNum(rsp[[i]][1]); i<-i+1;
+    ns<-wtsUtilities::parseNum(rsp[[i]][1]); i<-i+1;
     for (s in 1:ns){
-        idx<-parseNum(rsp[[i]][1]);
+        idx<-wtsUtilities::parseNum(rsp[[i]][1]);
         ft<-rsp[[i]][2];               #function type
-        np<-parseNum(rsp[[i]][3]);     #number of parameters for function
-        ps<-parseNum(rsp[[i]][3+1:np]);#parameter values
+        np<-wtsUtilities::parseNum(rsp[[i]][3]);     #number of parameters for function
+        ps<-wtsUtilities::parseNum(rsp[[i]][3+1:np]);#parameter values
         nm<-rsp[[i]][3+np+1];          #function label
         selfcns[[s]]<-list(type=ft,params=ps,label=nm);
         i<-i+1;
