@@ -13,9 +13,9 @@
 #'
 #'@export
 #'
-getMDFR.NatMort<-function(rsims,
-                          type=c('M_cxm','M_yxm','M_yxmsz'),
-                          verbose=FALSE){
+getMDFR.Pop.NaturalMortality<-function(rsims,
+                                      type=c('M_cxm','M_yxm','M_yxmsz'),
+                                      verbose=FALSE){
     if (verbose) cat("--Getting natural mortality info\n");
     if (inherits(rsims,'rsimTCSAM')){
         rsims<-list(rsim=rsims);#wrap in list

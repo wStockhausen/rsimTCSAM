@@ -1,7 +1,7 @@
 #'
-#'@title Get recruitment size distribution from model results from rsimTCSAM model runs as a dataframe
+#'@title Get mean growth increments from model results from TCSAM2015 and rsimTCSAM model runs as a dataframe
 #'
-#'@description Function to get recruitment size distribution from model results from rsimTCSAM model runs as a dataframe.
+#'@description Function to get mean growth increments from model results from TCSAM2015 and rsimTCSAM model runs as a dataframe.
 #'
 #'@param rsims - single rsimTCSAM results object, or named list of such
 #'@param verbose - flag (T/F) to print debug info
@@ -12,21 +12,20 @@
 #'
 #'@export
 #'
-getMDFR.RecSizeDistribution<-function(rsims,verbose=FALSE){
-    if (verbose) cat("--Getting recruitment size distribution.\n");
+getMDFR.Pop.MeanGrowthIncrements<-function(rsims,verbose=FALSE){
+    if (verbose) cat("--Getting mean growth increments\n");
     if (inherits(rsims,'rsimTCSAM')){
         rsims<-list(rsim=rsims);#wrap in list
     }
     
-    path<-'mp/R_list/R_cz';
-    mdfrp<-getMDFR(path,rsims,verbose);
+    mdfrp<-getMDFR('mp/T_list/mnZAM_cxz',rsims,verbose);
     mdfrp$y<-'';
     ums<-as.character(unique(mdfrp$case))
     for (um in ums){
         idx<-(mdfrp$case==um);
-        mdfrp$y[idx]<-reformatTimeBlocks(mdfrp$pc[idx],rsims[[um]]$mc$dims);
+        mdfrp$y[idx]<-reformatTimeBlocks(mdfrp$pc[idx],rsims[[um]]$mc$dims)
     }
-    mdfrp<-mdfrp[,c('case','pc','y','z','val')];
+    mdfrp<-mdfrp[,c('case','pc','y','x','z','val')];
 
     mdfr<-getMDFR.CanonicalFormat(mdfrp);
 

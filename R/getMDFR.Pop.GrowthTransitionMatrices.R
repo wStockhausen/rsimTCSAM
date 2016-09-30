@@ -13,7 +13,7 @@
 #'
 #'@export
 #'
-getMDFR.GrowthTransitionMatrices<-function(rsims,verbose=FALSE){
+getMDFR.Pop.GrowthTransitionMatrices<-function(rsims,verbose=FALSE){
     if (verbose) cat("--Getting growth transition matrices.\n");
     if (inherits(rsims,'rsimTCSAM')){
         rsims<-list(rsim=rsims);#wrap in list
