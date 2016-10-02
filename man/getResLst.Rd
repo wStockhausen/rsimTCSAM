@@ -4,10 +4,14 @@
 \alias{getResLst}
 \title{Create a rsimTCSAM.resLst object from a model run}
 \usage{
-getResLst(path = NULL)
+getResLst(path = NULL, rep = "rsimTCSAM.RData", verbose = FALSE)
 }
 \arguments{
-\item{path}{- path to .RData object containing model run}
+\item{path}{- path to folder with .RData object containing model run}
+
+\item{rep}{- filename of .RData file}
+
+\item{verbose}{- flag (T/F) to print diagnostic information}
 }
 \value{
 a rsimTCSAM.resLst object.

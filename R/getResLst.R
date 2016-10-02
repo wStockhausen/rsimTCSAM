@@ -3,7 +3,9 @@
 #'
 #'@description Function to create a rsimTCSAM.resLst object from a model run.
 #'
-#'@param path - path to .RData object containing model run
+#'@param path - path to folder with .RData object containing model run
+#'@param rep - filename of .RData file
+#'@param verbose - flag (T/F) to print diagnostic information
 #'
 #'@return a rsimTCSAM.resLst object.
 #'
@@ -15,15 +17,18 @@
 #'
 #'@export
 #'
-getResLst<-function(path=NULL){
+getResLst<-function(path=NULL,rep="rsimTCSAM.RData",verbose=FALSE){
     if (is.null(path)){
-        path<-tcltk::tk_choose.files(default="rsim.RData",
+        path<-tcltk::tk_choose.files(default="rsimTCSAM.RData",
                                      caption="Select file with model results",
+                                     multi=FALSE,
                                      filters=matrix(data=c("*.RData",".RData"),nrow=1,ncol=2));
         if (length(path)==0) {
             cat("User canceled file selection!! Returning NULL as model results.\n")
             return(NULL);#user canceled file selection
         }
+    } else {
+        path<-file.path(path,rep);
     }
 
     if (!file.exists(path)) {
@@ -34,8 +39,8 @@ getResLst<-function(path=NULL){
     }
 
 
-    cat("Reading model report from file:\n",path,"\n")
-    source(path,local=TRUE);
+    cat("rsimTCSAM::getResLst(...): Reading model report from file:\n'",path,"'\n",sep='')
+    load(path,verbose=verbose);
     if(!any(names(rsim)=='mc')){
             cat("The file '",path,"'\n",
                 "\tdoes not appear to be a rsimTCSAM model results file.\n",
@@ -43,10 +48,11 @@ getResLst<-function(path=NULL){
                 "\tReturning NULL.\n",sep="");
             return(NULL);
     }
-    class(rsim)<-c('rsimTCSAM',class(rsim));#set class attribute to 'rsimTCSAM' for identification
+    if (!inherits(rsim,'rsimTCSAM')) class(rsim)<-c('rsimTCSAM',class(rsim));#set class attribute to 'rsimTCSAM' for identification
     
     resLst<-list(rep=rsim);
     class(resLst)<-c('rsimTCSAM.resLst',class(resLst));
 
+    cat("rsimTCSAM::getResLst(...): Done!\n");
     return(resLst);
 }

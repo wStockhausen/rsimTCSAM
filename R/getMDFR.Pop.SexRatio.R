@@ -14,8 +14,15 @@
 #'
 getMDFR.Pop.SexRatio<-function(rsims,verbose=FALSE){
     if (verbose) cat("--Getting recruitment sex ratio.\n");
+
     if (inherits(rsims,'rsimTCSAM')){
-        rsims<-list(rsim=rsims);#wrap in list
+        #rsims is a rsimTCSAM model object
+        rsims<-list(rep=rsims);
+        class(rsims)<-c("rsimTCSAM.resLst",class(rsims));
+    }
+    if (inherits(rsims,'rsimTCSAM.resLst')){
+        #rsims is a rsimTCSAM.resLst model object
+        rsims<-list(rsim=rsims);
     }
     
     path<-'mp/R_list/Rx_c';
@@ -24,7 +31,9 @@ getMDFR.Pop.SexRatio<-function(rsims,verbose=FALSE){
     ums<-as.character(unique(mdfrp$case))
     for (um in ums){
         idx<-(mdfrp$case==um);
-        mdfrp$y[idx]<-reformatTimeBlocks(mdfrp$pc[idx],rsims[[um]]$mc$dims);
+        rsim<-rsims[[um]];
+        if (inherits(rsim,"rsimTCSAM.resLst")) rsim<-rsim$rep;
+        mdfrp$y[idx]<-reformatTimeBlocks(mdfrp$pc[idx],rsim$mc$dims);
     }
     mdfrp<-mdfrp[,c('case','pc','y','val')];
 

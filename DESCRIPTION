@@ -1,8 +1,8 @@
 Package: rsimTCSAM
 Type: Package
 Title: Simulation model for testing TCSAM01 and TCSAM02 models.
-Version: 2016.09.28
-Date: 2016-09-28
+Version: 2016.10.01
+Date: 2016-10-01
 Author: William Stockhausen
 Maintainer: William Stockhausen <william.stockhausen@noaa.gov>
 Description: This provides a simulation model for testing the 

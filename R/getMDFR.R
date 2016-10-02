@@ -24,6 +24,14 @@ getMDFR<-function(path,rsims,verbose=FALSE){
             mdfrp$case<-'rsim';
             mdfr<-rbind(mdfr,mdfrp)
         }
+    } else if (inherits(rsims,'rsimTCSAM.resLst')){
+        #rsims is a rsimTCSAM.resLst model object
+        obj<-getObj(path,rsims$rep,verbose=verbose);
+        if (!is.null(obj)){
+            mdfrp<-reshape2::melt(obj,value.name='val',as.is=TRUE);
+            mdfrp$case<-'rsim';
+            mdfr<-rbind(mdfr,mdfrp)
+        }
     } else if (class(rsims)=='list'){
         #rsims is a list of rsimTCSAM model objects
         nl<-length(rsims);
@@ -38,16 +46,16 @@ getMDFR<-function(path,rsims,verbose=FALSE){
         }
     }
 
-    if (!is.null(mdfr)){
-        cns<-colnames(mdfr);
-        chks<-c('y','z','zp');
-        for (chk in chks){
-            idx<-which(cns==chk);
-            if (length(idx)>0) mdfr[,chk]<-as.numeric(mdfr[,chk]);
-        }
-    }
+    # if (!is.null(mdfr)){
+    #     cns<-colnames(mdfr);
+    #     chks<-c('y','z','zp');
+    #     for (chk in chks){
+    #         idx<-which(cns==chk);
+    #         if (length(idx)>0) mdfr[,chk]<-as.numeric(mdfr[,chk]);
+    #     }
+    # }
     
-    mdfr<-getMDFR.CanonicalFormat(mdfr);
+    if (!is.null(mdfr)) mdfr<-getMDFR.CanonicalFormat(mdfr);
     
     return(mdfr);
 }

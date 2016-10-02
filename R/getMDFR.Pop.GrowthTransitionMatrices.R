@@ -16,14 +16,27 @@
 getMDFR.Pop.GrowthTransitionMatrices<-function(rsims,verbose=FALSE){
     if (verbose) cat("--Getting growth transition matrices.\n");
 
+    if (inherits(rsims,'rsimTCSAM')){
+        #rsims is a rsimTCSAM model object
+        rsims<-list(rep=rsims);
+        class(rsims)<-c("rsimTCSAM.resLst",class(rsims));
+    }
+    if (inherits(rsims,'rsimTCSAM.resLst')){
+        #rsims is a rsimTCSAM.resLst model object
+        rsims<-list(rsim=rsims);
+    }
+    
     mdfrp<-getMDFR('mp/T_list/T_cxzz',rsims,verbose);
     mdfrp$y<-'';
     ums<-as.character(unique(mdfrp$case))
     for (um in ums){
         idx<-(mdfrp$case==um);
-        mdfrp$y[idx]<-reformatTimeBlocks(mdfrp$pc[idx],rsims[[um]]$mc$dims);
-        mdfrp<-mdfrp[,c('case','pc','y','x','z','zp','val')];
+        rsim<-rsims[[um]];
+        if (inherits(rsim,"rsimTCSAM.resLst")) rsim<-rsim$rep;
+        mdfrp$y[idx]<-reformatTimeBlocks(mdfrp$pc[idx],rsim$mc$dims);
     }
+    mdfrp<-mdfrp[,c('case','pc','y','x','z','zp','val')];
+    
     #in mdfrp above, 'z' is post-molt size, 'zp' is pre-molt size
     #"transpose" matrices so 'z' represents pre-molt size, 'zp' post-molt size
     zp<-mdfrp$z;

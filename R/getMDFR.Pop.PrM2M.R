@@ -16,12 +16,24 @@
 getMDFR.Pop.PrM2M<-function(rsims,verbose=FALSE){
     if (verbose) cat("--Getting molt-to-maturity ogives.\n");
 
+    if (inherits(rsims,'rsimTCSAM')){
+        #rsims is a rsimTCSAM model object
+        rsims<-list(rep=rsims);
+        class(rsims)<-c("rsimTCSAM.resLst",class(rsims));
+    }
+    if (inherits(rsims,'rsimTCSAM.resLst')){
+        #rsims is a rsimTCSAM.resLst model object
+        rsims<-list(rsim=rsims);
+    }
+    
     mdfrp<-getMDFR('mp/prM2M_cxz',rsims,verbose);
     mdfrp$y<-'';
     ums<-as.character(unique(mdfrp$case));
     for (um in ums){
         idx<-(mdfrp$case==um);
-        mdfrp$y[idx]<-reformatTimeBlocks(mdfrp$pc[idx],rsims[[um]]$mc$dims);
+        rsim<-rsims[[um]];
+        if (inherits(rsim,"rsimTCSAM.resLst")) rsim<-rsim$rep;
+        mdfrp$y[idx]<-reformatTimeBlocks(mdfrp$pc[idx],rsim$mc$dims);
     }
     mdfrp<-mdfrp[,c('case','pc','y','x','z','val')];
 
