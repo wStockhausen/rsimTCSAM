@@ -13,8 +13,8 @@
 #'
 #'@export
 #'
-getMDFR.Pop.GrowthTransitionMatrices<-function(rsims,verbose=FALSE){
-    if (verbose) cat("--Getting growth transition matrices.\n");
+getMDFR.Pop.GrowthMatrices<-function(rsims,verbose=FALSE){
+    if (verbose) cat("--rsimTCSAM::Getting growth transition matrices.\n");
 
     if (inherits(rsims,'rsimTCSAM')){
         #rsims is a rsimTCSAM model object
@@ -48,6 +48,6 @@ getMDFR.Pop.GrowthTransitionMatrices<-function(rsims,verbose=FALSE){
     mdfr$m<-"immature";
     mdfr$s<-"all";
     
-    if (verbose) cat("--Done. \n");
+    if (verbose) cat("--rsimTCSAM::Done. \n");
     return(mdfr);
 }

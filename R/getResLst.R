@@ -31,6 +31,7 @@ getResLst<-function(path=NULL,rep="rsimTCSAM.RData",verbose=FALSE){
         path<-file.path(path,rep);
     }
 
+    cat("rsimTCSAM::getResLst(...): Reading model report from file:\n'",path,"'\n",sep='')
     if (!file.exists(path)) {
         cat("Warning from getResLst(...).\n");
         cat("--The following file does not exist:\n\t'",path,"'\n",sep='');
@@ -38,8 +39,6 @@ getResLst<-function(path=NULL,rep="rsimTCSAM.RData",verbose=FALSE){
         return(NULL);
     }
 
-
-    cat("rsimTCSAM::getResLst(...): Reading model report from file:\n'",path,"'\n",sep='')
     load(path,verbose=verbose);
     if(!any(names(rsim)=='mc')){
             cat("The file '",path,"'\n",

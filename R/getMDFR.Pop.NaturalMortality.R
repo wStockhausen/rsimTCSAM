@@ -16,7 +16,7 @@
 getMDFR.Pop.NaturalMortality<-function(rsims,
                                       type=c('M_cxm','M_yxm','M_yxmsz'),
                                       verbose=FALSE){
-    if (verbose) cat("--Getting natural mortality info\n");
+    if (verbose) cat("--rsimTCSAM::Getting natural mortality info\n");
     if (inherits(rsims,'rsimTCSAM')){
         #rsims is a rsimTCSAM model object
         rsims<-list(rep=rsims);
@@ -49,6 +49,6 @@ getMDFR.Pop.NaturalMortality<-function(rsims,
 
     mdfr<-getMDFR.CanonicalFormat(mdfrp);
 
-    if (verbose) cat("--Done. \n");
+    if (verbose) cat("--rsimTCSAM::getMDFR.Pop.NaturalMortality: Done! \n");
     return(mdfr);
 }

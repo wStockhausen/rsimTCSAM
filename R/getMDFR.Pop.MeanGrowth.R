@@ -12,7 +12,7 @@
 #'
 #'@export
 #'
-getMDFR.Pop.MeanGrowthIncrements<-function(rsims,verbose=FALSE){
+getMDFR.Pop.MeanGrowth<-function(rsims,verbose=FALSE){
     if (verbose) cat("--Getting mean growth increments\n");
 
     if (inherits(rsims,'rsimTCSAM')){
