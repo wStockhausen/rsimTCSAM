@@ -28,7 +28,7 @@ getMDFR.CanonicalFormat<-function(mdfr){
         mdfr[['fleet']]<-mdfr$v;
         mdfr$type <-"surveys";
     }
-    if (!('pc' %in% nms))       mdfr[['pc']]      <-"";
+    if (!('pc' %in% nms)) mdfr[['pc']]<-"";
     if (!('y' %in% nms)) mdfr[['y']]<-"all";
     if (!('x' %in% nms)) mdfr[['x']]<-"all";
     if (!('m' %in% nms)) mdfr[['m']]<-"all";
@@ -42,13 +42,7 @@ getMDFR.CanonicalFormat<-function(mdfr){
     }
     
     #check for fisheries and surveys info
-    if ('f' %in% nms) {
-        mdfr$type<-'fishery';
-        mdfr$fleet<-mdfr$f;
-    } else if ('v' %in% nms) {
-        mdfr$type<-'survey';
-        mdfr$fleet<-mdfr$v;
-    } else {
+    if (all(mdfr$type=='')) {
         mdfr$type<-'population';
         mdfr$fleet<-'';
     }
