@@ -1,5 +1,5 @@
 #'
-#'@title Calculate initial size compositions.
+#'@title Calculate initial size compositions
 #'
 #'@description Function to calculate initial size compositions.
 #'
@@ -10,6 +10,8 @@
 #'
 #'@import reshape2
 #'@import ggplot2
+#'
+#'@details None.
 #'
 #'@export
 #'

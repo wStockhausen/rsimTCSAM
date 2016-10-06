@@ -12,6 +12,8 @@ calcNatZ.Fisheries(mc, mp, N_yxmsz, showPlot = TRUE)
 \item{mp}{- model processes list object}
 
 \item{N_yxmsz}{- numbers at size array}
+
+\item{showPlot}{- flag to show plot.}
 }
 \value{
 list with the following elements:
@@ -33,5 +35,8 @@ dmN_fyxmsz: 6-d array of discard mortality by fishery/year/sex/maturity/shell co
 }
 \description{
 Function to calculate fishery catches, mortality at size through the model time interval
+}
+\details{
+None.
 }
 

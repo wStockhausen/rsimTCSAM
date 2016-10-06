@@ -18,6 +18,16 @@ getMDFR.CanonicalFormat<-function(mdfr){
     if (!('type' %in% nms))     mdfr[['type']]    <-"";
     if (!('category' %in% nms)) mdfr[['category']]<-"";
     if (!('fleet' %in% nms))    mdfr[['fleet']]   <-"";
+    if (('f' %in% nms)) {
+        #convert fisheries to fleets
+        mdfr$fleet<-mdfr$f;
+        mdfr$type <-"fisheries";
+    }
+    if (('v' %in% nms)){
+        #convert surveys to fleets
+        mdfr[['fleet']]<-mdfr$v;
+        mdfr$type <-"surveys";
+    }
     if (!('pc' %in% nms))       mdfr[['pc']]      <-"";
     if (!('y' %in% nms)) mdfr[['y']]<-"all";
     if (!('x' %in% nms)) mdfr[['x']]<-"all";
@@ -25,6 +35,7 @@ getMDFR.CanonicalFormat<-function(mdfr){
     if (!('s' %in% nms)) mdfr[['s']]<-"all";
     if (!('z' %in% nms)) mdfr[['z']]<-"all";
     if (!('val' %in% nms)) mdfr[['val']]<-NA;
+    if ('.' %in% nms) mdfr$val<-mdfr[['.']];
     if (!('zp' %in% nms)) {
         if (!('lci' %in% nms)) mdfr[['lci']]<-NA;
         if (!('uci' %in% nms)) mdfr[['uci']]<-NA;

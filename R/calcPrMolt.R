@@ -1,5 +1,5 @@
 #'
-#'@title Calculate probability at size of molting for immature crab by sex, shell condition.
+#'@title Calculate probability at size of molting for immature crab by sex, shell condition
 #'
 #'@title Function to calculate probability at size of molting for immature crab by sex, shell condition.
 #'
@@ -7,6 +7,8 @@
 #'@param showPlot - flag to show plots
 #'
 #'@return prMolt_yxsz
+#'
+#'@details None.
 #'
 #'@import reshape2
 #'@import ggplot2

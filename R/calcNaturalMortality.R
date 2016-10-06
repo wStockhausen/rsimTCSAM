@@ -1,9 +1,12 @@
 #'
-#'@title Calculate natural mortality.
+#'@title Calculate natural mortality
 #'
 #'@param mc - model configuration object
+#'@param showPlot - flag to show plot.
 #'
 #'@return list  with array M_yxmsz and M_cxm
+#'
+#'@details None.
 #'
 #'@import reshape2
 #'@import ggplot2

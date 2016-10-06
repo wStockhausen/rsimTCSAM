@@ -23,4 +23,7 @@ N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/s
 \description{
 Function to project population numbers at size forward through the model time interval
 }
+\details{
+None.
+}
 

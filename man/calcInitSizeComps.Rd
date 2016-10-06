@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcInitSizeComps.R
 \name{calcInitSizeComps}
 \alias{calcInitSizeComps}
-\title{Calculate initial size compositions.}
+\title{Calculate initial size compositions}
 \usage{
 calcInitSizeComps(mc, mp, showPlot = TRUE)
 }
@@ -16,5 +16,8 @@ n_xmsz: 4-d array of initial population abundance by sex/maturity/shell conditio
 }
 \description{
 Function to calculate initial size compositions.
+}
+\details{
+None.
 }
 

@@ -1,5 +1,5 @@
 #'
-#'@title Add error to "observations.
+#'@title Add error to "observations
 #'
 #'@description Function to add error to "observations".
 #'
@@ -10,6 +10,8 @@
 #'@param type - error distribution (NORMAL, LOGNORMAL, MULTINOMIAL)
 #'
 #'@return number (or, if x is a vector, vector) with error(s) added
+#'
+#'@details None.
 #'
 #'@export
 #'

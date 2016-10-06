@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcPrMolt.R
 \name{calcPrMolt}
 \alias{calcPrMolt}
-\title{Calculate probability at size of molting for immature crab by sex, shell condition.}
+\title{Calculate probability at size of molting for immature crab by sex, shell condition}
 \usage{
 calcPrMolt(mc, showPlot = TRUE)
 }
@@ -13,5 +13,8 @@ calcPrMolt(mc, showPlot = TRUE)
 }
 \value{
 prMolt_yxsz
+}
+\details{
+None.
 }
 

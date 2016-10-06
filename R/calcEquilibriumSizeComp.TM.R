@@ -1,6 +1,6 @@
 #'
 #'@title Calculate the equilibrium size composition for one sex of a terminally-molting species with
-#'two maturity states and two shell conditions.
+#'two maturity states and two shell conditions
 #'
 #'@description Function to calculate the equilibrium size composition for one sex of a terminally-molting species with
 #'two maturity states and two shell conditions.
@@ -14,6 +14,8 @@
 #'@param S2_msz - 3d array of pr(survival) from mating/molting to end of year by maturity state, shell condition, size class
 #'
 #'@return n_msz, a 3d array with equilibrium numbers-at-size
+#'
+#'@details None.
 #'
 #'@export
 #'

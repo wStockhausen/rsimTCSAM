@@ -6,6 +6,7 @@
 #'@param mc - model configuration list object
 #'@param mp - model processes list object
 #'@param N_yxmsz - numbers at size array
+#'@param showPlot - flag to show plot.
 #'
 #'@return list with the following elements:
 #'cpN_fyxms:  5-d array of fishery catches (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
@@ -23,6 +24,8 @@
 #'dmN_fyxms:  5-d array of discard mortality as numbers by fishery/year/sex/maturity/shell condition
 #'dmB_fyxms:  5-d array of discard mortality as biomass by fishery/year/sex/maturity/shell condition
 #'dmN_fyxmsz: 6-d array of discard mortality by fishery/year/sex/maturity/shell condition/size
+#'
+#'@details None.
 #'
 #'@import reshape2
 #'@import ggplot2

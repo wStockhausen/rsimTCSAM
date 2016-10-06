@@ -13,6 +13,8 @@
 #'B_yxms  - 4-d array of population biomass by year/sex/maturity/shell condition
 #'N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/size
 #'
+#'@details None.
+#'
 #'@import reshape2
 #'@import ggplot2
 #'@import wtsUtilities

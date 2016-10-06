@@ -2,7 +2,7 @@
 % Please edit documentation in R/addError.R
 \name{addError}
 \alias{addError}
-\title{Add error to "observations.}
+\title{Add error to "observations}
 \usage{
 addError(x, cv = NULL, ss = NULL, sdv = NULL, type = "NORMAL")
 }
@@ -22,5 +22,8 @@ number (or, if x is a vector, vector) with error(s) added
 }
 \description{
 Function to add error to "observations".
+}
+\details{
+None.
 }
 

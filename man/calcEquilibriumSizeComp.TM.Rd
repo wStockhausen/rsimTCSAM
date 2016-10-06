@@ -3,7 +3,7 @@
 \name{calcEquilibriumSizeComp.TM}
 \alias{calcEquilibriumSizeComp.TM}
 \title{Calculate the equilibrium size composition for one sex of a terminally-molting species with
-two maturity states and two shell conditions.}
+two maturity states and two shell conditions}
 \usage{
 calcEquilibriumSizeComp.TM(mc, R_z, S1_msz, P_sz, Th_sz, T_szz, S2_msz)
 }
@@ -28,5 +28,8 @@ n_msz, a 3d array with equilibrium numbers-at-size
 \description{
 Function to calculate the equilibrium size composition for one sex of a terminally-molting species with
 two maturity states and two shell conditions.
+}
+\details{
+None.
 }
 

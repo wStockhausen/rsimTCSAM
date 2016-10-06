@@ -1,5 +1,5 @@
 #'
-#'@title Calculate size-specific fishery capture and retention rates.
+#'@title Calculate size-specific fishery capture and retention rates
 #'
 #'@description Function to calculate size-specific fishery capture and retention rates.
 #'
@@ -18,6 +18,8 @@
 #'rmF_fyxmsz - size-specific retention mortality rate
 #'dmF_fyxmsz - size-specific discard mortality rate
 #'tmF_yxmsz  - total fishing mortality across all fisheries
+#'
+#'@details None.
 #'
 #'@import reshape2
 #'@import ggplot2

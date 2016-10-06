@@ -12,6 +12,8 @@
 #'B_vyxms: 5-d array of survey biomass by year/sex/maturity/shell condition
 #'N_vyxmsz: 6-d array of survey numbers by year/sex/maturity/shell condition/size
 #'
+#'@details None.
+#'
 #'@import reshape2
 #'@import ggplot2
 #'@import wtsUtilities

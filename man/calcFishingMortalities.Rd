@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcFishingMortalities.R
 \name{calcFishingMortalities}
 \alias{calcFishingMortalities}
-\title{Calculate size-specific fishery capture and retention rates.}
+\title{Calculate size-specific fishery capture and retention rates}
 \usage{
 calcFishingMortalities(mc, sel_cz, showPlot = TRUE)
 }
@@ -28,5 +28,8 @@ tmF_yxmsz  - total fishing mortality across all fisheries
 }
 \description{
 Function to calculate size-specific fishery capture and retention rates.
+}
+\details{
+None.
 }
 

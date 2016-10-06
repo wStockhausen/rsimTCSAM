@@ -22,4 +22,7 @@ N_vyxmsz: 6-d array of survey numbers by year/sex/maturity/shell condition/size
 \description{
 Function to calculate survey numbers at size through the model time interval
 }
+\details{
+None.
+}
 

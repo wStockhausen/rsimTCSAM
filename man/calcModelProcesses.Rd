@@ -15,6 +15,9 @@ calcModelProcesses(mc, showPlot = TRUE)
 mp - list object for model processes
 }
 \description{
-Function to calculate model processes prior to running the model
+Function to calculate model processes prior to running the model.
+}
+\details{
+None.
 }
 

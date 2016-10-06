@@ -2,14 +2,19 @@
 % Please edit documentation in R/calcNaturalMortality.R
 \name{calcNaturalMortality}
 \alias{calcNaturalMortality}
-\title{Calculate natural mortality.}
+\title{Calculate natural mortality}
 \usage{
 calcNaturalMortality(mc, showPlot = TRUE)
 }
 \arguments{
 \item{mc}{- model configuration object}
+
+\item{showPlot}{- flag to show plot.}
 }
 \value{
 list  with array M_yxmsz and M_cxm
+}
+\details{
+None.
 }
 

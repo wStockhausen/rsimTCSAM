@@ -1,5 +1,5 @@
 #'
-#'@title Calculate probability-at-size (pre-molt) for immature crab that a molt is to maturity, by sex and shell condition.
+#'@title Calculate probability-at-size (pre-molt) for immature crab that a molt is to maturity, by sex and shell condition
 #'
 #'@title Function to calculate probability-at-size (pre-molt) for immature crab that a molt is to maturity, by sex and shell condition.
 #'
@@ -9,6 +9,8 @@
 #'@return list with elements:
 #'prM2M_cxz
 #'prM2M_yxsz
+#'
+#'@details None.
 #'
 #'@import reshape2
 #'@import ggplot2

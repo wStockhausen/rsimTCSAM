@@ -1,10 +1,12 @@
 #'
 #'@title Calculate model processes
 #'
-#'@description Function to calculate model processes prior to running the model
+#'@description Function to calculate model processes prior to running the model.
 #'
 #'@param mc - model configuration list object
 #'@param showPlot - flag (T/F) to show plots
+#'
+#'@details None.
 #'
 #'@return mp - list object for model processes
 #'

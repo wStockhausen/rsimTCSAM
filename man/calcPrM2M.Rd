@@ -2,7 +2,7 @@
 % Please edit documentation in R/calcPrM2M.R
 \name{calcPrM2M}
 \alias{calcPrM2M}
-\title{Calculate probability-at-size (pre-molt) for immature crab that a molt is to maturity, by sex and shell condition.}
+\title{Calculate probability-at-size (pre-molt) for immature crab that a molt is to maturity, by sex and shell condition}
 \usage{
 calcPrM2M(mc, showPlot = TRUE)
 }
@@ -15,5 +15,8 @@ calcPrM2M(mc, showPlot = TRUE)
 list with elements:
 prM2M_cxz
 prM2M_yxsz
+}
+\details{
+None.
 }
 
