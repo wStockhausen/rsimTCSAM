@@ -18,6 +18,7 @@ list with the following elements:
 N_vyxms: 5-d array of survey numbers by year/sex/maturity/shell condition
 B_vyxms: 5-d array of survey biomass by year/sex/maturity/shell condition
 N_vyxmsz: 6-d array of survey numbers by year/sex/maturity/shell condition/size
+B_vyxmsz: 6-d array of survey biomass by year/sex/maturity/shell condition/size
 }
 \description{
 Function to calculate survey numbers at size through the model time interval

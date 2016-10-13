@@ -12,18 +12,23 @@
 #'cpN_fyxms:  5-d array of fishery catches (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
 #'cpB_fyxms:  5-d array of fishery catches (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
 #'cpN_fyxmsz: 6-d array of fishery catches (NOT MORTALITY) by fishery/year/sex/maturity/shell condition/size
+#'cpB_fyxmsz: 6-d array of fishery catches (NOT MORTALITY) by fishery/year/sex/maturity/shell condition/size
 #'dsN_fyxms:  5-d array of fishery discard numbers (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
 #'dsB_fyxms:  5-d array of fishery discard biomass (NOT MORTALITY) by fishery/year/sex/maturity/shell condition
 #'dsN_fyxmsz: 6-d array of fishery discard numbers (NOT MORTALITY) by fishery/year/sex/maturity/shell condition/size
+#'dsB_fyxmsz: 6-d array of fishery discard numbers (NOT MORTALITY) by fishery/year/sex/maturity/shell condition/size
 #'tmN_fyxms:  5-d array of total fishery mortality as numbers by fishery/year/sex/maturity/shell condition
 #'tmB_fyxms:  5-d array of total fishery mortality as biomass by fishery/year/sex/maturity/shell condition
 #'tmN_fyxmsz: 6-d array of total fishery mortality as numbers by fishery/year/sex/maturity/shell condition/size
+#'tmB_fyxmsz: 6-d array of total fishery mortality as numbers by fishery/year/sex/maturity/shell condition/size
 #'rmN_fyxms:  5-d array of retention mortality as numbers by fishery/year/sex/maturity/shell condition
 #'rmB_fyxms:  5-d array of retention mortality as biomass by fishery/year/sex/maturity/shell condition
 #'rmN_fyxmsz: 6-d array of retention mortality by year/sex/maturity/shell condition/size
+#'rmB_fyxmsz: 6-d array of retention mortality by year/sex/maturity/shell condition/size
 #'dmN_fyxms:  5-d array of discard mortality as numbers by fishery/year/sex/maturity/shell condition
 #'dmB_fyxms:  5-d array of discard mortality as biomass by fishery/year/sex/maturity/shell condition
 #'dmN_fyxmsz: 6-d array of discard mortality by fishery/year/sex/maturity/shell condition/size
+#'dmB_fyxmsz: 6-d array of discard mortality by fishery/year/sex/maturity/shell condition/size
 #'
 #'@details None.
 #'
@@ -65,15 +70,17 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
     }#f
     
     #--Captured abundance/biomass (1000s mt) aggregated over size [NOT mortality]
-    cpN_fyxms<-dimArray(mc,'f.y.x.m.s');     #captured abundance by f,y,x,m,s
-    cpB_fyxms<-dimArray(mc,'f.y.x.m.s');     #captured biomass by f,y,x,m,s
+    cpN_fyxms <-dimArray(mc,'f.y.x.m.s');     #captured abundance by f,y,x,m,s
+    cpB_fyxms <-dimArray(mc,'f.y.x.m.s');     #captured biomass by f,y,x,m,s
+    cpB_fyxmsz<-dimArray(mc,'f.y.x.m.s.z');   #captured biomass by f,y,x,m,s,z
     for (f in d$f$nms){
+        cpB_fyxmsz[f,,,,,]<-W_yxmsz*cpN_fyxmsz[f,,,,,];
         for (y in d$y$nms){
             for (x in d$x$nms){
                 for (m in d$m$nms){
                     for (s in d$s$nms){
-                        cpN_fyxms[f,y,x,m,s]<-cpN_fyxms[f,y,x,m,s]+sum(cpN_fyxmsz[f,y,x,m,s,]);
-                        cpB_fyxms[f,y,x,m,s]<-cpB_fyxms[f,y,x,m,s]+sum(W_yxmsz[y,x,m,s,]*cpN_fyxmsz[f,y,x,m,s,]);
+                        cpN_fyxms[f,y,x,m,s] <-cpN_fyxms[f,y,x,m,s]+sum(cpN_fyxmsz[f,y,x,m,s,]);
+                        cpB_fyxms[f,y,x,m,s] <-cpB_fyxms[f,y,x,m,s]+sum(cpB_fyxmsz[f,y,x,m,s,]);
                     }#s
                 }#m
             }#x
@@ -83,13 +90,15 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
     #--Retained catch abundance/biomass (1000s mt) aggregated over size
     rmN_fyxms<-dimArray(mc,'f.y.x.m.s');     #retained abundance by f,y,x,m,s
     rmB_fyxms<-dimArray(mc,'f.y.x.m.s');     #retained biomass by f,y,x,m,s
+    rmB_fyxmsz<-dimArray(mc,'f.y.x.m.s.z');  #retained biomass by f,y,x,m,s,z
     for (f in d$f$nms){
+        rmB_fyxmsz[f,,,,,]<-W_yxmsz*rmN_fyxmsz[f,,,,,];
         for (y in d$y$nms){
             for (x in d$x$nms){
                 for (m in d$m$nms){
                     for (s in d$s$nms){
                         rmN_fyxms[f,y,x,m,s]<-rmN_fyxms[f,y,x,m,s]+sum(rmN_fyxmsz[f,y,x,m,s,]);
-                        rmB_fyxms[f,y,x,m,s]<-rmB_fyxms[f,y,x,m,s]+sum(W_yxmsz[y,x,m,s,]*rmN_fyxmsz[f,y,x,m,s,]);
+                        rmB_fyxms[f,y,x,m,s]<-rmB_fyxms[f,y,x,m,s]+sum(rmB_fyxmsz[f,y,x,m,s,]);
                     }#s
                 }#m
             }#x
@@ -97,15 +106,17 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
     }#f
     
     #--Discarded catch abundance/biomass (millions/1000s mt) [NOT mortality] aggregated over size
-    dsN_fyxms<-dimArray(mc,'f.y.x.m.s');  #discard numbers by f,y,x,m,s (NOT mortality)
-    dsB_fyxms<-dimArray(mc,'f.y.x.m.s');  #discard biomass by f,y,x,m,s (NOT mortality)
+    dsN_fyxms <-dimArray(mc,'f.y.x.m.s');  #discard numbers by f,y,x,m,s (NOT mortality)
+    dsB_fyxms <-dimArray(mc,'f.y.x.m.s');  #discard biomass by f,y,x,m,s (NOT mortality)
+    dsB_fyxmsz<-dimArray(mc,'f.y.x.m.s.z');#discard biomass by f,y,x,m,s,z
     for (f in d$f$nms){
+        dsB_fyxmsz[f,,,,,]<-W_yxmsz*dsN_fyxmsz[f,,,,,];
         for (y in d$y$nms){
             for (x in d$x$nms){
                 for (m in d$m$nms){
                     for (s in d$s$nms){
-                        dsN_fyxms[f,y,x,m,s]<-dsN_fyxms[f,y,x,m,s]+sum(cpN_fyxmsz[f,y,x,m,s,]-rmN_fyxmsz[f,y,x,m,s,]);
-                        dsB_fyxms[f,y,x,m,s]<-dsB_fyxms[f,y,x,m,s]+sum(W_yxmsz[y,x,m,s,]*(cpN_fyxmsz[f,y,x,m,s,]-rmN_fyxmsz[f,y,x,m,s,]));
+                        dsN_fyxms[f,y,x,m,s]<-dsN_fyxms[f,y,x,m,s]+sum(dsN_fyxmsz[f,y,x,m,s,]);
+                        dsB_fyxms[f,y,x,m,s]<-dsB_fyxms[f,y,x,m,s]+sum(dsB_fyxmsz[f,y,x,m,s,]);
                     }#s
                 }#m
             }#x
@@ -113,15 +124,17 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
     }#f
     
     #--Discarded catch MORTALITY in abundance/biomass (millions/1000s mt) aggregated over size
-    dmN_fyxms<-dimArray(mc,'f.y.x.m.s');  #discard mortality in numbers by f,y,x,m,s
-    dmB_fyxms<-dimArray(mc,'f.y.x.m.s');  #discard mortality in biomass by f,y,x,m,s
+    dmN_fyxms <-dimArray(mc,'f.y.x.m.s');   #discard mortality in numbers by f,y,x,m,s
+    dmB_fyxms <-dimArray(mc,'f.y.x.m.s');   #discard mortality in biomass by f,y,x,m,s
+    dmB_fyxmsz<-dimArray(mc,'f.y.x.m.s.z'); #discard mortality in biomass by f,y,x,m,s,z
     for (f in d$f$nms){
+        dmB_fyxmsz[f,,,,,]<-W_yxmsz*dmN_fyxmsz[f,,,,,];
         for (y in d$y$nms){
             for (x in d$x$nms){
                 for (m in d$m$nms){
                     for (s in d$s$nms){
                         dmN_fyxms[f,y,x,m,s]<-dmN_fyxms[f,y,x,m,s]+sum(dmN_fyxmsz[f,y,x,m,s,]);
-                        dmB_fyxms[f,y,x,m,s]<-dmB_fyxms[f,y,x,m,s]+sum(W_yxmsz[y,x,m,s,]*dmN_fyxmsz[f,y,x,m,s,]);
+                        dmB_fyxms[f,y,x,m,s]<-dmB_fyxms[f,y,x,m,s]+sum(dmB_fyxmsz[f,y,x,m,s,]);
                     }#s
                 }#m
             }#x
@@ -129,10 +142,12 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
     }#f
     
     #--total mortality numbers/biomass (millions, 1000's t) aggregated over size
-    tmN_fyxms<-dimArray(mc,'f.y.x.m.s');  #total numbers killed by f,x,y,m,s
-    tmB_fyxms<-dimArray(mc,'f.y.x.m.s');  #total biomass killed by f,x,y,m,s
-    tmN_fyxms <- rmN_fyxms+dmN_fyxms;
-    tmB_fyxms <- rmB_fyxms+dmB_fyxms;
+    tmN_fyxms <-dimArray(mc,'f.y.x.m.s');   #total numbers killed by f,x,y,m,s
+    tmB_fyxms <-dimArray(mc,'f.y.x.m.s');   #total biomass killed by f,x,y,m,s
+    tmB_fyxmsz<-dimArray(mc,'f.y.x.m.s.z'); #total biomass killed by f,y,x,m,s,z
+    tmN_fyxms  <- rmN_fyxms+dmN_fyxms;
+    tmB_fyxms  <- rmB_fyxms+dmB_fyxms;
+    tmB_fyxmsz <- rmB_fyxmsz+dmB_fyxmsz;
     
     if (showPlot){
         #retained mortality
@@ -203,9 +218,9 @@ calcNatZ.Fisheries<-function(mc,mp,N_yxmsz,showPlot=TRUE){
         }
     }
     
-    return(list(cpN_fyxms=cpN_fyxms,cpB_fyxms=cpB_fyxms,cpN_fyxmsz=cpN_fyxmsz,
-                dsN_fyxms=dsN_fyxms,dsB_fyxms=dsB_fyxms,dsN_fyxmsz=dsN_fyxmsz,
-                tmN_fyxms=tmN_fyxms,tmB_fyxms=tmB_fyxms,tmN_fyxmsz=tmN_fyxmsz,
-                rmN_fyxms=rmN_fyxms,rmB_fyxms=rmB_fyxms,rmN_fyxmsz=rmN_fyxmsz,
-                dmN_fyxms=dmN_fyxms,dmB_fyxms=dmB_fyxms,dmN_fyxmsz=dmN_fyxmsz));
+    return(list(cpN_fyxms=cpN_fyxms,cpB_fyxms=cpB_fyxms,cpN_fyxmsz=cpN_fyxmsz,cpB_fyxmsz=cpB_fyxmsz,
+                dsN_fyxms=dsN_fyxms,dsB_fyxms=dsB_fyxms,dsN_fyxmsz=dsN_fyxmsz,dsB_fyxmsz=dsB_fyxmsz,
+                tmN_fyxms=tmN_fyxms,tmB_fyxms=tmB_fyxms,tmN_fyxmsz=tmN_fyxmsz,tmB_fyxmsz=tmB_fyxmsz,
+                rmN_fyxms=rmN_fyxms,rmB_fyxms=rmB_fyxms,rmN_fyxmsz=rmN_fyxmsz,rmB_fyxmsz=rmB_fyxmsz,
+                dmN_fyxms=dmN_fyxms,dmB_fyxms=dmB_fyxms,dmN_fyxmsz=dmN_fyxmsz,dmB_fyxmsz=dmB_fyxmsz));
 }

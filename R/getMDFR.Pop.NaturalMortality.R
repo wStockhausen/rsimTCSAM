@@ -47,7 +47,7 @@ getMDFR.Pop.NaturalMortality<-function(rsims,
         mdfrp<-mdfrp[,c("case","y","x","m","s","z","val")];
     }
 
-    mdfr<-getMDFR.CanonicalFormat(mdfrp);
+    mdfr<-rCompTCMs::getMDFR.CanonicalFormat(mdfrp);
 
     if (verbose) cat("--rsimTCSAM::getMDFR.Pop.NaturalMortality: Done! \n");
     return(mdfr);

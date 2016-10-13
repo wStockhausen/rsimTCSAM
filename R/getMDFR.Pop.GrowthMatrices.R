@@ -43,8 +43,8 @@ getMDFR.Pop.GrowthMatrices<-function(rsims,verbose=FALSE){
     mdfrp$z<-mdfrp$zp;
     mdfrp$zp<-zp;
     
-    mdfr<-getMDFR.CanonicalFormat(mdfrp);
-    mdfr$type<-"population";
+    mdfr<-rCompTCMs::getMDFR.CanonicalFormat(mdfrp);
+    mdfr$process<-"population";
     mdfr$m<-"immature";
     mdfr$s<-"all";
     

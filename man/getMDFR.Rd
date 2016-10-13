@@ -14,7 +14,7 @@ getMDFR(path, rsims, verbose = FALSE)
 \item{verbose}{- flag (T/F) to print diagnostics}
 }
 \value{
-Melted dataframe (ala package reshape2).
+Melted dataframe (ala package reshape2) in canonical format.
 }
 \description{
 Function to get model objects as a melted dataframe from rsimTCSAM models.

@@ -5,14 +5,15 @@
 \title{Get fishery catch abundance time series from model results from rsimTCSAM model runs as a dataframe}
 \usage{
 getMDFR.Fisheries.CatchAbundance(rsims, category = c("captured", "discarded",
-  "retained", "discard mortality", "index"), cast = "x", verbose = FALSE)
+  "retained", "discard mortality", "total mortality", "index"), cast = "y+x",
+  verbose = FALSE)
 }
 \arguments{
-\item{rsims}{- single rsimTCSAM object, rsimTCSAM.resLst object, or named list of the latter}
+\item{rsims}{- single rsimTCSAM.rep object, rsimTCSAM.resLst object, or named list of the latter}
 
-\item{category}{- 'captured','discarded','retained', 'discard mortality', or 'index'}
+\item{category}{- 'captured','discarded','retained', 'discard mortality', 'total mortality', or 'index'}
 
-\item{cast}{- casting formula for excluding x,m,s factor levels from an average-at-size across unspecified factors}
+\item{cast}{- casting formula for excluding y,x,m,s,z factor levels from an average-at-size across unspecified factors}
 
 \item{verbose}{- flag (T/F) to print debug info}
 }

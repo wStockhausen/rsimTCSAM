@@ -4,9 +4,9 @@
 \alias{getMDFR.Pop.Quantities}
 \title{Extract population quantities from rsimTCSAM model runs as a dataframe}
 \usage{
-getMDFR.Pop.Quantities(rsims = NULL, type = c("R_y", "MB_yx", "B_yxms",
-  "B_yxm", "B_yx", "N_yxmsz", "N_yxmz", "N_yxz", "N_yxms", "N_yxm", "N_yx",
-  "iN_xmsz", "fN_xmsz"), verbose = FALSE)
+getMDFR.Pop.Quantities(rsims = NULL, type = c("R_y", "MB_yx", "B_yxmsz",
+  "B_yxmz", "B_yxz", "B_yxms", "B_yxm", "B_yx", "N_yxmsz", "N_yxmz", "N_yxz",
+  "N_yxms", "N_yxm", "N_yx", "iN_xmsz", "fN_xmsz"), verbose = FALSE)
 }
 \arguments{
 \item{rsims}{- single rsimTCSAM results object, or named list of such}

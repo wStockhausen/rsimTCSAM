@@ -8,10 +8,13 @@
 #'@param iN_xmsz - initial numbers at size array
 ##'
 #'@return list with two elements:
-#'MB_yx   - 2d array with mature biomass at mating time by year/sex
-#'N_yxms  - 4-d array of population numbers by year/sex/maturity/shell condition
-#'B_yxms  - 4-d array of population biomass by year/sex/maturity/shell condition
-#'N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/size
+#'\itemize{
+#'  \item{MB_yx   - 2d array with mature biomass at mating time by year/sex}
+#'  \item{N_yxms  - 4-d array of population numbers by year/sex/maturity/shell condition}
+#'  \item{B_yxms  - 4-d array of population biomass by year/sex/maturity/shell condition}
+#'  \item{N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/size}
+#'  \item{B_yxmsz - 5-d array of population biomass by year/sex/maturity/shell condition/size}
+#'}
 #'
 #'@details None.
 #'
@@ -52,16 +55,18 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
             N_yxmsz[y+1,x,,,]<-runOneYear.TM(mc,R_z,S1_msz,P_sz,Th_sz,T_szz,S2_msz,N_msz);
         }#x
     }#y
-    
+
     #calculate aggregate numbers/biomss (millions, 1000s t)
-    N_yxms <- dimArray(mc,'y.x.m.s');#numbers
-    B_yxms <- dimArray(mc,'y.x.m.s');#biomass
+    N_yxms  <- dimArray(mc,'y.x.m.s');#numbers
+    B_yxms  <- dimArray(mc,'y.x.m.s');#biomass
+    B_yxmsz <- dimArray(mc,'y.x.m.s.z');#biomass-at-size
+    B_yxmsz <-mp$W_yxmsz * N_yxmsz;
     for (y in d$y$nms){
         for (x in d$x$nms){
             for (m in d$m$nms){
                 for (s in d$s$nms){
                     N_yxms[y,x,m,s]<-sum(N_yxmsz[y,x,m,s,]);
-                    B_yxms[y,x,m,s]<-sum(mp$W_yxmsz[y,x,m,s,] * N_yxmsz[y,x,m,s,]);
+                    B_yxms[y,x,m,s]<-sum(B_yxmsz[y,x,m,s,]);
                 }#s
             }#m
         }#x
@@ -99,7 +104,7 @@ calcNatZ<-function(mc,mp,iN_xmsz,showPlot=TRUE){
         print(p);
     }
     
-    return(list(MB_yx=MB_yx,N_yxms=N_yxms,B_yxms=B_yxms,N_yxmsz=N_yxmsz));
+    return(list(MB_yx=MB_yx,N_yxms=N_yxms,B_yxms=B_yxms,N_yxmsz=N_yxmsz,B_yxmsz=B_yxmsz));
 }
 
 #'

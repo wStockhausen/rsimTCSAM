@@ -7,7 +7,7 @@
 #'@param rsims - single rsimTCSAM results object, or named list of such
 #'@param verbose - flag (T/F) to print diagnostics
 #'
-#'@return Melted dataframe (ala package reshape2).
+#'@return Melted dataframe (ala package reshape2) in canonical format.
 #'
 #'@details Returned dataframe is a melted (ala reshape2) version of the requested array in
 #'canonical format. The array value is in column 'val'. Uses \code{reshape2::melt(...)}.
@@ -55,7 +55,7 @@ getMDFR<-function(path,rsims,verbose=FALSE){
     #     }
     # }
     
-    if (!is.null(mdfr)) mdfr<-getMDFR.CanonicalFormat(mdfr);
+    if (!is.null(mdfr)) mdfr<-rCompTCMs::getMDFR.CanonicalFormat(mdfr);
     
     return(mdfr);
 }

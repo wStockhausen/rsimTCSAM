@@ -37,8 +37,8 @@ getMDFR.Pop.RecSizeDistribution<-function(rsims,verbose=FALSE){
     }
     mdfrp<-mdfrp[,c('case','pc','y','z','val')];
 
-    mdfr<-getMDFR.CanonicalFormat(mdfrp);
-    mdfr$type<-"population";
+    mdfr<-rCompTCMs::getMDFR.CanonicalFormat(mdfrp);
+    mdfr$process<-"population";
     mdfr$x<-"all";
     mdfr$m<-"immature";
     mdfr$s<-"all";

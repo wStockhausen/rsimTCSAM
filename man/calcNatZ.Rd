@@ -15,10 +15,13 @@ calcNatZ(mc, mp, iN_xmsz, showPlot = TRUE)
 }
 \value{
 list with two elements:
-MB_yx   - 2d array with mature biomass at mating time by year/sex
-N_yxms  - 4-d array of population numbers by year/sex/maturity/shell condition
-B_yxms  - 4-d array of population biomass by year/sex/maturity/shell condition
-N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/size
+\itemize{
+ \item{MB_yx   - 2d array with mature biomass at mating time by year/sex}
+ \item{N_yxms  - 4-d array of population numbers by year/sex/maturity/shell condition}
+ \item{B_yxms  - 4-d array of population biomass by year/sex/maturity/shell condition}
+ \item{N_yxmsz - 5-d array of population numbers by year/sex/maturity/shell condition/size}
+ \item{B_yxmsz - 5-d array of population biomass by year/sex/maturity/shell condition/size}
+}
 }
 \description{
 Function to project population numbers at size forward through the model time interval

@@ -11,6 +11,7 @@
 #'N_vyxms: 5-d array of survey numbers by year/sex/maturity/shell condition
 #'B_vyxms: 5-d array of survey biomass by year/sex/maturity/shell condition
 #'N_vyxmsz: 6-d array of survey numbers by year/sex/maturity/shell condition/size
+#'B_vyxmsz: 6-d array of survey biomass by year/sex/maturity/shell condition/size
 #'
 #'@details None.
 #'
@@ -30,16 +31,18 @@ calcNatZ.Surveys<-function(mc,mp,N_yxmsz,showPlot=TRUE){
     }#v
     
     #--calculate survey abundance/biomass aggregated over size
-    N_vyxms<-dimArray(mc,'v.y.x.m.s'); #survey numbers by y, x, m, s
-    B_vyxms<-dimArray(mc,'v.y.x.m.s'); #survey biomass by y, x, m, s
-    W_yxmsz<-mp$W_yxmsz;               #weight-at-size
+    N_vyxms <-dimArray(mc,'v.y.x.m.s'); #survey numbers by y, x, m, s
+    B_vyxms <-dimArray(mc,'v.y.x.m.s'); #survey biomass by y, x, m, s
+    B_vyxmsz<-dimArray(mc,'v.y.x.m.s.z'); #survey biomass by y, x, m, s, z
+    W_yxmsz <-mp$W_yxmsz;                 #weight-at-size
     for (v in d$v$nms){
+        B_vyxmsz[v,,,,,]<-W_yxmsz*N_vyxmsz[v,,,,,];
         for (y in d$y$nms){
             for (x in d$x$nms){
                 for (m in d$m$nms){
                     for (s in d$s$nms){
                         N_vyxms[v,y,x,m,s]<-N_vyxms[v,y,x,m,s]+sum(N_vyxmsz[v,y,x,m,s,]);
-                        B_vyxms[v,y,x,m,s]<-B_vyxms[v,y,x,m,s]+sum(W_yxmsz[y,x,m,s,]*N_vyxmsz[v,y,x,m,s,]);
+                        B_vyxms[v,y,x,m,s]<-B_vyxms[v,y,x,m,s]+sum(B_vyxmsz[v,y,x,m,s,]);
                     }#s
                 }#m
             }#x
@@ -85,5 +88,5 @@ calcNatZ.Surveys<-function(mc,mp,N_yxmsz,showPlot=TRUE){
         }#vp
     }
     
-    return(invisible(list(N_vyxms=N_vyxms,B_vyxms=B_vyxms,N_vyxmsz=N_vyxmsz)));
+    return(invisible(list(N_vyxms=N_vyxms,B_vyxms=B_vyxms,N_vyxmsz=N_vyxmsz,B_vyxmsz=B_vyxmsz)));
 }

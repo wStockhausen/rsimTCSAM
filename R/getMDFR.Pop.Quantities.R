@@ -15,6 +15,7 @@
 #'
 getMDFR.Pop.Quantities<-function(rsims=NULL,
                                  type=c("R_y","MB_yx",
+                                        "B_yxmsz","B_yxmz","B_yxz",
                                         "B_yxms","B_yxm","B_yx",
                                         "N_yxmsz","N_yxmz","N_yxz",
                                         "N_yxms","N_yxm","N_yx",
@@ -49,21 +50,42 @@ getMDFR.Pop.Quantities<-function(rsims=NULL,
         mdfr$m<-'mature';
     }
     if (substr(type[1],1,3)=="B_y"){
-        #biomass trends
-        if (verbose) cat("Getting population biomass trends\n");
-        path<-'mr/P_list/B_yxms';
+        #Population biomass-at-size
+        if (verbose) cat("Getting population biomass-at-size\n");
+        path<-'mr/P_list/B_yxmsz';
         dfr<-getMDFR(path,rsims,verbose=verbose);
-        if (type[1]=="B_yxms") mdfr<-dfr;
+        dfr<-removeImmOS(dfr);
+        if (type[1]=="B_yxmsz") mdfr<-dfr;
+        if (type[1]=="B_yxmz"){
+            #biomass trends
+            if (verbose) cat("Getting population B_yxmz.\n");
+            mdfr<-reshape2::dcast(dfr,case+y+x+m+z~.,fun.aggregate=sum,value.var='val');
+            names(mdfr)[6]<-'val';
+        }
+        if (type[1]=="B_yxz"){
+            #biomass trends
+            if (verbose) cat("Getting population B_yxz.\n");
+            mdfr<-reshape2::dcast(dfr,case+y+x+z~.,fun.aggregate=sum,value.var='val');
+            names(mdfr)[5]<-'val';
+        }
+        if (type[1]=="B_yxms"){
+            #biomass trends
+            if (verbose) cat("Getting population biomass trends B_yxms\n");
+            mdfr<-reshape2::dcast(dfr,case+y+x+m+s~.,fun.aggregate=sum,value.var='val');
+            names(mdfr)[6]<-'val';
+        }
         if (type[1]=="B_yxm"){
-            if (verbose) cat("Getting population B_yxm.\n");
+            #biomass trends
+            if (verbose) cat("Getting population biomass trends B_yxm\n");
             mdfr<-reshape2::dcast(dfr,case+y+x+m~.,fun.aggregate=sum,value.var='val');
             names(mdfr)[5]<-'val';
-        } 
+        }
         if (type[1]=="B_yx"){
-            if (verbose) cat("Getting population B_yxm.\n");
+            #biomass trends
+            if (verbose) cat("Getting population biomass trends B_yx\n");
             mdfr<-reshape2::dcast(dfr,case+y+x~.,fun.aggregate=sum,value.var='val');
             names(mdfr)[4]<-'val';
-        } 
+        }
     }
     if (substr(type[1],1,3)=="N_y"){
         #Population abundance-at-size
@@ -127,7 +149,7 @@ getMDFR.Pop.Quantities<-function(rsims=NULL,
         }
     }
 
-    mdfr<-getMDFR.CanonicalFormat(mdfr);
+    mdfr<-rCompTCMs::getMDFR.CanonicalFormat(mdfr);
     mdfr$type<-"population";
 
     if (verbose) cat("--rsimTCSAM::getMDFR.Pop.Quantities: Done. \n");
