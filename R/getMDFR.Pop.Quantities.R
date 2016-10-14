@@ -25,6 +25,7 @@ getMDFR.Pop.Quantities<-function(rsims=NULL,
     if (verbose) cat("rsimTCSAM::getMDFR.Pop.Quantities: Getting population trends\n");
     
     types<-c("R_y","MB_yx",
+             "B_yxmsz","B_yxmz","B_yxz",
              "B_yxms","B_yxm","B_yx",
              "N_yxmsz","N_yxmz","N_yxz",
              "N_yxms","N_yxm","N_yx",
